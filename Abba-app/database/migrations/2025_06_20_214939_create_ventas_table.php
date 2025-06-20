@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
+    /**
+     * 5. Migración para la tabla ventas (database/migrations/xxxx_create_ventas_table.php)
+     */
     public function up()
     {
         Schema::create('ventas', function (Blueprint $table) {
