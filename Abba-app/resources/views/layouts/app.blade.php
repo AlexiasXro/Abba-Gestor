@@ -10,9 +10,76 @@
 </head>
 <body class="bg-light">
 
+    {{-- 🌐 Navbar completa --}}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container">
-            <a class="navbar-brand" href="#">Mi Tienda</a>
+            <a class="navbar-brand" href="{{ url('/panel') }}">🥿 Mi Tienda</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAbba">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarAbba">
+                 <ul class="navbar-nav me-auto">
+
+                {{-- Panel --}}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Panel</a>
+                </li>
+
+                {{-- Productos --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Productos</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Listado</a></li>
+                        <li><a class="dropdown-item" href="#">Agregar</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="#">Stock por talles</a></li>
+                    </ul>
+                </li>
+
+                {{-- Clientes --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Clientes</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Listado</a></li>
+                        <li><a class="dropdown-item" href="#">Agregar</a></li>
+                    </ul>
+                </li>
+
+                {{-- Ventas --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Ventas</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Historial</a></li>
+                        <li><a class="dropdown-item" href="#">Nueva venta</a></li>
+                        <li><a class="dropdown-item" href="#">Ticket PDF</a></li>
+                    </ul>
+                </li>
+
+                {{-- Alertas y reportes --}}
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Stock Bajo</a>
+                </li>
+
+                {{-- Admin / Configuración futura --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Configuración</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Talles</a></li>
+                        <li><a class="dropdown-item" href="#">Usuarios (futuro)</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+
+                {{-- Cierre de sesión u otro menú --}}
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('logout') }}">Salir</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -45,7 +112,7 @@
         @yield('content')
     </div>
 
-    <!-- Bootstrap JS (necesario para dismissible alert) -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

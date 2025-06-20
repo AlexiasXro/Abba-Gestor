@@ -17,3 +17,6 @@ Route::resource('productos', ProductoController::class);
 
 // Rutas para clientes
 Route::resource('clientes', ClienteController::class);
+
+Route::get('/alertas/stock', [AlertaController::class, 'stockBajo'])->name('alertas.stock');
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');

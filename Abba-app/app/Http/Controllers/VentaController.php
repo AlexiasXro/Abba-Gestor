@@ -13,6 +13,14 @@ class VentaController extends Controller
 {
 
     //VentaController (app/Http/Controllers/VentaController.php)
+    public function index()
+    {
+        $ventas = Venta::with(['cliente', 'detalles.producto'])->latest()->get();
+
+        return view('ventas.index', compact('ventas'));
+    }
+
+    // otros métodos como create, store, show, etc.
 
     public function create()
     {
