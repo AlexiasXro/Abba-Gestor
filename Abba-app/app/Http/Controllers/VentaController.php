@@ -133,7 +133,15 @@ class VentaController extends Controller
         return view('ventas.show', compact('venta'));
     }
     
-    // Otros métodos del CRUD...
+    // Otros métodos 
+    public function pdf(Venta $venta)
+{
+    $venta->load('cliente', 'detalles.producto', 'detalles.talle');
+    
+    $pdf = PDF::loadView('ventas.pdf', compact('venta'));
+    
+    return $pdf->stream('ticket-venta-'.$venta->id.'.pdf');
+}
 
     
 }

@@ -22,10 +22,7 @@
             <div class="collapse navbar-collapse" id="navbarAbba">
                  <ul class="navbar-nav me-auto">
 
-                {{-- Panel --}}
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Panel</a>
-                </li>
+              
 
                 {{-- Productos --}}
                 <li class="nav-item dropdown">
@@ -51,8 +48,8 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Ventas</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Historial</a></li>
-                        <li><a class="dropdown-item" href="#">Nueva venta</a></li>
+                        <li><a class="dropdown-item" href="{{ route('productos.index') }}">Historial</a></li>
+                        <li><a class="dropdown-item" href="{{ route('ventas.create') }}">Nueva venta</a></li>
                         <li><a class="dropdown-item" href="#">Ticket PDF</a></li>
                     </ul>
                 </li>

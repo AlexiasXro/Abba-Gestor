@@ -5,7 +5,7 @@ use App\Http\Controllers\VentaController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ClienteController;
 
-Route::get('/panel', function () {
+Route::get('/', function () {
     return view('panel');
 });
 

@@ -1,15 +1,22 @@
 instalar PHP PHP 8.4.8
- C:\Program Files\PHP
+    C:\Program Files\PHP
     https://windows.php.net/download#php-8.4
+    https://www.apachefriends.org/es/download.html
 
- *Habilitar permisos de cambio al usuaro comun[name del equipo] 
- Cambios en PHP.ini->extension=fileinfo
+      *Habilitar permisos de cambio al usuaro comun[name del equipo] 
+      Cambios en PHP.ini->extension=fileinfo
                     extension=pdo_sqlite
                     extension=sqlite3
+                    extension=zip
 
- instalar composer 
- Uso del instalador#
+
+    instalar composer 
+    Uso del instalador#
     https://getcomposer.org/doc/00-intro.md#installation-windows
+
+    instalar zip
+    https://www.7-zip.org/
+    Asegurate de agregar su ruta a las variables de entorno (ej.: C:\Program Files\7-Zip)
 
 _________________________________________________________________
 
