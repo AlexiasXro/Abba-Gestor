@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\AlertaController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TalleController;
 
 
 Route::get('/', function () {
@@ -32,15 +33,18 @@ Route::prefix('productos')->name('productos.')->group(function () {
 //________________________________________________________________________________
 
 
-//------------------------------------------
+//Rutas para alertas y logueo?------------------------------------------
 Route::get('/alertas/stock', [AlertaController::class, 'stockBajo'])->name('alertas.stock');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 //----------------------------------------------
 
 
-// Rutas para clientes------------------------------------------
+// Rutas para clientes____________________________________________________________________
 Route::resource('clientes', ClienteController::class);
 
 // Extra: vistas de eliminados y restauración
 Route::get('clientes-eliminados', [ClienteController::class, 'eliminados'])->name('clientes.eliminados');
 Route::post('clientes/{id}/restaurar', [ClienteController::class, 'restaurar'])->name('clientes.restaurar');
+
+// Rutas para talles__________________________________________________________________________
+Route::resource('talles', TalleController::class);

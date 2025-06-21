@@ -69,7 +69,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Configuración</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Talles</a></li>
+                            <li><a class="dropdown-item" href="{{ route('talles.index') }}">Talles</a></li>
                             <li><a class="dropdown-item" href="#">Usuarios (futuro)</a></li>
                         </ul>
                     </li>
