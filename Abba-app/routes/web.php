@@ -15,8 +15,21 @@ Route::get('/', function () {
 // Rutas para ventas
 Route::resource('ventas', VentaController::class)->except(['edit', 'update', 'destroy']);
 
-// Rutas para productos
-Route::resource('productos', ProductoController::class);
+// Rutas para productos_____________________________________________________
+Route::prefix('productos')->name('productos.')->group(function () {
+    Route::get('/', [ProductoController::class, 'index'])->name('index');
+    Route::get('/eliminados', [ProductoController::class, 'eliminados'])->name('eliminados');
+    Route::get('/create', [ProductoController::class, 'create'])->name('create');
+    Route::post('/', [ProductoController::class, 'store'])->name('store');
+    Route::get('/{producto}', [ProductoController::class, 'show'])->name('show');
+    Route::get('/{producto}/edit', [ProductoController::class, 'edit'])->name('edit');
+    Route::put('/{producto}', [ProductoController::class, 'update'])->name('update');
+    Route::delete('/{producto}', [ProductoController::class, 'destroy'])->name('destroy');
+
+    // Ruta para restaurar
+    Route::post('/{id}/restaurar', [ProductoController::class, 'restaurar'])->name('restaurar');
+});
+//________________________________________________________________________________
 
 
 //------------------------------------------
