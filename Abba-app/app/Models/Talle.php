@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Talle extends Model
 {
+    //Abba-app\app\Models\Talle.php
     use HasFactory;
 
     protected $fillable = ['talle'];

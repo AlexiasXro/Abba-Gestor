@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Producto extends Model
 {
+    //Abba-app/app/Models/Producto.php
     use HasFactory;
 
     protected $fillable = [

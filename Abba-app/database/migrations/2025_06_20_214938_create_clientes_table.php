@@ -19,11 +19,14 @@ return new class extends Migration
             $table->string('email')->nullable();
             $table->string('direccion')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('clientes');
+    Schema::table('clientes', function (Blueprint $table) {
+        $table->dropSoftDeletes();
+    });
     }
 };

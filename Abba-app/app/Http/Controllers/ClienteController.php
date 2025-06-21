@@ -2,64 +2,93 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    //Abba-app/app/Http/Controllers/ClienteController.php
+    // Mostrar todos los clientes activos
     public function index()
     {
-        //
+        $clientes = Cliente::latest()->get();
+        return view('clientes.index', compact('clientes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // Mostrar clientes eliminados (soft deleted)
+    public function eliminados()
+    {
+        $clientesEliminados = Cliente::onlyTrashed()->get();
+        return view('clientes.eliminados', compact('clientesEliminados'));
+    }
+
+    // Formulario de creación
     public function create()
     {
-        //
+        return view('clientes.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Guardar cliente nuevo
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'telefono' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255|unique:clientes,email',
+            'direccion' => 'nullable|string|max:255',
+        ]);
+
+        $cliente = Cliente::create($validated);
+
+        return redirect()->route('clientes.show', $cliente->id)
+                         ->with('success', 'Cliente creado correctamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    // Mostrar cliente
+    public function show(Cliente $cliente)
     {
-        //
+        return view('clientes.show', compact('cliente'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    // Formulario de edición
+    public function edit(Cliente $cliente)
     {
-        //
+        return view('clientes.edit', compact('cliente'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    // Actualizar cliente
+    public function update(Request $request, Cliente $cliente)
     {
-        //
+        $validated = $request->validate([
+            'nombre' => 'required|string|max:255',
+            'apellido' => 'required|string|max:255',
+            'telefono' => 'nullable|string|max:20',
+            'email' => 'nullable|email|max:255|unique:clientes,email,' . $cliente->id,
+            'direccion' => 'nullable|string|max:255',
+        ]);
+
+        $cliente->update($validated);
+
+        return redirect()->route('clientes.show', $cliente->id)
+                         ->with('success', 'Cliente actualizado correctamente.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    // Soft delete del cliente
+    public function destroy(Cliente $cliente)
     {
-        //
+        $cliente->delete(); // ahora es soft delete
+        return redirect()->route('clientes.index')
+                         ->with('success', 'Cliente eliminado correctamente.');
+    }
+
+    // Restaurar un cliente eliminado
+    public function restaurar($id)
+    {
+        $cliente = Cliente::onlyTrashed()->findOrFail($id);
+        $cliente->restore();
+
+        return redirect()->route('clientes.index')
+                         ->with('success', 'Cliente restaurado correctamente.');
     }
 }
