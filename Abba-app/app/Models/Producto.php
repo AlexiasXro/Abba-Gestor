@@ -44,4 +44,6 @@ class Producto extends Model
             ?->pivot
             ?->stock ?? 0;
     }
+
+    
 }

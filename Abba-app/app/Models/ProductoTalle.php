@@ -29,3 +29,5 @@ class ProductoTalle extends Model
         return $this->belongsTo(Talle::class);
     }
 }
+
+

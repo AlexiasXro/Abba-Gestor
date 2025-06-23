@@ -47,22 +47,33 @@ class VentaController extends Controller
         'metodo_pago' => 'required|string|in:efectivo,tarjeta,transferencia',
     ]);
 
-    // Verificación de stock antes de procesar la venta
+
     foreach ($validated['productos'] as $item) {
-        $stockDisponible = ProductoTalle::where('producto_id', $item['id'])
-                                      ->where('talle_id', $item['talle_id'])
-                                      ->value('stock');
-        
-        if ($stockDisponible < $item['cantidad']) {
-            $producto = Producto::find($item['id']);
-            $talle = Talle::find($item['talle_id']);
-            
-            return back()->withErrors([
-                'stock' => "No hay suficiente stock para {$producto->nombre} (Talle: {$talle->talle}). ".
-                           "Stock disponible: {$stockDisponible}, Cantidad solicitada: {$item['cantidad']}"
-            ])->withInput();
-        }
+    $stockDisponible = ProductoTalle::where('producto_id', $item['id'])
+        ->where('talle_id', $item['talle_id'])
+        ->value('stock');
+
+    if ($stockDisponible === null) {
+        $producto = Producto::find($item['id']);
+        $talle = Talle::find($item['talle_id']);
+
+        return back()->withErrors([
+            'stock' => "No se encontró registro de stock para {$producto->nombre} (Talle: {$talle->talle})"
+        ])->withInput();
     }
+
+    if ($stockDisponible < $item['cantidad']) {
+        $producto = Producto::find($item['id']);
+        $talle = Talle::find($item['talle_id']);
+
+        return back()->withErrors([
+            'stock' => "No hay suficiente stock para {$producto->nombre} (Talle: {$talle->talle}). ".
+                       "Stock disponible: {$stockDisponible}, Cantidad solicitada: {$item['cantidad']}"
+        ])->withInput();
+    }
+}
+
+    
 
     // Calcular subtotal, descuento y total
     $subtotal = 0;

@@ -7,11 +7,15 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\AlertaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TalleController;
+use App\Http\Controllers\PanelController;
 
 
 Route::get('/', function () {
     return view('panel');
 });
+
+// Redireccionar / a /panel (o directamente llamar al método)
+Route::get('/', [PanelController::class, 'index'])->name('panel');
 
 // Rutas para ventas
 Route::resource('ventas', VentaController::class)->except(['edit', 'update', 'destroy']);

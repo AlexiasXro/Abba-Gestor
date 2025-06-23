@@ -45,7 +45,8 @@ class ProductoController extends Controller
             'talles.*.stock' => 'required|integer|min:0',
         ]);
 
-        $producto = Producto::create($validated);
+        $datosProducto = collect($validated)->except('talles')->toArray(); // solo los campos del producto
+$producto = Producto::create($datosProducto);
 
         if (!empty($validated['talles'])) {
             $syncData = [];
