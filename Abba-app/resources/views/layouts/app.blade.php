@@ -68,41 +68,46 @@
 
     <div class="container">
         {{-- 🔔 Alerta de stock mínimo --}}
-@php
-    use App\Models\ProductoTalle;
-    $productosBajoStock = ProductoTalle::with(['producto', 'talle'])
-        ->where('stock', '<=', 3)
-        ->orderBy('stock')
-        ->get()
-        ->groupBy('producto_id');
-@endphp
+        @php
+        use App\Models\ProductoTalle;
+        $productosBajoStock = ProductoTalle::with(['producto', 'talle'])
+        ->where('stock', '<=', 3) ->orderBy('stock')
+            ->get()
+            ->groupBy('producto_id');
+            @endphp
 
-@if($productosBajoStock->isNotEmpty())
-    <div class="alert alert-warning">
-        <strong>¡Atención!</strong> Hay productos con stock bajo.
-        <button class="btn btn-sm btn-outline-dark float-end" type="button" data-bs-toggle="collapse" data-bs-target="#alertaStockCollapse">
-            Ver detalles
-        </button>
-        <div class="clearfix"></div>
+            @if($productosBajoStock->isNotEmpty())
+            <div class="alert alert-warning">
+                <strong>¡Atención!</strong> Hay productos con stock bajo.
+                <button class="btn btn-sm btn-outline-dark float-end" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#alertaStockCollapse">
+                    Ver detalles
+                </button>
+                <div class="clearfix"></div>
 
-        <div class="collapse mt-3" id="alertaStockCollapse">
-            @foreach ($productosBajoStock as $productoId => $items)
-                <strong>{{ $items->first()->producto->nombre }}</strong>
-                <ul class="mb-2">
-                    @foreach ($items as $item)
+                <div class="collapse mt-3" id="alertaStockCollapse">
+                    @foreach ($productosBajoStock as $productoId => $items)
+                    <strong>
+                        {{ optional($items->first()->producto)->nombre ?? 'Producto eliminado' }}
+                    </strong>
+
+
+                    <ul class="mb-2">
+                        @foreach ($items as $item)
                         <li>Talle: {{ $item->talle->talle }} — Stock: {{ $item->stock }}</li>
+                        @endforeach
+                    </ul>
                     @endforeach
-                </ul>
-            @endforeach
-        </div>
-    </div>
-@endif
+                </div>
+            </div>
+            @endif
 
-        {{-- Contenido dinámico de cada vista --}}
-        @yield('content')
+            {{-- Contenido dinámico de cada vista --}}
+            @yield('content')
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>

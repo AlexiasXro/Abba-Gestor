@@ -19,7 +19,7 @@ class PanelController extends Controller
         
         // Productos con stock bajo (incluyendo relación con talles)
         $productosBajoStock = ProductoTalle::with(['producto', 'talle'])
-            ->where('stock', '<=', 3)
+            ->where('stock', '<=', 1)
             ->orderBy('stock')
             ->get()
             ->groupBy('producto_id');

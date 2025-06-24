@@ -9,7 +9,7 @@
             <h1>Panel de Control</h1>
         </div>
     </div>
-    
+
     <!-- Accesos rápidos -->
     <div class="row mb-4">
         <div class="col-md-4 mb-3">
@@ -28,7 +28,7 @@
             </a>
         </div>
     </div>
-    
+
     <!-- Resumen de ventas -->
     <div class="row mb-4">
         <div class="col-md-6">
@@ -44,61 +44,64 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Productos con stock bajo -->
-<div class="col-md-6">
-    <div class="card">
-        <div class="card-header bg-warning text-dark">
-            <h5 class="mb-0">Productos con Stock Bajo</h5>
-        </div>
-        <div class="card-body">
-            @if($productosBajoStock->isEmpty())
-                <div class="alert alert-success mb-0">
-                    Todo el stock está en orden
-                </div>
-            @else
-                <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
-                    <table class="table table-sm mb-0">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th>Talle</th>
-                                <th>Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($productosBajoStock as $productoId => $items)
-    @foreach ($items as $index => $item)
-        <tr>
-            @if ($index === 0)
-                <td rowspan="{{ $items->count() }}"><strong>{{ $item->producto->nombre }}</strong></td>
-            @endif
-            <td>{{ $item->talle->talle }}</td>
-            <td>{{ $item->stock }}</td>
-        </tr>
-    @endforeach
-@endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @endif
-        </div>
-    </div>
-</div>
 
-    
-   <!-- Últimos clientes -->
-<!-- Últimos clientes -->
-    <div class="row">
-        <div class="col-12">
+        <!-- Productos con stock bajo -->
+        <div class="col-md-6">
             <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h5 class="mb-0">Últimos Clientes Registrados</h5>
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">Productos con Stock Bajo</h5>
                 </div>
                 <div class="card-body">
-                    @if($ultimosClientes->isEmpty())
-                        <p class="text-muted">No hay clientes registrados recientemente</p>
+                    @if($productosBajoStock->isEmpty())
+                    <div class="alert alert-success mb-0">
+                        Todo el stock está en orden
+                    </div>
                     @else
+                    <div class="table-responsive" style="max-height: 200px; overflow-y: auto;">
+                        <table class="table table-sm mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Talle</th>
+                                    <th>Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($productosBajoStock as $productoId => $items)
+                                @foreach ($items as $index => $item)
+                                <tr>
+                                    @if ($index === 0)
+                                    <td rowspan="{{ $items->count() }}">
+                                        <strong>{{ optional($item->producto)->nombre ?? 'Producto eliminado' }}</strong>
+                                    </td>
+                                    @endif
+                                    <td>{{ $item->talle->talle }}</td>
+                                    <td>{{ $item->stock }}</td>
+                                </tr>
+                                @endforeach
+                                @endforeach
+                            </tbody>
+
+                        </table>
+                    </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Últimos clientes -->
+        <!-- Últimos clientes -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">Últimos Clientes Registrados</h5>
+                    </div>
+                    <div class="card-body">
+                        @if($ultimosClientes->isEmpty())
+                        <p class="text-muted">No hay clientes registrados recientemente</p>
+                        @else
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
@@ -121,11 +124,11 @@
                                 </tbody>
                             </table>
                         </div>
-                    @endif
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
-@endsection
+    @endsection
