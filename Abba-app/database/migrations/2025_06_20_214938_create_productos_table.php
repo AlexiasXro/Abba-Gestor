@@ -17,15 +17,18 @@ return new class extends Migration
             $table->string('codigo')->unique();
             $table->string('nombre');
             $table->text('descripcion')->nullable();
+            $table->string('tipo')->default('ropa');// ✅ Agregado
             $table->decimal('precio', 10, 2);
             $table->integer('stock_minimo')->default(3);
             $table->boolean('activo')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
     public function down(): void
     {
         Schema::dropIfExists('productos');
+        
     }
 };

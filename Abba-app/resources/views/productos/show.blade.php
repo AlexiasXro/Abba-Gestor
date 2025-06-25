@@ -10,7 +10,7 @@
         <tr><th>Código</th><td>{{ $producto->codigo }}</td></tr>
         <tr><th>Descripción</th><td>{{ $producto->descripcion }}</td></tr>
         <tr><th>Precio</th><td>${{ number_format($producto->precio, 2) }}</td></tr>
-        <tr><th>Stock mínimo</th><td>{{ $producto->stock_minimo }}</td></tr>
+        <tr><th>Stock total</th><td>{{ $producto->talles->sum('pivot.stock') }}</td></tr>
         <tr><th>Activo</th><td>{{ $producto->activo ? 'Sí' : 'No' }}</td></tr>
     </table>
 

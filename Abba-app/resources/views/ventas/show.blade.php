@@ -2,26 +2,37 @@
 
 @section('content')
 <div class="container">
-    <div class="row mb-4">
-        <div class="col-12 d-flex justify-content-between align-items-center">
+    <div class="row mb-4 align-items-center">
+        <div class="col-8">
             <h1>Detalle de Venta #{{ $venta->id }}</h1>
-            <button class="btn btn-primary" onclick="window.print()">Imprimir Ticket</button>
+            <p><small>Fecha: {{ \Carbon\Carbon::parse($venta->created_at)->format('d/m/Y H:i') }}</small></p>
+        </div>
+        <div class="col-4 text-end">
+            <button class="btn btn-primary no-print" onclick="window.print()">Imprimir Ticket</button>
         </div>
     </div>
     
-    <div class="card mb-4">
+    <div class="card mb-4 admin-info">
         <div class="card-body">
             <div class="row">
                 <div class="col-md-6">
                     <h5>Información de la Venta</h5>
-                    <p><strong>Fecha:</strong> {{ $venta->fecha_venta->format('d/m/Y H:i') }}</p>
                     <p><strong>Método de Pago:</strong> {{ ucfirst($venta->metodo_pago) }}</p>
+                    @if($venta->metodo_pago === 'efectivo')
+                        <p><strong>Monto Pagado:</strong> ${{ number_format($venta->monto_pagado, 2) }}</p>
+                        <p><strong>Vuelto:</strong> ${{ number_format($venta->monto_pagado - $venta->total, 2) }}</p>
+                    @elseif($venta->metodo_pago === 'tarjeta')
+                        <p><strong>Tipo de Tarjeta:</strong> {{ ucfirst($venta->tipo_tarjeta ?? 'N/A') }}</p>
+                    @elseif($venta->metodo_pago === 'transferencia')
+                        <p><strong>Número de Operación:</strong> {{ $venta->numero_operacion ?? 'N/A' }}</p>
+                    @endif
                 </div>
                 <div class="col-md-6">
                     <h5>Cliente</h5>
                     @if($venta->cliente)
                         <p><strong>Nombre:</strong> {{ $venta->cliente->nombre }} {{ $venta->cliente->apellido }}</p>
                         <p><strong>Teléfono:</strong> {{ $venta->cliente->telefono ?? 'N/A' }}</p>
+                        <p><strong>Email:</strong> {{ $venta->cliente->email ?? 'N/A' }}</p>
                     @else
                         <p>Cliente no registrado</p>
                     @endif
@@ -29,11 +40,12 @@
             </div>
         </div>
     </div>
-    
-    <div class="card">
+
+    <!-- Tabla productos para admin -->
+    <div class="card admin-info">
         <div class="card-body">
-            <h5>Productos</h5>
-            <table class="table">
+            <h5>Productos Detallados</h5>
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th>Producto</th>
@@ -73,38 +85,60 @@
             </table>
         </div>
     </div>
+
+    <!-- Tabla simplificada para impresión, solo datos esenciales -->
+    <div class="card print-only" style="display:none;">
+        <div class="card-body">
+            <h5>Productos</h5>
+            <table class="table" style="border:none;">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($venta->detalles as $detalle)
+                    <tr>
+                        <td>{{ $detalle->producto->nombre }}</td>
+                        <td>{{ $detalle->cantidad }}</td>
+                        <td>${{ number_format($detalle->precio_unitario, 2) }}</td>
+                        <td>${{ number_format($detalle->subtotal, 2) }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3" class="text-end">Total:</th>
+                        <td>${{ number_format($venta->total, 2) }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <p><strong>Método de Pago:</strong> {{ ucfirst($venta->metodo_pago) }}</p>
+            @if($venta->metodo_pago === 'efectivo')
+    <p><strong>Monto Pagado:</strong> ${{ number_format($venta->monto_pagado ?? 0, 2) }}</p>
+    <p><strong>Vuelto:</strong> ${{ number_format(($venta->monto_pagado ?? 0) - $venta->total, 2) }}</p>
+@endif
+            <p>Gracias por su compra!</p>
+        </div>
+    </div>
+
 </div>
 
-<!-- Estilo para impresión -->
-<style media="print">
-    body * {
-        visibility: hidden;
-    }
-    .container, .container * {
-        visibility: visible;
-    }
-    .container {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-    }
-    .no-print {
-        display: none !important;
-    }
-    .card {
-        border: none;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    table, th, td {
-        border: 1px solid #ddd;
-    }
-    th, td {
-        padding: 8px;
-        text-align: left;
+<style>
+    /* Ocultar info de admin al imprimir */
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+        .admin-info {
+            display: none !important;
+        }
+        .print-only {
+            display: block !important;
+        }
     }
 </style>
 @endsection

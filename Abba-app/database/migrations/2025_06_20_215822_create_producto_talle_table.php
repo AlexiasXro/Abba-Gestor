@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('talle_id')->constrained()->onDelete('cascade');
             $table->integer('stock');
             $table->timestamps();
+           $table->softDeletes(); // ✅ Agregado
         });
     }
 

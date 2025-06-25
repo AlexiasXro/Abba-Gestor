@@ -11,10 +11,15 @@ class ProductoController extends Controller
     //Abba-app\app\Http\Controllers\ProductoController.php
     // Mostrar productos activos
     public function index()
-    {
-        $productos = Producto::whereNull('deleted_at')->orderBy('created_at', 'desc')->get();
-        return view('productos.index', compact('productos'));
-    }
+{
+    $productos = Producto::with('talles') // carga los talles con pivot
+                         ->whereNull('deleted_at')
+                         ->orderBy('created_at', 'desc')
+                         ->get();
+
+    return view('productos.index', compact('productos'));
+}
+
 
     // Mostrar productos eliminados (soft deleted)
     public function eliminados()
@@ -38,7 +43,7 @@ class ProductoController extends Controller
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
             'precio' => 'required|numeric|min:0',
-            'stock_minimo' => 'required|integer|min:0',
+            'stock_minimo' => 'nullable|integer|min:0', // ahora es opcional
             'activo' => 'required|boolean',
             'talles' => 'nullable|array',
             'talles.*.id' => 'required|exists:talles,id',

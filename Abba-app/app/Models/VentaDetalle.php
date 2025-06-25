@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class VentaDetalle extends Model
 {
     //Modelo VentaDetalle (app/Models/VentaDetalle.php)
-
+   protected $table = 'ventas_detalle'; //CORRECCIÓN
     use HasFactory;
 
     protected $fillable = [

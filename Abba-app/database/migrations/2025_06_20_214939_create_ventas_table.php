@@ -19,6 +19,8 @@ return new class extends Migration
             $table->decimal('descuento', 10, 2)->default(0);
             $table->decimal('total', 10, 2);
             $table->string('metodo_pago');
+            $table->decimal('monto_pagado', 10, 2)->nullable()->after('metodo_pago');
+
             $table->text('notas')->nullable();
             $table->timestamps();
         });

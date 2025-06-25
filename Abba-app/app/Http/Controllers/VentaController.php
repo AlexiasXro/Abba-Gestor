@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\DB;
+
 
 use App\Models\Venta;
 use App\Models\Cliente;
@@ -22,19 +24,21 @@ class VentaController extends Controller
 
     // otros métodos como create, store, show, etc.
 
-    public function create()
-    {
-        $clientes = Cliente::all();
-        $productos = Producto::with('talles')->get();
-        $talles = Talle::all();
-        
-        return view('ventas.create', compact('clientes', 'productos', 'talles'));
-    }
+    
+        public function create()
+{
+    $clientes = Cliente::all();
+    $productos = Producto::with('talles')->get();
+    $talles = Talle::all();
+
+    return view('ventas.create', compact('clientes', 'productos', 'talles'));
+}
 
     
-   public function store(Request $request)
+
+    
+ public function store(Request $request)
 {
-    // Validación de los datos del formulario
     $validated = $request->validate([
         'cliente_id' => 'nullable|exists:clientes,id',
         'productos' => 'required|array|min:1',
@@ -43,50 +47,39 @@ class VentaController extends Controller
         'productos.*.cantidad' => 'required|integer|min:1',
         'productos.*.precio' => 'required|numeric|min:0',
         'productos.*.descuento' => 'nullable|numeric|min:0',
-        'descuento_global' => 'nullable|numeric|min:0',
         'metodo_pago' => 'required|string|in:efectivo,tarjeta,transferencia',
+        'monto_pagado' => 'required_if:metodo_pago,efectivo|numeric|min:0',
+        'tipo_tarjeta' => 'nullable|string|in:debito,credito',
+        'numero_operacion' => 'nullable|string|max:50',
     ]);
 
-
+    // Verificar stock
     foreach ($validated['productos'] as $item) {
-    $stockDisponible = ProductoTalle::where('producto_id', $item['id'])
-        ->where('talle_id', $item['talle_id'])
-        ->value('stock');
+        $stockDisponible = ProductoTalle::where('producto_id', $item['id'])
+            ->where('talle_id', $item['talle_id'])
+            ->value('stock');
 
-    if ($stockDisponible === null) {
-        $producto = Producto::find($item['id']);
-        $talle = Talle::find($item['talle_id']);
-
-        return back()->withErrors([
-            'stock' => "No se encontró registro de stock para {$producto->nombre} (Talle: {$talle->talle})"
-        ])->withInput();
+        if ($stockDisponible === null || $stockDisponible < $item['cantidad']) {
+            $producto = Producto::find($item['id']);
+            $talle = Talle::find($item['talle_id']);
+            return back()->withErrors([
+                'stock' => "Stock insuficiente para {$producto->nombre} (Talle: {$talle->talle})"
+            ])->withInput();
+        }
     }
 
-    if ($stockDisponible < $item['cantidad']) {
-        $producto = Producto::find($item['id']);
-        $talle = Talle::find($item['talle_id']);
-
-        return back()->withErrors([
-            'stock' => "No hay suficiente stock para {$producto->nombre} (Talle: {$talle->talle}). ".
-                       "Stock disponible: {$stockDisponible}, Cantidad solicitada: {$item['cantidad']}"
-        ])->withInput();
-    }
-}
-
-    
-
-    // Calcular subtotal, descuento y total
+    // Calcular totales
     $subtotal = 0;
     $items = [];
-    
+
     foreach ($validated['productos'] as $item) {
         $precio = $item['precio'];
         $cantidad = $item['cantidad'];
         $descuento = $item['descuento'] ?? 0;
-        
+
         $subtotalItem = ($precio * $cantidad) - $descuento;
         $subtotal += $subtotalItem;
-        
+
         $items[] = [
             'producto_id' => $item['id'],
             'talle_id' => $item['talle_id'],
@@ -96,47 +89,52 @@ class VentaController extends Controller
             'subtotal' => $subtotalItem,
         ];
     }
-    
+
     $descuentoGlobal = $validated['descuento_global'] ?? 0;
     $total = $subtotal - $descuentoGlobal;
-    
-    // Usar transacción para asegurar integridad de datos
+
+    // Validar monto entregado si es efectivo
+    if ($validated['metodo_pago'] === 'efectivo') {
+        $montoPagado = $validated['monto_pagado'];
+        if ($montoPagado < $total) {
+            return back()->withErrors(['monto_pagado' => 'El monto entregado debe ser igual o mayor al total de la venta.'])
+                         ->withInput();
+        }
+    }
+
+    // Transacción
     DB::beginTransaction();
-    
+
     try {
-        // Crear la venta
         $venta = Venta::create([
             'cliente_id' => $validated['cliente_id'] ?? null,
             'fecha_venta' => now(),
             'subtotal' => $subtotal,
-            'descuento' => $descuentoGlobal,
+            'descuento' => 0, // Por ahora sin descuento global
             'total' => $total,
             'metodo_pago' => $validated['metodo_pago'],
+            'monto_pagado' => $validated['metodo_pago'] === 'efectivo' ? $validated['monto_pagado'] : null,
         ]);
-        
-        // Crear los detalles de la venta
+
         $venta->detalles()->createMany($items);
-        
-        // Actualizar stock (más eficiente que updateExistingPivot)
+
         foreach ($validated['productos'] as $item) {
             ProductoTalle::where('producto_id', $item['id'])
-                       ->where('talle_id', $item['talle_id'])
-                       ->decrement('stock', $item['cantidad']);
+                ->where('talle_id', $item['talle_id'])
+                ->decrement('stock', $item['cantidad']);
         }
-        
+
         DB::commit();
-        
-        return redirect()->route('ventas.show', $venta->id)
-                         ->with('success', 'Venta registrada correctamente');
-        
+        return redirect()->route('ventas.show', $venta->id)->with('success', 'Venta registrada correctamente');
+
     } catch (\Exception $e) {
         DB::rollBack();
-        
         return back()->withErrors([
-            'error' => 'Ocurrió un error al procesar la venta: '.$e->getMessage()
+            'error' => 'Error al procesar la venta: ' . $e->getMessage()
         ])->withInput();
     }
 }
+
 
     public function show(Venta $venta)
     {

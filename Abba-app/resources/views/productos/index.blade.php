@@ -17,7 +17,8 @@
                 <th>Código</th>
                 <th>Nombre</th>
                 <th>Precio</th>
-                <th>Stock mínimo</th>
+                <th>Stock Total</th>
+                <th>Talles</th>
                 <th>Activo</th>
                 <th>Acciones</th>
             </tr>
@@ -28,7 +29,21 @@
                     <td>{{ $producto->codigo }}</td>
                     <td>{{ $producto->nombre }}</td>
                     <td>${{ number_format($producto->precio, 2) }}</td>
-                    <td>{{ $producto->stock_minimo }}</td>
+
+                    <!-- Stock total sumando todos los talles -->
+                    <td>{{ $producto->talles->sum('pivot.stock') }}</td>
+
+                    <!-- Talles con badges -->
+                    <td>
+                        @forelse($producto->talles as $talle)
+                            <span class="badge bg-primary me-1" title="Stock: {{ $talle->pivot->stock }}">
+                                {{ $talle->talle }}
+                            </span>
+                        @empty
+                            <span class="text-muted">Sin talles</span>
+                        @endforelse
+                    </td>
+
                     <td>{{ $producto->activo ? 'Sí' : 'No' }}</td>
                     <td>
                         <a href="{{ route('productos.show', $producto) }}" class="btn btn-info btn-sm">Ver</a>
@@ -42,9 +57,10 @@
                     </td>
                 </tr>
             @empty
-                <tr><td colspan="6" class="text-center">No hay productos activos.</td></tr>
-            @endforelse
-        </tbody>
-    </table>
+
+            <tr><td colspan="7" class="text-center">No hay productos activos.</td></tr>
+        @endforelse
+    </tbody>
+</table>
 </div>
 @endsection

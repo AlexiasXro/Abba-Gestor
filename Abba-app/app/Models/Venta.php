@@ -11,8 +11,15 @@ class Venta extends Model
     use HasFactory;
 
     protected $fillable = [
-        'cliente_id', 'fecha_venta', 'subtotal', 'descuento', 'total', 'metodo_pago', 'notas'
-    ];
+    'cliente_id',
+    'fecha_venta',
+    'subtotal',
+    'descuento',
+    'total',
+    'metodo_pago',
+    'monto_pagado',   // <--- Agregar este campo
+    'notas',
+];
 
     public function cliente()
     {
