@@ -91,4 +91,43 @@ class ClienteController extends Controller
         return redirect()->route('clientes.index')
                          ->with('success', 'Cliente restaurado correctamente.');
     }
+
+
+
+
+    // Registro rápido de clientes en views/ventas/create
+   public function rapido(Request $request)
+{
+    $validated = $request->validate([
+        'nombre' => 'required|string|max:255',
+        'apellido' => 'required|string|max:255',
+        'dni' => 'nullable|string|max:20',
+        'telefono' => 'nullable|string|max:20',
+    ]);
+
+    $clienteNuevo = Cliente::create($validated);
+
+    return response()->view('clientes.partials.option', ['cliente' => $clienteNuevo]);
+}
+
+
+
+ // Búsqueda de clientes al vender. views/ventas/create
+public function buscar(Request $request)
+{
+    $query = $request->input('query');
+
+    $clientes = Cliente::where('nombre', 'like', "%{$query}%")
+        ->orWhere('apellido', 'like', "%{$query}%")
+        ->orWhere('dni', 'like', "%{$query}%")
+        ->orWhere('telefono', 'like', "%{$query}%")
+        ->limit(10)
+        ->get();
+
+    return response()->json($clientes);
+}
+
+
+
+
 }

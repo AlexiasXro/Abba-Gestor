@@ -9,6 +9,10 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<!-- htmx-->
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+
+
 </head>
 
 <body class="bg-light">
@@ -46,7 +50,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Ventas</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('productos.index') }}">Historial</a></li>
+                            <li><a class="dropdown-item" href="{{ route('ventas.index') }}">Historial</a></li>
                             <li><a class="dropdown-item" href="{{ route('ventas.create') }}">Nueva venta</a></li>
                         </ul>
                     </li>

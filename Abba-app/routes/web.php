@@ -19,6 +19,13 @@ Route::get('/', [PanelController::class, 'index'])->name('panel');
 
 // Rutas para ventas
 Route::resource('ventas', VentaController::class)->except(['edit', 'update', 'destroy']);
+Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.index');
+//modal
+Route::post('/clientes/rapido', [ClienteController::class, 'rapido'])->name('clientes.rapido');
+//buscar cliente
+Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
+
+
 
 // Rutas para productos_____________________________________________________
 Route::prefix('productos')->name('productos.')->group(function () {

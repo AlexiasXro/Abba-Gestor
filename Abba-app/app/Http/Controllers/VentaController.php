@@ -16,11 +16,14 @@ class VentaController extends Controller
 
     //VentaController (app/Http/Controllers/VentaController.php)
     public function index()
-    {
-        $ventas = Venta::with(['cliente', 'detalles.producto'])->latest()->get();
+{
+    $ventas = Venta::with(['cliente', 'detalles.producto.talles'])
+                ->orderBy('created_at', 'desc')
+                ->get();
 
-        return view('ventas.index', compact('ventas'));
-    }
+    return view('ventas.index', compact('ventas'));
+}
+
 
     // otros métodos como create, store, show, etc.
 
@@ -39,10 +42,13 @@ class VentaController extends Controller
     
  public function store(Request $request)
 {
+    //dd($request->all());
+
     $validated = $request->validate([
-        'cliente_id' => 'nullable|exists:clientes,id',
+        'cliente_id' => 'required|exists:clientes,id',
         'productos' => 'required|array|min:1',
-        'productos.*.id' => 'required|exists:productos,id',
+        'productos.*.producto_id' => 'required|exists:productos,id',
+
         'productos.*.talle_id' => 'required|exists:talles,id',
         'productos.*.cantidad' => 'required|integer|min:1',
         'productos.*.precio' => 'required|numeric|min:0',
@@ -55,12 +61,12 @@ class VentaController extends Controller
 
     // Verificar stock
     foreach ($validated['productos'] as $item) {
-        $stockDisponible = ProductoTalle::where('producto_id', $item['id'])
+        $stockDisponible = ProductoTalle::where('producto_id', $item['producto_id'])
             ->where('talle_id', $item['talle_id'])
             ->value('stock');
 
         if ($stockDisponible === null || $stockDisponible < $item['cantidad']) {
-            $producto = Producto::find($item['id']);
+            $producto = Producto::find($item['producto_id']);
             $talle = Talle::find($item['talle_id']);
             return back()->withErrors([
                 'stock' => "Stock insuficiente para {$producto->nombre} (Talle: {$talle->talle})"
@@ -81,7 +87,7 @@ class VentaController extends Controller
         $subtotal += $subtotalItem;
 
         $items[] = [
-            'producto_id' => $item['id'],
+            'producto_id' => $item['producto_id'],
             'talle_id' => $item['talle_id'],
             'cantidad' => $cantidad,
             'precio_unitario' => $precio,
@@ -119,7 +125,7 @@ class VentaController extends Controller
         $venta->detalles()->createMany($items);
 
         foreach ($validated['productos'] as $item) {
-            ProductoTalle::where('producto_id', $item['id'])
+            ProductoTalle::where('producto_id', $item['producto_id'])
                 ->where('talle_id', $item['talle_id'])
                 ->decrement('stock', $item['cantidad']);
         }
