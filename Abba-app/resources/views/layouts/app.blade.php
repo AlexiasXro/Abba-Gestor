@@ -43,6 +43,7 @@
                             <li><a class="dropdown-item" href="{{ route('clientes.index') }}">Listado</a></li>
                             <li><a class="dropdown-item" href="{{ route('clientes.create') }}">Agregar</a></li>
                             <li><a class="dropdown-item" href="{{ route('clientes.eliminados') }}">Eliminados</a></li>
+                            <li><a class="dropdown-item" href="{{ route('clientes.index') }}">Historial</a></li>
                         </ul>
                     </li>
 

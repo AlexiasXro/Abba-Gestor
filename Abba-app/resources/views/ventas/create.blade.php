@@ -205,19 +205,24 @@ document.addEventListener('click', function(e) {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Referencias a elementos clave del DOM
-    const container = document.getElementById('productos-container'); // contenedor donde se agregan productos dinámicamente
+    const container = document.getElementById(
+    'productos-container'); // contenedor donde se agregan productos dinámicamente
     const addButton = document.getElementById('agregar-producto'); // botón para agregar nuevo producto
     const template = document.getElementById('producto-template'); // template HTML para un producto
     const totalMostrado = document.getElementById('total_mostrado'); // campo que muestra el total acumulado
     const metodoPagoSelect = document.getElementById('metodo_pago'); // select del método de pago
-    const montoEntregadoContainer = document.getElementById('monto-entregado-container'); // contenedor monto entregado (solo efectivo)
+    const montoEntregadoContainer = document.getElementById(
+    'monto-entregado-container'); // contenedor monto entregado (solo efectivo)
     const montoPagadoInput = document.getElementById('monto_pagado'); // input monto pagado en efectivo
     const vueltoText = document.getElementById('vuelto-text'); // texto que muestra el vuelto o falta de dinero
-    const tipoTarjetaContainer = document.getElementById('tipo-tarjeta-container'); // contenedor para tipo de tarjeta (crédito/débito)
-    const numeroOperacionContainer = document.getElementById('numero-operacion-container'); // contenedor para número de operación transferencia
+    const tipoTarjetaContainer = document.getElementById(
+    'tipo-tarjeta-container'); // contenedor para tipo de tarjeta (crédito/débito)
+    const numeroOperacionContainer = document.getElementById(
+    'numero-operacion-container'); // contenedor para número de operación transferencia
 
-    // Objeto con stock disponible por producto y talle, generado desde backend Laravel con @json
+    // Objeto con stock disponible por producto y talle, generado desde backend Laravel con
     // Estructura: { productoId: { talleId: stock, ... }, ... }
+
     const stockDisponible = @json(
         $productos -> mapWithKeys(function($producto) {
             return [
@@ -253,16 +258,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Muestra/oculta inputs relacionados al método de pago seleccionado
     function mostrarCamposMetodoPago() {
         const metodo = metodoPagoSelect.value;
-        montoEntregadoContainer.classList.toggle('d-none', metodo !== 'efectivo'); // mostrar solo si es efectivo
+        montoEntregadoContainer.classList.toggle('d-none', metodo !==
+        'efectivo'); // mostrar solo si es efectivo
         tipoTarjetaContainer.classList.toggle('d-none', metodo !== 'tarjeta'); // mostrar solo si es tarjeta
-        numeroOperacionContainer.classList.toggle('d-none', metodo !== 'transferencia'); // mostrar solo si es transferencia
+        numeroOperacionContainer.classList.toggle('d-none', metodo !==
+        'transferencia'); // mostrar solo si es transferencia
     }
 
     // Agrega un producto al formulario usando el template
     function agregarProducto() {
         const clone = template.content.cloneNode(true); // clona el template
         const productoItem = clone.querySelector('.producto-item'); // contenedor individual producto
-        const index = document.querySelectorAll('.producto-item').length; // índice para los nombres de inputs (productos[0], productos[1], etc.)
+        const index = document.querySelectorAll('.producto-item')
+        .length; // índice para los nombres de inputs (productos[0], productos[1], etc.)
         const inputs = productoItem.querySelectorAll('[name]'); // todos los inputs/selects dentro del producto
 
         // Ajusta el atributo 'name' de cada input para que se envíen correctamente como array al backend
@@ -279,21 +287,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const precioInput = productoItem.querySelector('.precio');
         const descuentoInput = productoItem.querySelector('.descuento');
 
-        // Cuando cambia el producto seleccionado, actualiza precio, stock máximo y total
         productoSelect.addEventListener('change', () => {
-            const precio = productoSelect.options[productoSelect.selectedIndex].getAttribute('data-precio') || 0;
+            const precio = productoSelect.options[productoSelect.selectedIndex].getAttribute(
+                'data-precio') || 0;
             precioInput.value = precio;
             actualizarMaxCantidad(productoSelect, talleSelect, cantidadInput);
+            validarStock(productoSelect, talleSelect, cantidadInput);
             recalcularTotales();
         });
 
-        // Cuando cambia el talle, actualiza el stock máximo permitido y total
         talleSelect.addEventListener('change', () => {
             actualizarMaxCantidad(productoSelect, talleSelect, cantidadInput);
+            validarStock(productoSelect, talleSelect, cantidadInput);
             recalcularTotales();
         });
 
-        // Valida cantidad ingresada para que no supere stock ni sea menor a 1, y recalcula total
         cantidadInput.addEventListener('input', () => {
             const max = cantidadInput.getAttribute('max');
             if (max && parseInt(cantidadInput.value) > max) {
@@ -301,6 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (parseInt(cantidadInput.value) < 1 || isNaN(parseInt(cantidadInput.value))) {
                 cantidadInput.value = 1;
             }
+            validarStock(productoSelect, talleSelect, cantidadInput);
             recalcularTotales();
         });
 
@@ -338,7 +347,41 @@ document.addEventListener('DOMContentLoaded', function() {
             cantidadInput.removeAttribute('max'); // si no hay stock info, no se limita cantidad
         }
     }
+    
+// STOCK
+    function validarStock(productoSelect, talleSelect, cantidadInput) {
+    const productoId = productoSelect.value;
+    const talleId = talleSelect.value;
+    const cantidad = parseInt(cantidadInput.value) || 0;
 
+    const esValido =
+        stockDisponible[productoId] &&
+        stockDisponible[productoId][talleId] !== undefined &&
+        cantidad <= stockDisponible[productoId][talleId];
+
+    if (!esValido) {
+        cantidadInput.classList.add('is-invalid');
+        let feedback = cantidadInput.parentElement.querySelector('.invalid-feedback');
+        if (!feedback) {
+            feedback = document.createElement('div');
+            feedback.className = 'invalid-feedback';
+            cantidadInput.parentElement.appendChild(feedback);
+        }
+        feedback.textContent = 'Stock insuficiente para este talle.';
+    } else {
+        cantidadInput.classList.remove('is-invalid');
+        const feedback = cantidadInput.parentElement.querySelector('.invalid-feedback');
+        if (feedback) feedback.remove();
+    }
+
+    // Nueva validación global: desactiva botón si hay errores
+    const botonConfirmar = document.getElementById('confirmar-venta');
+    if (document.querySelector('.cantidad.is-invalid')) {
+        botonConfirmar.setAttribute('disabled', 'disabled');
+    } else {
+        botonConfirmar.removeAttribute('disabled');
+    }
+}
     // Recalcula el total de la venta sumando cada producto con cantidad * precio - descuento
     // También calcula el vuelto o cuánto falta si es pago en efectivo
     function recalcularTotales() {

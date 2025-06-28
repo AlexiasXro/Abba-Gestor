@@ -7,7 +7,7 @@
                     <label class="form-label">Producto</label>
 
                     <select class="form-select producto-select" name="productos[][producto_id]" required>
-                        
+
                         <option value="">-- Seleccionar producto --</option>
                         @foreach($productos as $producto)
                         <option value="{{ $producto->id }}" data-precio="{{ $producto->precio }}">
