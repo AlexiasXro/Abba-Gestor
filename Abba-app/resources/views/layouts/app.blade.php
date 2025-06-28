@@ -43,7 +43,7 @@
                             <li><a class="dropdown-item" href="{{ route('clientes.index') }}">Listado</a></li>
                             <li><a class="dropdown-item" href="{{ route('clientes.create') }}">Agregar</a></li>
                             <li><a class="dropdown-item" href="{{ route('clientes.eliminados') }}">Eliminados</a></li>
-                            <li><a class="dropdown-item" href="{{ route('clientes.index') }}">Historial</a></li>
+                            <li><a class="dropdown-item" href="{{ route('clientes.historial') }}">Historial</a></li>
                         </ul>
                     </li>
 
@@ -51,7 +51,7 @@
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Ventas</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('ventas.index') }}">Historial</a></li>
+                            <li><a class="dropdown-item" href="{{ route('ventas.index') }}">Listado</a></li>
                             <li><a class="dropdown-item" href="{{ route('ventas.create') }}">Nueva venta</a></li>
                         </ul>
                     </li>

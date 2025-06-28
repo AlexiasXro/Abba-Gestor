@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cliente;
+use App\Models\Venta;
 use Illuminate\Http\Request;
 
 class ClienteController extends Controller
@@ -127,6 +128,71 @@ public function buscar(Request $request)
     return response()->json($clientes);
 }
 
+// HISTORIAL DE LOS CLIENTE Y LO QUE COMPRARON 
+public function historial(Request $request)
+{
+    // Recibo filtros
+    $clienteQuery = $request->input('cliente'); // nombre, dni, teléfono
+    $fechaDesde = $request->input('fecha_desde');
+    $fechaHasta = $request->input('fecha_hasta');
+    $estado = $request->input('estado');
+    $metodoPago = $request->input('metodo_pago');
+    $montoMin = $request->input('monto_min');
+    $montoMax = $request->input('monto_max');
+    $numeroVenta = $request->input('numero_venta');
+
+    $ventas = Venta::query();
+
+    // Filtrar por cliente (buscar en nombre, dni o teléfono)
+    if ($clienteQuery) {
+        $clientesIds = Cliente::where('nombre', 'like', "%$clienteQuery%")
+            ->orWhere('dni', 'like', "%$clienteQuery%")
+            ->orWhere('telefono', 'like', "%$clienteQuery%")
+            ->pluck('id');
+
+        $ventas->whereIn('cliente_id', $clientesIds);
+    }
+
+    // Filtrar por número de venta (id o código)
+    if ($numeroVenta) {
+        $ventas->where('id', $numeroVenta);
+    }
+
+    // Filtrar por estado si existe
+    if ($estado) {
+        $ventas->where('estado', $estado);
+    }
+
+    // Filtrar por método de pago si existe
+    if ($metodoPago) {
+        $ventas->where('metodo_pago', $metodoPago);
+    }
+
+    // Filtrar por rango de fechas
+    if ($fechaDesde) {
+        $ventas->whereDate('created_at', '>=', $fechaDesde);
+    }
+    if ($fechaHasta) {
+        $ventas->whereDate('created_at', '<=', $fechaHasta);
+    }
+
+    // Filtrar por rango de monto
+    if ($montoMin) {
+        $ventas->where('total', '>=', $montoMin);
+    }
+    if ($montoMax) {
+        $ventas->where('total', '<=', $montoMax);
+    }
+
+    $ventas = $ventas->orderBy('created_at', 'desc')->paginate(10);
+
+    // Para mantener los filtros en la vista
+    $filtros = $request->only([
+        'cliente', 'fecha_desde', 'fecha_hasta', 'estado', 'metodo_pago', 'monto_min', 'monto_max', 'numero_venta'
+    ]);
+
+    return view('clientes.historial', compact('ventas', 'filtros'));
+}
 
 
 

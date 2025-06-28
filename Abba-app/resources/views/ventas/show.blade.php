@@ -36,6 +36,7 @@
                     @else
                         <p>Cliente no registrado</p>
                     @endif
+              
                 </div>
             </div>
         </div>
