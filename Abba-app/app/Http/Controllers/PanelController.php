@@ -14,8 +14,10 @@ class PanelController extends Controller
     {
         // Ventas del día (resumen)
         $ventasHoyResumen = Venta::whereDate('fecha_venta', today())
+            ->where('estado', '!=', 'anulada')
             ->selectRaw('COUNT(*) as cantidad, SUM(total) as monto')
             ->first();
+
 
         // Ventas del día (detalle últimas 5)
         $ventasHoyDetalle = Venta::with('cliente')
@@ -37,6 +39,13 @@ class PanelController extends Controller
             ->get();
 
         // Único return con todas las variables
-        return view('panel', compact('ventasHoyResumen', 'ventasHoyDetalle', 'productosBajoStock', 'ultimosClientes'));
+        return view('panel', [
+            'ventasHoyResumen' => $ventasHoyResumen,
+            'ventasHoyDetalle' => $ventasHoyDetalle,
+            'productosBajoStock' => $productosBajoStock,
+            'ultimosClientes' => $ultimosClientes,
+            'mostrarAlertaStock' => true,
+        ]);
+
     }
 }

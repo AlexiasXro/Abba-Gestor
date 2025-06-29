@@ -102,10 +102,16 @@
                     </thead>
                     <tbody>
                         @foreach ($ventasHoyDetalle as $venta)
-                        <tr>
+                        <tr @if($venta->estado === 'anulada') class="table-danger" @endif>
                             <td>{{ $venta->id }}</td>
                             <td>{{ $venta->cliente->nombre ?? 'Sin nombre' }}</td>
-                            <td>${{ number_format($venta->total, 2) }}</td>
+                            <td>
+                                @if($venta->estado === 'anulada')
+                                <del>${{ number_format($venta->total, 2) }}</del>
+                                @else
+                                ${{ number_format($venta->total, 2) }}
+                                @endif
+                            </td>
                             <td>${{ number_format($venta->monto_pagado, 2) }}</td>
                             <td>${{ number_format($venta->monto_pagado - $venta->total, 2) }}</td>
                             <td>{{ $venta->created_at->format('H:i') }}</td>
@@ -113,6 +119,9 @@
                                 <a href="{{ route('ventas.show', $venta->id) }}" class="btn btn-sm btn-info"
                                     title="Ver Detalle">
                                     Ver
+                                    @if($venta->estado === 'anulada')
+                                    <span class="badge bg-danger ms-1">Anulada</span>
+                                    @endif
                                 </a>
                             </td>
                         </tr>

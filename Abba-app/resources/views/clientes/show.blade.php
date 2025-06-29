@@ -30,6 +30,7 @@
                 <th>Dirección</th>
                 <td>{{ $cliente->direccion ?? '-' }}</td>
             </tr>
+            
         </tbody>
     </table>
 </div>

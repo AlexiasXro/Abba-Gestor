@@ -9,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<!-- htmx-->
+    <!-- htmx-->
     <script src="https://unpkg.com/htmx.org@1.9.2"></script>
 
 
@@ -75,37 +75,45 @@
         {{-- 🔔 Alerta de stock mínimo --}}
         @php
         use App\Models\ProductoTalle;
+
         $productosBajoStock = ProductoTalle::with(['producto', 'talle'])
-        ->where('stock', '<=', 3) ->orderBy('stock')
+        ->where('stock', '<=', 1) ->orderBy('stock')
             ->get()
             ->groupBy('producto_id');
             @endphp
 
-            @if($productosBajoStock->isNotEmpty())
-            <div class="alert alert-warning">
-                <strong>¡Atención!</strong> Hay productos con stock bajo.
-                <button class="btn btn-sm btn-outline-dark float-end" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#alertaStockCollapse">
-                    Ver detalles
-                </button>
-                <div class="clearfix"></div>
-
-                <div class="collapse mt-3" id="alertaStockCollapse">
-                    @foreach ($productosBajoStock as $productoId => $items)
-                    <strong>
-                        {{ optional($items->first()->producto)->nombre ?? 'Producto eliminado' }}
+            @if(isset($mostrarAlertaStock) && $mostrarAlertaStock && $productosBajoStock->isNotEmpty())
+            <div class="card border-warning mb-3 shadow-sm" style="font-size: 0.9rem;">
+                <div class="card-body py-2">
+                    <strong class="text-warning">
+                        ⚠ {{ $productosBajoStock->count() }} producto(s) con stock bajo
                     </strong>
 
+                    <button class="btn btn-sm btn-outline-warning float-end" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#alertaStockCollapse">
+                        Ver detalles
+                    </button>
+                    <div class="clearfix"></div>
 
-                    <ul class="mb-2">
-                        @foreach ($items as $item)
-                        <li>Talle: {{ $item->talle->talle }} — Stock: {{ $item->stock }}</li>
+                    <div class="collapse mt-2" id="alertaStockCollapse">
+                        @foreach ($productosBajoStock as $productoId => $items)
+                        <strong class="d-block mt-2">
+                            {{ optional($items->first()->producto)->nombre ?? 'Producto eliminado' }}
+                        </strong>
+                        <ul class="mb-2 ps-3">
+                            @foreach ($items as $item)
+                            <li>
+                                Talle {{ $item->talle->talle }} —
+                                <span class="text-danger fw-bold">{{ $item->stock }}</span> unidad(es)
+                            </li>
+                            @endforeach
+                        </ul>
                         @endforeach
-                    </ul>
-                    @endforeach
+                    </div>
                 </div>
             </div>
             @endif
+
 
             {{-- Contenido dinámico de cada vista --}}
             @yield('content')
@@ -114,7 +122,7 @@
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    
+
 </body>
 
 </html>

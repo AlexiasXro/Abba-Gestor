@@ -26,6 +26,8 @@ Route::post('/clientes/rapido', [ClienteController::class, 'rapido'])->name('cli
 Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
 //historial cliente
 Route::get('clientes/historial', [ClienteController::class, 'historial'])->name('clientes.historial');
+//anular venta 
+Route::patch('/ventas/{venta}/anular', [VentaController::class, 'anular'])->name('ventas.anular');
 
 
 

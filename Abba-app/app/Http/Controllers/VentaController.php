@@ -158,5 +158,36 @@ class VentaController extends Controller
         return $pdf->stream('ticket-venta-' . $venta->id . '.pdf');
     }
 
+ // Ventas Anuladas
+    public function anular(Request $request, Venta $venta)
+{
+    if ($venta->estado === 'anulada') {
+        return back()->with('error', 'La venta ya fue anulada.');
+    }
+
+    $request->validate([
+        'motivo_anulacion' => 'required|string|min:5'
+    ]);
+
+    // Reversión de stock
+    foreach ($venta->detalles as $detalle) {
+        $productoTalle = ProductoTalle::where('producto_id', $detalle->producto_id)
+            ->where('talle_id', $detalle->talle_id)
+            ->first();
+
+        if ($productoTalle) {
+            $productoTalle->stock += $detalle->cantidad;
+            $productoTalle->save();
+        }
+    }
+
+    $venta->estado = 'anulada';
+    $venta->motivo_anulacion = $request->motivo_anulacion;
+    $venta->save();
+
+    return redirect()->route('ventas.show', $venta)->with('success', 'Venta anulada correctamente.');
+}
+
+
 
 }
