@@ -18,6 +18,9 @@ instalar PHP PHP 8.4.8
     https://www.7-zip.org/
     Asegurate de agregar su ruta a las variables de entorno (ej.: C:\Program Files\7-Zip)
 
+    manejo de tikec impreso?
+    composer require barryvdh/laravel-dompdf
+
 _________________________________________________________________
 
 # Diagrama de Clases - Sistema de Ventas y Stock

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Venta;
 use App\Models\Cliente;
+use Barryvdh\DomPDF\Facade\Pdf; // ✅ CORRECTO
 use App\Models\Producto;
 use App\Models\ProductoTalle;
 use App\Models\Talle;
@@ -48,13 +49,19 @@ class VentaController extends Controller
             'cliente_id' => 'required|exists:clientes,id',
             'productos' => 'required|array|min:1',
             'productos.*.producto_id' => 'required|exists:productos,id',
-
             'productos.*.talle_id' => 'required|exists:talles,id',
             'productos.*.cantidad' => 'required|integer|min:1',
             'productos.*.precio' => 'required|numeric|min:0',
             'productos.*.descuento' => 'nullable|numeric|min:0',
-            'metodo_pago' => 'required|string|in:efectivo,tarjeta,transferencia',
-            'monto_pagado' => 'required_if:metodo_pago,efectivo|numeric|min:0',
+            'metodo_pago' => 'required|string|in:efectivo,tarjeta,transferencia,cuotas',
+
+            // solo para efectivo
+            'monto_pagado' => 'required_if:metodo_pago,efectivo|nullable|numeric|min:0',
+
+            // solo para cuotas
+            'entrega_inicial' => 'required_if:metodo_pago,cuotas|nullable|numeric|min:0',
+            'cantidad_cuotas' => 'required_if:metodo_pago,cuotas|nullable|integer|min:2',
+
             'tipo_tarjeta' => 'nullable|string|in:debito,credito',
             'numero_operacion' => 'nullable|string|max:50',
         ]);
@@ -158,35 +165,35 @@ class VentaController extends Controller
         return $pdf->stream('ticket-venta-' . $venta->id . '.pdf');
     }
 
- // Ventas Anuladas
+    // Ventas Anuladas
     public function anular(Request $request, Venta $venta)
-{
-    if ($venta->estado === 'anulada') {
-        return back()->with('error', 'La venta ya fue anulada.');
-    }
-
-    $request->validate([
-        'motivo_anulacion' => 'required|string|min:5'
-    ]);
-
-    // Reversión de stock
-    foreach ($venta->detalles as $detalle) {
-        $productoTalle = ProductoTalle::where('producto_id', $detalle->producto_id)
-            ->where('talle_id', $detalle->talle_id)
-            ->first();
-
-        if ($productoTalle) {
-            $productoTalle->stock += $detalle->cantidad;
-            $productoTalle->save();
+    {
+        if ($venta->estado === 'anulada') {
+            return back()->with('error', 'La venta ya fue anulada.');
         }
+
+        $request->validate([
+            'motivo_anulacion' => 'required|string|min:5'
+        ]);
+
+        // Reversión de stock
+        foreach ($venta->detalles as $detalle) {
+            $productoTalle = ProductoTalle::where('producto_id', $detalle->producto_id)
+                ->where('talle_id', $detalle->talle_id)
+                ->first();
+
+            if ($productoTalle) {
+                $productoTalle->stock += $detalle->cantidad;
+                $productoTalle->save();
+            }
+        }
+
+        $venta->estado = 'anulada';
+        $venta->motivo_anulacion = $request->motivo_anulacion;
+        $venta->save();
+
+        return redirect()->route('ventas.show', $venta)->with('success', 'Venta anulada correctamente.');
     }
-
-    $venta->estado = 'anulada';
-    $venta->motivo_anulacion = $request->motivo_anulacion;
-    $venta->save();
-
-    return redirect()->route('ventas.show', $venta)->with('success', 'Venta anulada correctamente.');
-}
 
 
 
