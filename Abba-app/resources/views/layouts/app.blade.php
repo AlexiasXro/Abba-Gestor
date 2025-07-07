@@ -17,7 +17,7 @@
 
 <body class="bg-light">
     {{-- 🌐 Navbar completa --}}
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 no-print">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">🌐 Mi Tienda</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAbba">
@@ -55,6 +55,9 @@
                             <li><a class="dropdown-item" href="{{ route('ventas.create') }}">Nueva venta</a></li>
                         </ul>
                     </li>
+                    <li class="nav-item">
+        <a class="nav-link" href="{{ route('cuotas.index') }}">Cuentas por cobrar</a> {{-- NUEVO --}}
+    </li>
 
                     {{-- Configuración --}}
                     <li class="nav-item">

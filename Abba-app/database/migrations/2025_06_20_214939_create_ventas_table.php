@@ -10,21 +10,23 @@ return new class extends Migration
      * 5. Migración para la tabla ventas (database/migrations/xxxx_create_ventas_table.php)
      */
     public function up()
-    {
-        Schema::create('ventas', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('cliente_id')->nullable()->constrained()->onDelete('set null');
-            $table->dateTime('fecha_venta');
-            $table->decimal('subtotal', 10, 2);
-            $table->decimal('descuento', 10, 2)->default(0);
-            $table->decimal('total', 10, 2);
-            $table->string('metodo_pago');
-            $table->decimal('monto_pagado', 10, 2)->nullable()->after('metodo_pago');
+{
+    Schema::create('ventas', function (Blueprint $table) {
+        $table->id();
+        $table->foreignId('cliente_id')->nullable()->constrained()->onDelete('set null');
+        $table->dateTime('fecha_venta');
+        $table->decimal('subtotal', 10, 2);
+        $table->decimal('descuento', 10, 2)->default(0);
+        $table->decimal('total', 10, 2);
+        $table->string('metodo_pago');
+        $table->decimal('monto_pagado', 10, 2)->nullable()->after('metodo_pago');
+        $table->string('estado')->default('completada');
+        $table->text('motivo_anulacion')->nullable();
+        $table->text('notas')->nullable();
+        $table->timestamps();
+    });
+}
 
-            $table->text('notas')->nullable();
-            $table->timestamps();
-        });
-    }
 
     public function down()
     {

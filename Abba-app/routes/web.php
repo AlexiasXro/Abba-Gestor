@@ -8,6 +8,9 @@ use App\Http\Controllers\AlertaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TalleController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\CuotaController;
+
+
 
 
 Route::get('/', function () {
@@ -28,7 +31,9 @@ Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clie
 Route::get('clientes/historial', [ClienteController::class, 'historial'])->name('clientes.historial');
 //anular venta 
 Route::patch('/ventas/{venta}/anular', [VentaController::class, 'anular'])->name('ventas.anular');
-
+//-----gestion de cuotas
+Route::get('/cuotas', [CuotaController::class, 'index'])->name('cuotas.index');
+Route::post('/cuotas/pagar/{id}', [CuotaController::class, 'pagar'])->name('cuotas.pagar');
 
 
 

@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
 @endif
@@ -9,58 +10,104 @@
 
 @section('content')
 <div class="container">
-    <div class="row mb-4 align-items-center">
-        <div class="col-8">
-            <h1>Detalle de Venta #{{ $venta->id }}</h1>
-            <p><small>Fecha: {{ \Carbon\Carbon::parse($venta->created_at)->format('d/m/Y H:i') }}</small></p>
-        </div>
-        <div class="col-4 text-end">
-            <button class="btn btn-primary no-print" onclick="window.print()">Imprimir Ticket</button>
+
+    <!-- ENCABEZADO -->
+    <div class="row mb-4 align-items-center  no-print">
+    <div class="col-md-8 d-flex align-items-center">
+        <img src="{{ asset('images/AbbaShoes Positive.svg') }}" alt="Logo Tienda" style="max-height: 60px;" class="me-3">
+        <div>
+            <h5 class="mb-0">Detalle de Venta #{{ $venta->id }}</h5>
+            <small class="text-muted">Fecha: {{ \Carbon\Carbon::parse($venta->created_at)->format('d/m/Y H:i') }}</small>
         </div>
     </div>
+    <div class="col-md-4 text-md-end text-start mt-3 mt-md-0">
+        <button class="btn btn-primary no-print" onclick="window.print()">Imprimir Ticket</button>
+    </div>
+</div>
 
-    <div class="card mb-4 admin-info">
+
+    <!-- RESUMEN DE VENTA Y CLIENTE -->
+    <div class="card mb-3 admin-info">
         <div class="card-body">
+            <h5 class="mb-3">Resumen</h5>
             <div class="row">
                 <div class="col-md-6">
-                    <h5>Información de la Venta</h5>
-                    <p><strong>Método de Pago:</strong> {{ ucfirst($venta->metodo_pago) }}</p>
+                    <p class="mb-1"><strong>Método de Pago:</strong> {{ ucfirst($venta->metodo_pago) }}</p>
                     @if($venta->metodo_pago === 'efectivo')
-                    <p><strong>Monto Pagado:</strong> ${{ number_format($venta->monto_pagado, 2) }}</p>
-                    <p><strong>Vuelto:</strong> ${{ number_format($venta->monto_pagado - $venta->total, 2) }}</p>
+                        <p class="mb-1"><strong>Monto Pagado:</strong> ${{ number_format($venta->monto_pagado, 2) }}</p>
+                        <p class="mb-1"><strong>Vuelto:</strong> ${{ number_format($venta->monto_pagado - $venta->total, 2) }}</p>
                     @elseif($venta->metodo_pago === 'tarjeta')
-                    <p><strong>Tipo de Tarjeta:</strong> {{ ucfirst($venta->tipo_tarjeta ?? 'N/A') }}</p>
+                        <p class="mb-1"><strong>Tipo de Tarjeta:</strong> {{ ucfirst($venta->tipo_tarjeta ?? 'N/A') }}</p>
                     @elseif($venta->metodo_pago === 'transferencia')
-                    <p><strong>Número de Operación:</strong> {{ $venta->numero_operacion ?? 'N/A' }}</p>
+                        <p class="mb-1"><strong>Operación:</strong> {{ $venta->numero_operacion ?? 'N/A' }}</p>
                     @endif
                 </div>
                 <div class="col-md-6">
-                    <h5>Cliente</h5>
                     @if($venta->cliente)
-                    <p><strong>Nombre:</strong> {{ $venta->cliente->nombre }} {{ $venta->cliente->apellido }}</p>
-                    <p><strong>Teléfono:</strong> {{ $venta->cliente->telefono ?? 'N/A' }}</p>
-                    <p><strong>Email:</strong> {{ $venta->cliente->email ?? 'N/A' }}</p>
+                        <p class="mb-1"><strong>Cliente:</strong> {{ $venta->cliente->nombre }} {{ $venta->cliente->apellido }}</p>
+                        <p class="mb-1"><strong>Teléfono:</strong> {{ $venta->cliente->telefono ?? 'N/A' }}</p>
+                        <p class="mb-1"><strong>Email:</strong> {{ $venta->cliente->email ?? 'N/A' }}</p>
                     @else
-                    <p>Cliente no registrado</p>
+                        <p>Cliente no registrado</p>
                     @endif
-
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Tabla productos para admin -->
-    <div class="card admin-info">
+    <!-- DETALLE DE CUOTAS -->
+    @if($venta->metodo_pago === 'cuotas')
+    <div class="card admin-info mb-4">
         <div class="card-body">
-            <h5>Productos Detallados</h5>
+            <h5 class="mb-3">Detalle de Cuotas</h5>
+            @if($venta->cuotas->count())
             <table class="table table-bordered">
-                <thead>
+                <thead class="table-light">
+                    <tr class="text-center">
+                        <th>Cuota #</th>
+                        <th>Monto</th>
+                        <th>Vencimiento</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($venta->cuotas as $cuota)
                     <tr>
+                        <td>{{ $cuota->numero }}</td>
+                        <td>${{ number_format($cuota->monto, 2) }}</td>
+                        <td>{{ \Carbon\Carbon::parse($cuota->fecha_vencimiento)->format('d/m/Y') }}</td>
+                        <td>
+                            @if($cuota->pagada)
+                                <span class="badge bg-success">Pagada</span>
+                            @elseif(\Carbon\Carbon::parse($cuota->fecha_vencimiento)->isPast())
+                                <span class="badge bg-danger">Vencida</span>
+                            @else
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+            @else
+            <p>No hay cuotas registradas para esta venta.</p>
+            @endif
+        </div>
+    </div>
+    @endif
+
+    <!-- DETALLE DE PRODUCTOS -->
+    <div class="card admin-info mb-4">
+        <div class="card-body">
+            <h5 class="mb-3">Productos Detallados</h5>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr class="text-center">
                         <th>Producto</th>
                         <th>Talle</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unitario</th>
-                        <th>Descuento</th>
+                        <th>Cant.</th>
+                        <th>P.Unit</th>
+                        <th>Desc.</th>
                         <th>Subtotal</th>
                     </tr>
                 </thead>
@@ -93,81 +140,30 @@
             </table>
         </div>
     </div>
-<!--Venta anulada?-->
+
+    <!-- ANULACIÓN -->
     @if ($venta->estado !== 'anulada')
-    <form action="{{ route('ventas.anular', $venta) }}" method="POST" class="mt-3">
-        @csrf
-        @method('PATCH')
-
-        <div class="mb-2">
-            <label for="motivo">Motivo de anulación:</label>
-            <textarea name="motivo_anulacion" class="form-control" required></textarea>
+    <div class="card admin-info">
+        <div class="card-body">
+            <form action="{{ route('ventas.anular', $venta) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <label for="motivo_anulacion" class="form-label">Motivo de anulación</label>
+                <textarea name="motivo_anulacion" class="form-control mb-2" rows="2" required></textarea>
+                <button type="submit" class="btn btn-danger">Anular venta</button>
+            </form>
         </div>
-
-        <button type="submit" class="btn btn-danger">Anular venta</button>
-    </form>
+    </div>
     @else
     <div class="alert alert-danger mt-3">
-        Esta venta fue anulada.<br>
-        <strong>Motivo:</strong> {{ $venta->motivo_anulacion }}
+        <strong>Venta Anulada.</strong><br>
+        Motivo: {{ $venta->motivo_anulacion }}
     </div>
     @endif
-
-    <!-- Tabla simplificada para impresión, solo datos esenciales -->
-    <div class="card print-only" style="display:none;">
-        <div class="card-body">
-            <h5>Productos</h5>
-            <table class="table" style="border:none;">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Precio Unitario</th>
-                        <th>Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($venta->detalles as $detalle)
-                    <tr>
-                        <td>{{ $detalle->producto->nombre }}</td>
-                        <td>{{ $detalle->cantidad }}</td>
-                        <td>${{ number_format($detalle->precio_unitario, 2) }}</td>
-                        <td>${{ number_format($detalle->subtotal, 2) }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th colspan="3" class="text-end">Total:</th>
-                        <td>${{ number_format($venta->total, 2) }}</td>
-                    </tr>
-                </tfoot>
-            </table>
-            <p><strong>Método de Pago:</strong> {{ ucfirst($venta->metodo_pago) }}</p>
-            @if($venta->metodo_pago === 'efectivo')
-            <p><strong>Monto Pagado:</strong> ${{ number_format($venta->monto_pagado ?? 0, 2) }}</p>
-            <p><strong>Vuelto:</strong> ${{ number_format(($venta->monto_pagado ?? 0) - $venta->total, 2) }}</p>
-            @endif
-            <p>Gracias por su compra!</p>
-        </div>
-    </div>
-
+       {{-- Aquí incluís el partial del ticket para impresión --}}
+    @include('ventas.partials.print-ticket')
 </div>
 
-<style>
-/* Ocultar info de admin al imprimir */
-@media print {
-    .no-print {
-        display: none !important;
-    }
+  
 
-    .admin-info {
-        display: none !important;
-    }
-
-    .print-only {
-        display: block !important;
-    }
-}
-</style>
 @endsection
