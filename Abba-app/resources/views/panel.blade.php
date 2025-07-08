@@ -8,20 +8,26 @@
 
     <!-- Accesos rápidos -->
     <div class="row mb-4">
-        <div class="col-md-4 mb-3">
+        <div class="col-md-3 mb-3">
             <a href="{{ route('ventas.create') }}" class="btn btn-primary btn-lg w-100 py-3">
                 Nueva Venta
             </a>
         </div>
-        <div class="col-md-4 mb-3">
+        
+        <div class="col-md-3 mb-3">
             <a href="{{ route('productos.index') }}" class="btn btn-success btn-lg w-100 py-3">
                 Productos
             </a>
         </div>
-        <div class="col-md-4 mb-3">
+
+        <div class="col-md-3 mb-3">
             <a href="{{ route('clientes.index') }}" class="btn btn-info btn-lg w-100 py-3">
                 Clientes
             </a>
+        </div>
+
+        <div class="col-md-3 mb-3">
+            <a href="{{ route('reportes.index') }}" class="btn btn-outline-dark w-100 py-3">📊 Ver Reportes</a>
         </div>
     </div>
 
@@ -38,6 +44,7 @@
                 </div>
             </div>
         </div>
+        
 
         <!-- Productos con stock bajo -->
         <div class="col-md-6">
@@ -168,5 +175,9 @@
             </div>
         </div>
     </div>
+   
+
 </div>
+
+
 @endsection

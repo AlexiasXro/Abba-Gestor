@@ -55,14 +55,21 @@
                             <li><a class="dropdown-item" href="{{ route('ventas.create') }}">Nueva venta</a></li>
                         </ul>
                     </li>
-                    <li class="nav-item">
-        <a class="nav-link" href="{{ route('cuotas.index') }}">Cuentas por cobrar</a> {{-- NUEVO --}}
-    </li>
-
-                    {{-- Configuración --}}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('talles.index') }}">Talles</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="gestionDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Gestión
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="gestionDropdown">
+                            <li><a class="dropdown-item" href="{{ route('cuotas.index') }}">Cuentas por cobrar</a></li>
+                            <li><a class="dropdown-item" href="{{ route('talles.index') }}">Talles</a></li>
+                            <li><a class="dropdown-item" href="{{ route('reportes.index') }}">
+                                    <i class="bi bi-bar-chart"></i> Reportes
+                                </a></li>
+                        </ul>
                     </li>
+
+
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
@@ -77,15 +84,15 @@
     <div class="container">
         {{-- 🔔 Alerta de stock mínimo --}}
         @php
-        use App\Models\ProductoTalle;
+            use App\Models\ProductoTalle;
 
-        $productosBajoStock = ProductoTalle::with(['producto', 'talle'])
-        ->where('stock', '<=', 1) ->orderBy('stock')
-            ->get()
-            ->groupBy('producto_id');
-            @endphp
+            $productosBajoStock = ProductoTalle::with(['producto', 'talle'])
+                ->where('stock', '<=', 1)->orderBy('stock')
+                ->get()
+                ->groupBy('producto_id');
+        @endphp
 
-            @if(isset($mostrarAlertaStock) && $mostrarAlertaStock && $productosBajoStock->isNotEmpty())
+        @if(isset($mostrarAlertaStock) && $mostrarAlertaStock && $productosBajoStock->isNotEmpty())
             <div class="card border-warning mb-3 shadow-sm" style="font-size: 0.9rem;">
                 <div class="card-body py-2">
                     <strong class="text-warning">
@@ -100,26 +107,26 @@
 
                     <div class="collapse mt-2" id="alertaStockCollapse">
                         @foreach ($productosBajoStock as $productoId => $items)
-                        <strong class="d-block mt-2">
-                            {{ optional($items->first()->producto)->nombre ?? 'Producto eliminado' }}
-                        </strong>
-                        <ul class="mb-2 ps-3">
-                            @foreach ($items as $item)
-                            <li>
-                                Talle {{ $item->talle->talle }} —
-                                <span class="text-danger fw-bold">{{ $item->stock }}</span> unidad(es)
-                            </li>
-                            @endforeach
-                        </ul>
+                            <strong class="d-block mt-2">
+                                {{ optional($items->first()->producto)->nombre ?? 'Producto eliminado' }}
+                            </strong>
+                            <ul class="mb-2 ps-3">
+                                @foreach ($items as $item)
+                                    <li>
+                                        Talle {{ $item->talle->talle }} —
+                                        <span class="text-danger fw-bold">{{ $item->stock }}</span> unidad(es)
+                                    </li>
+                                @endforeach
+                            </ul>
                         @endforeach
                     </div>
                 </div>
             </div>
-            @endif
+        @endif
 
 
-            {{-- Contenido dinámico de cada vista --}}
-            @yield('content')
+        {{-- Contenido dinámico de cada vista --}}
+        @yield('content')
     </div>
 
     <!-- Bootstrap JS -->

@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TalleController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\CuotaController;
+use App\Http\Controllers\ReporteController;
 
 
 
@@ -20,18 +21,24 @@ Route::get('/', function () {
 // Redireccionar / a /panel (o directamente llamar al método)
 Route::get('/', [PanelController::class, 'index'])->name('panel');
 
-// Rutas para ventas
+// Rutas para ventas____________________________________________________
 Route::resource('ventas', VentaController::class)->except(['edit', 'update', 'destroy']);
 Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.index');
-//modal
+
+//modal_-_-_-_-
 Route::post('/clientes/rapido', [ClienteController::class, 'rapido'])->name('clientes.rapido');
-//buscar cliente
+
+//buscar cliente______________________________________
 Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
-//historial cliente
+
+//historial cliente___________________________________________
 Route::get('clientes/historial', [ClienteController::class, 'historial'])->name('clientes.historial');
-//anular venta 
+
+//anular venta______________________________________________ 
 Route::patch('/ventas/{venta}/anular', [VentaController::class, 'anular'])->name('ventas.anular');
-//-----gestion de cuotas
+
+
+//Gestion de cuotas_____________________________________________________________________________________________
 Route::get('/cuotas', [CuotaController::class, 'index'])->name('cuotas.index');
 Route::post('/cuotas/pagar/{id}', [CuotaController::class, 'pagar'])->name('cuotas.pagar');
 
@@ -49,7 +56,7 @@ Route::prefix('productos')->name('productos.')->group(function () {
     Route::put('/{producto}', [ProductoController::class, 'update'])->name('update');
     Route::delete('/{producto}', [ProductoController::class, 'destroy'])->name('destroy');
 
-    // Ruta para restaurar
+    // Ruta para restaurar___
     Route::post('/{id}/restaurar', [ProductoController::class, 'restaurar'])->name('restaurar');
 });
 //________________________________________________________________________________
@@ -70,3 +77,8 @@ Route::post('clientes/{id}/restaurar', [ClienteController::class, 'restaurar'])-
 
 // Rutas para talles__________________________________________________________________________
 Route::resource('talles', TalleController::class);
+
+
+// Rutas para REPORTES__________________________________________________________________________
+
+Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
