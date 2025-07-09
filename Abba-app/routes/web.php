@@ -11,6 +11,8 @@ use App\Http\Controllers\PanelController;
 use App\Http\Controllers\CuotaController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ConfiguracionController;
+use App\Http\Controllers\GastoController;
+use App\Http\Controllers\CierreCajaController;
 
 
 
@@ -88,3 +90,9 @@ Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.ind
 
 // Rutas para CONFIGURACION__________________________________________________________________________
 Route::post('/configuracion/aspecto', [ConfiguracionController::class, 'actualizarAspecto'])->name('configuracion.aspecto')->middleware('auth');
+
+
+//Finanzas gastos
+Route::resource('gastos', GastoController::class);
+// Rutas para cierre de caja (resource completo si querés todas las acciones)
+Route::resource('cierres', CierreCajaController::class);

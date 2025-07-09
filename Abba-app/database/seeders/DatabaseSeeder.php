@@ -24,6 +24,9 @@ class DatabaseSeeder extends Seeder
             TalleSeeder::class,     // Inserta talles como 35, 36, 37, etc.
             ProductoSeeder::class,  // Crea 5 productos y los vincula con los talles
             ClienteSeeder::class,   // Crea 5 clientes ficticios
+             GastosSeeder::class,
+        CierresCajaSeeder::class,
+        VentasSeeder::class,
         ]);
     }
 }

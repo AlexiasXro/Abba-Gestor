@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
 
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const aspecto = localStorage.getItem('aspecto') || 'aspecto-claro';
@@ -31,7 +32,7 @@
 
 <body class=" ">
     {{-- 🌐 Navbar completa --}}
-    <nav class=" navbar navbar-expand-lg navbar-dark bg-dark mb-4 no-print">
+    <nav class=" navbar navbar-expand-lg navbar-dark bg-dark mb-4 no-print shadow-sm">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
                 <img src="{{ asset('images/AbbaShoes Negative.svg') }}" alt="Logo" style="height: 30px;">
@@ -82,6 +83,14 @@
                             <li><a class="dropdown-item" href="{{ route('reportes.index') }}">
                                     <i class="bi bi-bar-chart"></i> Reportes
                                 </a></li>
+
+                                 {{-- NUEVO: Gastos --}}
+                <li><a class="dropdown-item" href="{{ route('gastos.index') }}">Gastos</a></li>
+                <li><a class="dropdown-item" href="{{ route('gastos.create') }}">Registrar gasto</a></li>
+                {{-- NUEVO: Cierres de caja --}}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="{{ route('cierres.index') }}">Cierres de caja</a></li>
+                <li><a class="dropdown-item" href="{{ route('cierres.create') }}">Nuevo cierre</a></li>
                         </ul>
 
 
@@ -95,7 +104,8 @@
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAspecto"
                             style="min-width: 200px;">
                             <li>
-                                <select id="selector-aspecto" class="form-select form-select-sm mx-3 my-2" style="width: calc(100% - 1.5rem);">
+                                <select id="selector-aspecto" class="form-select form-select-sm mx-3 my-2"
+                                    style="width: calc(100% - 1.5rem);">
                                     <option value="aspecto-claro">Claro clásico</option>
                                     <option value="aspecto-oscuro">Oscuro moderno</option>
                                     <option value="aspecto-celeste">Celeste profesional</option>
@@ -141,6 +151,14 @@
                     </script>
 
 
+                </ul>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <span class="text-white small d-flex align-items-center">
+                            <i class="bi bi-clock me-1"></i> {{-- ícono reloj --}}
+                            {{ now()->format('d/m/Y ') }}
+                        </span>
+                    </li>
                 </ul>
 
                 <ul class="navbar-nav ms-auto">
