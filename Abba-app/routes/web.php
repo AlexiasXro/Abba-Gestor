@@ -10,6 +10,7 @@ use App\Http\Controllers\TalleController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\CuotaController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\ConfiguracionController;
 
 
 
@@ -82,3 +83,8 @@ Route::resource('talles', TalleController::class);
 // Rutas para REPORTES__________________________________________________________________________
 
 Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
+
+
+
+// Rutas para CONFIGURACION__________________________________________________________________________
+Route::post('/configuracion/aspecto', [ConfiguracionController::class, 'actualizarAspecto'])->name('configuracion.aspecto')->middleware('auth');

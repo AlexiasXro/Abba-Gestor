@@ -1,20 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
+<!--alerta-->
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+        </ul>
+    </div>
+@endif
+<!--fin alerta-->
+
 <!--Abba-app\resources\views\productos\edit.blade.php  Formulario editar producto-->
 <div class="container">
     <h1>Editar Producto</h1>
     <a href="{{ route('productos.show', $producto) }}" class="btn btn-secondary mb-3">Volver</a>
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-            </ul>
-        </div>
-    @endif
 
     <form action="{{ route('productos.update', $producto) }}" method="POST">
         @csrf

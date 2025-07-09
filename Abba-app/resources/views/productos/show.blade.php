@@ -4,6 +4,7 @@
 <!--Abba-app\resources\views\productos\show.blade.php  Detalle de producto-->
 <div class="container">
     <h1>Producto: {{ $producto->nombre }}</h1>
+    <!--boton de Volver-->
     <a href="{{ route('productos.index') }}" class="btn btn-secondary mb-3">Volver</a>
 
     <table class="table table-bordered">

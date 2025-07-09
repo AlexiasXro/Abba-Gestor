@@ -2,19 +2,24 @@
 
 @section('content')
 <!--Abba-app\resources\views\productos\create.blade.php-->
+
+  <!--alerta-->  
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+        </ul>
+    </div>
+@endif
+<!--fin alerta-->
+
 <div class="container">
     <h1>Nuevo Producto</h1>
+    <!--boton de volver-->
     <a href="{{ route('productos.index') }}" class="btn btn-secondary mb-3">Volver</a>
 
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-            </ul>
-        </div>
-    @endif
 
     <form action="{{ route('productos.store') }}" method="POST">
         @csrf

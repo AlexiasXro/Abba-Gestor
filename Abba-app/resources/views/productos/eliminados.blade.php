@@ -1,14 +1,19 @@
 @extends('layouts.app')
 
 @section('content')
+
+<!--alerta-->
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+<!--fin alerta-->
+
 <!--Abba-app\resources\views\productos\eliminados.blade.php   Listado productos eliminados con restaurar-->
 <div class="container">
     <h1>Productos Eliminados</h1>
+    <!--boton de regreso-->
     <a href="{{ route('productos.index') }}" class="btn btn-secondary mb-3">Volver a Productos</a>
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
 
     <table class="table table-bordered">
         <thead>

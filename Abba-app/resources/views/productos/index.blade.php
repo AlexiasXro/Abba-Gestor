@@ -1,15 +1,18 @@
 @extends('layouts.app')
 
 @section('content')
+
+<!-- alerta-->
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    <!--fin alerta-->
+
 <!--Abba-app\resources\views\productos\index.blade.php-->
 <div class="container">
     <h1>Productos</h1>
     <a href="{{ route('productos.create') }}" class="btn btn-primary mb-3">Nuevo Producto</a>
     <a href="{{ route('productos.eliminados') }}" class="btn btn-secondary mb-3">Ver Eliminados</a>
-
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
 
     <table class="table table-bordered">
         <thead>

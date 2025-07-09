@@ -1,6 +1,9 @@
 @extends('layouts.app')
+
+@section('content')
+ <!-- alertas -->
 @if ($errors->any())
-    <div class="mb-4 p-4 bg-red-100 border border-red-300 text-red-800 rounded">
+    <div class="mb-4 p-4 bg-red-400 border border-red-600 text-red-800 rounded">
         <p><strong>Ups!</strong> Hay errores con los datos ingresados:</p>
         <ul class="mt-2 list-disc list-inside">
             @foreach ($errors->all() as $error)
@@ -9,8 +12,7 @@
         </ul>
     </div>
 @endif
-
-@section('content')
+ <!-- fin de alerta-->
     <div class="container">
         <h1>Nueva Venta</h1>
 
