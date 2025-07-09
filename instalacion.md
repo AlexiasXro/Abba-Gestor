@@ -23,81 +23,106 @@ instalar PHP PHP 8.4.8
 
 _________________________________________________________________
 
-# Diagrama de Clases - Sistema de Ventas y Stock
+# 🚀 GUÍA DE INSTALACIÓN PARA NUEVA PC – Proyecto Laravel (Modo `php artisan serve`)
 
-## 🟩 Producto
-- id: int
-- codigo: string (único)
-- nombre: string
-- descripcion: text (nullable)
-- precio: decimal(10,2)
-- stock_minimo: int (default: 3)
-- activo: boolean (default: true)
-- timestamps
+## 📦 Requisitos previos (instalaciones necesarias)
 
-🔗 Relaciones:
-- Muchos a muchos con **Talle** (producto_talle)
-- Uno a muchos con **VentasDetalle**
+En la nueva PC, asegurate de tener:
+
+- **PHP 8.1 o superior**  
+  ➤ https://www.php.net/downloads.php
+
+- **Composer**  
+  ➤ https://getcomposer.org/download/
+
+- **XAMPP** (opcional)  
+  ✔ No es necesario para tu caso actual, ya que usás `php artisan serve`.
+
+## 🛠️ Instalación paso a paso
+
+### 1. Copiar el proyecto Laravel
+
+Copiá toda la carpeta del proyecto a la nueva PC.  
+📁 Ruta recomendada: `C:\Proyectos\abba`
+
+Asegurate de incluir:
+
+- La carpeta `database/` con el archivo `bdAbba.sqlite`
+- El archivo `.env` si lo tenés, o usar `.env.example`
+
+### 2. Instalar las dependencias
+
+Abrí la terminal (CMD o PowerShell) y ejecutá:
+
+```bash
+cd C:\Proyectos\abba
+composer install
+```
+
+### 3. Configurar el archivo `.env`
+
+Si no tenés `.env`, copiá el de ejemplo:
+
+```bash
+cp .env.example .env
+```
+
+Editá el archivo `.env` y asegurate que tenga:
+
+```dotenv
+DB_CONNECTION=sqlite
+DB_DATABASE=database/bdAbba.sqlite
+```
+
+### 4. Generar la clave de la aplicación
+
+```bash
+php artisan key:generate
+```
+
+### 5. Crear base de datos (si no existe el archivo)
+
+Si no tenés el archivo `bdAbba.sqlite`, podés crearlo con:
+
+```bash
+mkdir database
+type nul > database/bdAbba.sqlite
+```
+
+O manualmente: creá un archivo vacío llamado `bdAbba.sqlite` dentro de la carpeta `database/`.
+
+### 6. Ejecutar migraciones y seeders (solo si querés empezar desde cero)
+
+```bash
+php artisan migrate --seed
+```
+
+### 7. Levantar el servidor local
+
+```bash
+php artisan serve
+```
+
+📡 Luego, abrí el navegador y visitá:
+
+[http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+✅ ¡Listo! El proyecto debería estar funcionando en la nueva PC.
 
 ---
 
-## 🟦 Talle
-- id: int
-- talle: string
-- timestamps
+## (Opcional) Crear acceso directo para iniciar el sistema
 
-🔗 Relaciones:
-- Muchos a muchos con **Producto** (producto_talle)
-- Uno a muchos con **VentasDetalle**
+Abrí el Bloc de Notas y pegá esto:
 
----
+```bat
+@echo off
+cd C:\Proyectos\abba
+php artisan serve
+pause
+```
 
-## 🟨 ProductoTalle (Pivot)
-- id: int
-- producto_id: FK -> Producto
-- talle_id: FK -> Talle
-- stock: int (default: 0)
-- timestamps
+Guardalo como `iniciar_abba.bat` (en tipo de archivo elegí “Todos los archivos”).
 
----
+Hacé doble clic sobre ese archivo para iniciar el sistema fácilmente.
 
-## 🧑 Cliente
-- id: int
-- nombre: string
-- apellido: string
-- telefono: string (nullable)
-- email: string (nullable)
-- direccion: string (nullable)
-- timestamps
-
-🔗 Relaciones:
-- Uno a muchos con **Venta**
-
----
-
-## 🧾 Venta
-- id: int
-- cliente_id: FK -> Cliente (nullable)
-- fecha_venta: datetime
-- subtotal: decimal(10,2)
-- descuento: decimal(10,2)
-- total: decimal(10,2)
-- metodo_pago: string
-- notas: text (nullable)
-- timestamps
-
-🔗 Relaciones:
-- Uno a muchos con **VentasDetalle**
-
----
-
-## 📄 VentasDetalle
-- id: int
-- venta_id: FK -> Venta
-- producto_id: FK -> Producto
-- talle_id: FK -> Talle
-- cantidad: int
-- precio_unitario: decimal(10,2)
-- descuento: decimal(10,2)
-- subtotal: decimal(10,2)
-- timestamps
