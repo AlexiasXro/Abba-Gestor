@@ -96,3 +96,13 @@ Route::post('/configuracion/aspecto', [ConfiguracionController::class, 'actualiz
 Route::resource('gastos', GastoController::class);
 // Rutas para cierre de caja (resource completo si querés todas las acciones)
 Route::resource('cierres', CierreCajaController::class);
+
+
+use App\Http\Controllers\DevolucionController;
+
+Route::get('/devoluciones/crear', [DevolucionController::class, 'create'])->name('devoluciones.create');
+Route::post('/devoluciones', [DevolucionController::class, 'store'])->name('devoluciones.store');
+Route::get('/devoluciones', [DevolucionController::class, 'index'])->name('devoluciones.index');
+Route::put('/devoluciones/{devolucion}/anular', [DevolucionController::class, 'anular'])->name('devoluciones.anular');
+Route::get('/devoluciones/{devolucion}', [DevolucionController::class, 'show'])->name('devoluciones.show');
+Route::get('devoluciones/crear', [DevolucionController::class, 'create'])->name('devoluciones.create');

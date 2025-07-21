@@ -4,7 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+/**
+ * @property int $id
+ * @property \Carbon\Carbon $fecha
+ * @property int $cliente_id
+ * ...
+ */
 class Venta extends Model
 {
     //Modelo Venta (app/Models/Venta.php)

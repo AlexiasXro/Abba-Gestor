@@ -32,143 +32,102 @@
 
 <body class=" ">
     {{-- 🌐 Navbar completa --}}
-    <nav class=" navbar navbar-expand-lg navbar-dark bg-dark mb-4 no-print shadow-sm">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ asset('images/AbbaShoes Negative.svg') }}" alt="Logo" style="height: 30px;">
-                Gestor</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAbba">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
+    <div class="container">
+        <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+            <img src="{{ asset('images/AbbaShoes Negative.svg') }}" alt="Logo" style="height: 30px;" class="me-2">
+            Gestor
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAbba">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarAbba">
-                <ul class="navbar-nav me-auto">
-                    {{-- Productos --}}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Productos</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('productos.index') }}">Listado</a></li>
-                            <li><a class="dropdown-item" href="{{ route('productos.create') }}">Agregar</a></li>
-                            <li><a class="dropdown-item" href="{{ route('productos.eliminados') }}">Eliminados</a></li>
-                        </ul>
-                    </li>
+        <div class="collapse navbar-collapse" id="navbarAbba">
+            {{-- Menú principal --}}
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                    {{-- Clientes --}}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Clientes</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('clientes.index') }}">Listado</a></li>
-                            <li><a class="dropdown-item" href="{{ route('clientes.create') }}">Agregar</a></li>
-                            <li><a class="dropdown-item" href="{{ route('clientes.eliminados') }}">Eliminados</a></li>
-                            <li><a class="dropdown-item" href="{{ route('clientes.historial') }}">Historial</a></li>
-                        </ul>
-                    </li>
+                {{-- Productos --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-box-seam me-1"></i> Productos
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('productos.index') }}">Listado</a></li>
+                        <li><a class="dropdown-item" href="{{ route('productos.create') }}">Agregar</a></li>
+                        <li><a class="dropdown-item" href="{{ route('productos.eliminados') }}">Eliminados</a></li>
+                    </ul>
+                </li>
 
-                    {{-- Ventas --}}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">Ventas</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{{ route('ventas.index') }}">Listado</a></li>
-                            <li><a class="dropdown-item" href="{{ route('ventas.create') }}">Nueva venta</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="gestionDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Gestión
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="gestionDropdown">
-                            <li><a class="dropdown-item" href="{{ route('cuotas.index') }}">Cuentas por cobrar</a></li>
-                            <li><a class="dropdown-item" href="{{ route('talles.index') }}">Talles</a></li>
-                            <li><a class="dropdown-item" href="{{ route('reportes.index') }}">
-                                    <i class="bi bi-bar-chart"></i> Reportes
-                                </a></li>
+                {{-- Clientes --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-people-fill me-1"></i> Clientes
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('clientes.index') }}">Listado</a></li>
+                        <li><a class="dropdown-item" href="{{ route('clientes.create') }}">Agregar</a></li>
+                        <li><a class="dropdown-item" href="{{ route('clientes.eliminados') }}">Eliminados</a></li>
+                        <li><a class="dropdown-item" href="{{ route('clientes.historial') }}">Historial</a></li>
+                    </ul>
+                </li>
 
-                                 {{-- NUEVO: Gastos --}}
-                <li><a class="dropdown-item" href="{{ route('gastos.index') }}">Gastos</a></li>
-                <li><a class="dropdown-item" href="{{ route('gastos.create') }}">Registrar gasto</a></li>
-                {{-- NUEVO: Cierres de caja --}}
-                <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="{{ route('cierres.index') }}">Cierres de caja</a></li>
-                <li><a class="dropdown-item" href="{{ route('cierres.create') }}">Nuevo cierre</a></li>
-                        </ul>
+                {{-- Ventas --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-cart-fill me-1"></i> Ventas
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('ventas.index') }}">Listado</a></li>
+                        <li><a class="dropdown-item" href="{{ route('ventas.create') }}">Nueva venta</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-primary" href="{{ route('devoluciones.index') }}">
+                            <i class="bi bi-arrow-counterclockwise me-1"></i> Ver devoluciones
+                        </a></li>
+                    </ul>
+                </li>
 
+                {{-- Gestión --}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                        <i class="bi bi-gear-fill me-1"></i> Gestión
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ route('cuotas.index') }}">Cuentas por cobrar</a></li>
+                        <li><a class="dropdown-item" href="{{ route('talles.index') }}">Talles</a></li>
+                        <li><a class="dropdown-item" href="{{ route('reportes.index') }}">
+                            <i class="bi bi-bar-chart-fill me-1"></i> Reportes</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ route('gastos.index') }}">Gastos</a></li>
+                        <li><a class="dropdown-item" href="{{ route('gastos.create') }}">Registrar gasto</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{{ route('cierres.index') }}">Cierres de caja</a></li>
+                        <li><a class="dropdown-item" href="{{ route('cierres.create') }}">Nuevo cierre</a></li>
+                    </ul>
+                </li>
 
-                    </li>
+                {{-- Selector de aspecto --}}
+                
+            </ul>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="dropdownAspecto" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
-                            Aspecto del sistema
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAspecto"
-                            style="min-width: 200px;">
-                            <li>
-                                <select id="selector-aspecto" class="form-select form-select-sm mx-3 my-2"
-                                    style="width: calc(100% - 1.5rem);">
-                                    <option value="aspecto-claro">Claro clásico</option>
-                                    <option value="aspecto-oscuro">Oscuro moderno</option>
-                                    <option value="aspecto-celeste">Celeste profesional</option>
-                                    <option value="aspecto-beige">Beige natural</option>
-                                    <option value="aspecto-rosado">Rosa pastel</option>
-                                    <option value="aspecto-oliva">Verde oliva</option>
-                                    <option value="aspecto-gris">Gris minimalista</option>
-                                    <option value="aspecto-azul-marino">Azul marino</option>
-                                    <option value="aspecto-naranja">Naranja vibrante</option>
-                                    <option value="aspecto-morado">Morado suave</option>
-                                    <option value="aspecto-amarillo">Amarillo claro</option>
-                                    <option value="aspecto-rojo">Rojo suave</option>
-                                    <option value="aspecto-gris-oscuro">Gris oscuro</option>
-                                </select>
-                            </li>
-                        </ul>
-                    </li>
+            {{-- Fecha actual --}}
+            <ul class="navbar-nav ms-auto align-items-center me-3">
+                <li class="nav-item text-white small d-flex align-items-center">
+                    <i class="bi bi-clock me-1"></i> {{ now()->format('d/m/Y') }}
+                </li>
+            </ul>
 
-                    <script>
-                        const selector = document.getElementById('selector-aspecto');
-                        const aspectos = [
-                            'aspecto-claro', 'aspecto-oscuro', 'aspecto-celeste', 'aspecto-beige',
-                            'aspecto-rosado', 'aspecto-oliva', 'aspecto-gris', 'aspecto-azul-marino',
-                            'aspecto-naranja', 'aspecto-morado', 'aspecto-amarillo', 'aspecto-rojo',
-                            'aspecto-gris-oscuro'
-                        ];
-
-                        // Cargar clase desde localStorage o usar 'aspecto-claro' por defecto
-                        const actual = localStorage.getItem('aspecto') || 'aspecto-claro';
-                        document.body.classList.add(actual);
-                        selector.value = actual;
-
-                        selector.addEventListener('change', function () {
-                            const nuevo = this.value;
-
-                            // Quitar todas las clases anteriores
-                            document.body.classList.remove(...aspectos);
-                            // Agregar la nueva clase
-                            document.body.classList.add(nuevo);
-                            // Guardar en localStorage
-                            localStorage.setItem('aspecto', nuevo);
-                        });
-                    </script>
-
-
-                </ul>
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item">
-                        <span class="text-white small d-flex align-items-center">
-                            <i class="bi bi-clock me-1"></i> {{-- ícono reloj --}}
-                            {{ now()->format('d/m/Y ') }}
-                        </span>
-                    </li>
-                </ul>
-
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('logout') }}">Salir</a>
-                    </li>
-                </ul>
-            </div>
+            {{-- Salida --}}
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('logout') }}">
+                        <i class="bi bi-box-arrow-right me-1"></i> Salir
+                    </a>
+                </li>
+            </ul>
         </div>
-    </nav>
+    </div>
+</nav>
+
 
     <div class="container">
         {{-- 🔔 Alerta de stock mínimo --}}

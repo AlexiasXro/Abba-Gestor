@@ -123,7 +123,16 @@
                         <td>{{ $detalle->cantidad }}</td>
                         <td>${{ number_format($detalle->precio_unitario, 2) }}</td>
                         <td>${{ number_format($detalle->descuento, 2) }}</td>
-                        <td>${{ number_format($detalle->subtotal, 2) }}</td>
+                         <td>
+        ${{ number_format($detalle->subtotal, 2) }}
+        
+        @if ($venta->estado !== 'anulada')
+        <a href="{{ route('devoluciones.create') }}?venta_id={{ $venta->id }}&producto_id={{ $detalle->producto_id }}&talle_id={{ $detalle->talle_id }}" 
+   class="btn btn-sm btn-warning d-block mt-2">
+    Registrar devolución
+</a>
+        @endif
+    </td>
                     </tr>
                     @endforeach
                 </tbody>
