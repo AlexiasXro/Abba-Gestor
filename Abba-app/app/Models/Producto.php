@@ -22,6 +22,7 @@ class Producto extends Model
                     ->using(ProductoTalle::class)
                     ->withPivot('stock')
                     ->withTimestamps();
+                    
     }
 
     // Relación directa con la tabla pivote

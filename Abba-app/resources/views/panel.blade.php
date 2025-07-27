@@ -32,7 +32,7 @@
     </div>
 
     <!-- Resumen de ventas -->
-    <div class="row mb-4">
+    <div class="row mb-3">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header bg-primary text-white">Ventas Hoy</div>
@@ -46,16 +46,18 @@
         </div>
         
 
-        <!-- Productos con stock bajo -->
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-header bg-warning text-dark">Productos con Stock Bajo</div>
-                <div class="card-body">
-                    @if($productosBajoStock->isEmpty())
-                    <div class="alert alert-success">Todo el stock está en orden</div>
-                    @else
-                    <table class="table table-sm">
-                        <thead>
+      <!-- Productos con stock bajo -->
+<div class="col-md-6 mb-3">
+    <div class="card">
+        <div class="card-header bg-warning text-white">Productos con Stock Bajo</div>
+        <div class="card-body p-2">
+
+            @if($productosBajoStock->isEmpty())
+                <div class="alert alert-success">Todo el stock está en orden</div>
+            @else
+                <div class="scroll-container">
+                    <table class="table table-sm mb-0">
+                        <thead class="sticky-top bg-light">
                             <tr>
                                 <th>Producto</th>
                                 <th>Talle</th>
@@ -64,33 +66,62 @@
                         </thead>
                         <tbody>
                             @foreach ($productosBajoStock as $productoId => $items)
-                            @foreach ($items as $index => $item)
-                            <tr class="{{ $item->stock == 0 ? 'table-danger' : '' }}">
-                                @if ($index === 0)
-                                <td rowspan="{{ $items->count() }}">
-                                    <a href="{{ route('productos.show', $item->producto_id) }}">
-                                        {{ optional($item->producto)->nombre ?? 'Producto eliminado' }}
-                                    </a>
-                                </td>
-                                @endif
-                                <td>{{ $item->talle->talle }}</td>
-                                <td>{{ $item->stock }}</td>
-                            </tr>
-                            @endforeach
+                                @foreach ($items as $index => $item)
+                                    <tr class="{{ $item->stock == 0 ? 'table-danger' : '' }}">
+                                        @if ($index === 0)
+                                            <td rowspan="{{ $items->count() }}">
+                                                <a href="{{ route('productos.show', $item->producto_id) }}">
+                                                    {{ optional($item->producto)->nombre ?? 'Producto eliminado' }}
+                                                </a>
+                                            </td>
+                                        @endif
+                                        <td>{{ $item->talle->talle }}</td>
+                                        <td>{{ $item->stock }}</td>
+                                    </tr>
+                                @endforeach
                             @endforeach
                         </tbody>
                     </table>
-                    @endif
                 </div>
-            </div>
+            @endif
+
         </div>
     </div>
+</div>
+
+<style>
+    .scroll-container {
+        max-height: 180px; /* altura máxima del contenedor */
+        overflow: hidden;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .scroll-container:hover {
+        overflow-y: auto;
+    }
+
+    .scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .scroll-container::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+    }
+
+    .scroll-container::-webkit-scrollbar-track {
+        background-color: transparent;
+    }
+</style>
+
+
     <!-- Últimos ventas -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Detalle de Ventas del Día</h5>
-        </div>
-        <div class="card-body p-3">
+     <div class="row mb-3">
+        <div class="col-12 mb-3">
+            <div class="card">
+                <div class="card-header bg-primary text-white">Detalles del día de venta</div>
+                <div class="card-body">
             @if ($ventasHoyDetalle->isEmpty())
             <p class="text-muted text-center mb-0">No se realizaron ventas hoy.</p>
             @else
@@ -142,7 +173,7 @@
 
 
     <!-- Últimos clientes -->
-    <div class="row">
+    <div class="row ">
         <div class="col-12">
             <div class="card">
                 <div class="card-header bg-info text-white">Últimos Clientes Registrados</div>

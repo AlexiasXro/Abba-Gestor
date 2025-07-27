@@ -99,10 +99,20 @@ Route::resource('cierres', CierreCajaController::class);
 
 
 use App\Http\Controllers\DevolucionController;
-
+// Rutas para devoluciones
 Route::get('/devoluciones/crear', [DevolucionController::class, 'create'])->name('devoluciones.create');
 Route::post('/devoluciones', [DevolucionController::class, 'store'])->name('devoluciones.store');
 Route::get('/devoluciones', [DevolucionController::class, 'index'])->name('devoluciones.index');
 Route::put('/devoluciones/{devolucion}/anular', [DevolucionController::class, 'anular'])->name('devoluciones.anular');
 Route::get('/devoluciones/{devolucion}', [DevolucionController::class, 'show'])->name('devoluciones.show');
 Route::get('devoluciones/crear', [DevolucionController::class, 'create'])->name('devoluciones.create');
+
+
+use App\Http\Controllers\CompraController;
+// Rutas para compras   
+Route::resource('compras', CompraController::class)->except(['edit', 'update', 'destroy']);
+
+use App\Http\Controllers\ProveedorController;
+// Rutas para proveedores
+Route::resource('proveedores', ProveedorController::class)->except(['show']);
+

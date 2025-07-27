@@ -33,100 +33,114 @@
 <body class=" ">
     {{-- 🌐 Navbar completa --}}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4 shadow-sm">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
-            <img src="{{ asset('images/AbbaShoes Negative.svg') }}" alt="Logo" style="height: 30px;" class="me-2">
-            Gestor
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAbba">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+                <img src="{{ asset('images/AbbaShoes Negative.svg') }}" alt="Logo" style="height: 30px;" class="me-2">
+                Gestor
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAbba">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-        <div class="collapse navbar-collapse" id="navbarAbba">
-            {{-- Menú principal --}}
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <div class="collapse navbar-collapse" id="navbarAbba">
+                {{-- Menú principal --}}
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
-                {{-- Productos --}}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-box-seam me-1"></i> Productos
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('productos.index') }}">Listado</a></li>
-                        <li><a class="dropdown-item" href="{{ route('productos.create') }}">Agregar</a></li>
-                        <li><a class="dropdown-item" href="{{ route('productos.eliminados') }}">Eliminados</a></li>
-                    </ul>
-                </li>
+                    {{-- Productos --}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-box-seam me-1"></i> Productos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('productos.index') }}">Listado</a></li>
+                            <li><a class="dropdown-item" href="{{ route('productos.create') }}">Agregar</a></li>
+                            <li><a class="dropdown-item" href="{{ route('productos.eliminados') }}">Eliminados</a></li>
+                        </ul>
+                    </li>
 
-                {{-- Clientes --}}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-people-fill me-1"></i> Clientes
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('clientes.index') }}">Listado</a></li>
-                        <li><a class="dropdown-item" href="{{ route('clientes.create') }}">Agregar</a></li>
-                        <li><a class="dropdown-item" href="{{ route('clientes.eliminados') }}">Eliminados</a></li>
-                        <li><a class="dropdown-item" href="{{ route('clientes.historial') }}">Historial</a></li>
-                    </ul>
-                </li>
+                    {{-- Clientes --}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-people-fill me-1"></i> Clientes
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('clientes.index') }}">Listado</a></li>
+                            <li><a class="dropdown-item" href="{{ route('clientes.create') }}">Agregar</a></li>
+                            <li><a class="dropdown-item" href="{{ route('clientes.eliminados') }}">Eliminados</a></li>
+                            <li><a class="dropdown-item" href="{{ route('clientes.historial') }}">Historial</a></li>
+                        </ul>
+                    </li>
 
-                {{-- Ventas --}}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-cart-fill me-1"></i> Ventas
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('ventas.index') }}">Listado</a></li>
-                        <li><a class="dropdown-item" href="{{ route('ventas.create') }}">Nueva venta</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-primary" href="{{ route('devoluciones.index') }}">
-                            <i class="bi bi-arrow-counterclockwise me-1"></i> Ver devoluciones
-                        </a></li>
-                    </ul>
-                </li>
+                    {{-- Ventas --}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-cart-fill me-1"></i> Ventas
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('ventas.index') }}">Listado</a></li>
+                            <li><a class="dropdown-item" href="{{ route('ventas.create') }}">Nueva venta</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item text-primary" href="{{ route('devoluciones.index') }}">
+                                    <i class="bi bi-arrow-counterclockwise me-1"></i> Ver devoluciones
+                                </a></li>
+                        </ul>
+                    </li>
 
-                {{-- Gestión --}}
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                        <i class="bi bi-gear-fill me-1"></i> Gestión
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{ route('cuotas.index') }}">Cuentas por cobrar</a></li>
-                        <li><a class="dropdown-item" href="{{ route('talles.index') }}">Talles</a></li>
-                        <li><a class="dropdown-item" href="{{ route('reportes.index') }}">
-                            <i class="bi bi-bar-chart-fill me-1"></i> Reportes</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ route('gastos.index') }}">Gastos</a></li>
-                        <li><a class="dropdown-item" href="{{ route('gastos.create') }}">Registrar gasto</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="{{ route('cierres.index') }}">Cierres de caja</a></li>
-                        <li><a class="dropdown-item" href="{{ route('cierres.create') }}">Nuevo cierre</a></li>
-                    </ul>
-                </li>
+                    {{-- Gestión --}}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-gear-fill me-1"></i> Gestión
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('cuotas.index') }}">Cuentas por cobrar</a></li>
 
-                {{-- Selector de aspecto --}}
-                
-            </ul>
+                            <li><a class="dropdown-item" href="{{ route('reportes.index') }}">
+                                    <i class="bi bi-bar-chart-fill me-1"></i> Reportes</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('gastos.index') }}">Gastos</a></li>
+                            <li><a class="dropdown-item" href="{{ route('gastos.create') }}">Registrar gasto</a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ route('cierres.index') }}">Cierres de caja</a></li>
+                            <li><a class="dropdown-item" href="{{ route('cierres.create') }}">Nuevo cierre</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Inventario</a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ route('talles.index') }}">Talles</a></li>
+                            <li><a href="{{ route('compras.index') }}" class="dropdown-item">Compras</a></li>
+                            <li><a href="{{ route('proveedores.index') }}" class="dropdown-item">Proveedores</a></li>
+                        </ul>
+                    </li>
 
-            {{-- Fecha actual --}}
-            <ul class="navbar-nav ms-auto align-items-center me-3">
-                <li class="nav-item text-white small d-flex align-items-center">
-                    <i class="bi bi-clock me-1"></i> {{ now()->format('d/m/Y') }}
-                </li>
-            </ul>
+                    {{-- Selector de aspecto --}}
 
-            {{-- Salida --}}
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('logout') }}">
-                        <i class="bi bi-box-arrow-right me-1"></i> Salir
-                    </a>
-                </li>
-            </ul>
+                </ul>
+
+                {{-- Fecha actual --}}
+                <ul class="navbar-nav ms-auto align-items-center me-3">
+                    <li class="nav-item text-white small d-flex align-items-center">
+                        <i class="bi bi-clock me-1"></i> {{ now()->format('d/m/Y') }}
+                    </li>
+                </ul>
+
+                {{-- Salida --}}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('logout') }}">
+                            <i class="bi bi-box-arrow-right me-1"></i> Salir
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav>
+    </nav>
 
 
     <div class="container">
@@ -153,21 +167,29 @@
                     </button>
                     <div class="clearfix"></div>
 
-                    <div class="collapse mt-2" id="alertaStockCollapse">
-                        @foreach ($productosBajoStock as $productoId => $items)
-                            <strong class="d-block mt-2">
-                                {{ optional($items->first()->producto)->nombre ?? 'Producto eliminado' }}
-                            </strong>
-                            <ul class="mb-2 ps-3">
-                                @foreach ($items as $item)
-                                    <li>
-                                        Talle {{ $item->talle->talle }} —
-                                        <span class="text-danger fw-bold">{{ $item->stock }}</span> unidad(es)
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @endforeach
+                   <div class="collapse mt-2" id="alertaStockCollapse">
+    <div class="overflow-y-auto" style="max-height: 80vh;">
+        <div class="row">
+            @foreach ($productosBajoStock as $productoId => $items)
+                <div class="col-12 col-md-4 mb-3">
+                    <div class="border rounded p-2 h-100 bg-light shadow-sm">
+                        <strong class="d-block text-dark">
+                            {{ optional($items->first()->producto)->nombre ?? 'Producto eliminado' }}
+                        </strong>
+                        <ul class="mb-0 ps-3 small">
+                            @foreach ($items as $item)
+                                <li>
+                                    Talle {{ $item->talle->talle }} —
+                                    <span class="text-danger fw-bold">{{ $item->stock }}</span> unidad(es)
+                                </li>
+                            @endforeach
+                        </ul>
                     </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</div>
                 </div>
             </div>
         @endif

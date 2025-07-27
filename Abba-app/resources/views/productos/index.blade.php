@@ -3,25 +3,34 @@
 @section('content')
 
 <!-- alerta-->
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    <!--fin alerta-->
+@if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+<!--fin alerta-->
 
-<!--Abba-app\resources\views\productos\index.blade.php-->
+<!-- Abba-app\resources\views\productos\index.blade.php -->
 <div class="container">
     <h1>Productos</h1>
     <a href="{{ route('productos.create') }}" class="btn btn-primary mb-3">Nuevo Producto</a>
     <a href="{{ route('productos.eliminados') }}" class="btn btn-secondary mb-3">Ver Eliminados</a>
 
-    <table class="table table-bordered">
-        <thead>
+    @php
+        $todosLosTalles = \App\Models\Talle::orderBy('talle')->get(); // ordenados por talle
+    @endphp
+
+    <table class="table table-bordered table-striped table-sm align-middle">
+        <thead class="table-light">
             <tr>
                 <th>Código</th>
                 <th>Nombre</th>
                 <th>Precio</th>
                 <th>Stock Total</th>
-                <th>Talles</th>
+
+                {{-- Cabecera dinámica con talles --}}
+                @foreach($todosLosTalles as $talle)
+                    <th>{{ $talle->talle }}</th>
+                @endforeach
+
                 <th>Activo</th>
                 <th>Acciones</th>
             </tr>
@@ -32,20 +41,22 @@
                     <td>{{ $producto->codigo }}</td>
                     <td>{{ $producto->nombre }}</td>
                     <td>${{ number_format($producto->precio, 2) }}</td>
-
-                    <!-- Stock total sumando todos los talles -->
                     <td>{{ $producto->talles->sum('pivot.stock') }}</td>
 
-                    <!-- Talles con badges -->
-                    <td>
-                        @forelse($producto->talles as $talle)
-                            <span class="badge bg-primary me-1" title="Stock: {{ $talle->pivot->stock }}">
-                                {{ $talle->talle }}
-                            </span>
-                        @empty
-                            <span class="text-muted">Sin talles</span>
-                        @endforelse
-                    </td>
+                    {{-- Mostrar stock por talle --}}
+                    @foreach($todosLosTalles as $talle)
+                        @php
+                            $talleProducto = $producto->talles->firstWhere('id', $talle->id);
+                            $stock = $talleProducto ? $talleProducto->pivot->stock : 0;
+                        @endphp
+                        <td class="text-center">
+                            @if($stock > 0)
+                                <span class="text-success fw-bold">{{ $stock }}</span>
+                            @else
+                                <span class="text-danger fw-bold">❌</span>
+                            @endif
+                        </td>
+                    @endforeach
 
                     <td>{{ $producto->activo ? 'Sí' : 'No' }}</td>
                     <td>
@@ -60,10 +71,10 @@
                     </td>
                 </tr>
             @empty
-
-            <tr><td colspan="7" class="text-center">No hay productos activos.</td></tr>
-        @endforelse
-    </tbody>
-</table>
+                <tr><td colspan="{{ 7 + $todosLosTalles->count() }}" class="text-center">No hay productos activos.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+    {{ $productos->links() }}
 </div>
 @endsection

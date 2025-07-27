@@ -11,14 +11,14 @@ class ProductoController extends Controller
     //Abba-app\app\Http\Controllers\ProductoController.php
     // Mostrar productos activos
     public function index()
-{
-    $productos = Producto::with('talles') // carga los talles con pivot
-                         ->whereNull('deleted_at')
-                         ->orderBy('created_at', 'desc')
-                         ->get();
+    {
+        $productos = Producto::with('talles')
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
 
-    return view('productos.index', compact('productos'));
-}
+
+        return view('productos.index', compact('productos'));
+    }
 
 
     // Mostrar productos eliminados (soft deleted)
@@ -51,7 +51,7 @@ class ProductoController extends Controller
         ]);
 
         $datosProducto = collect($validated)->except('talles')->toArray(); // solo los campos del producto
-$producto = Producto::create($datosProducto);
+        $producto = Producto::create($datosProducto);
 
         if (!empty($validated['talles'])) {
             $syncData = [];
