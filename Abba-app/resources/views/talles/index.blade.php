@@ -7,7 +7,7 @@
 – Listado de talles
 -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>📏 Listado de Talles</h2>
+        <h4>📏 Listado de Talles</h4>
         <a href="{{ route('talles.create') }}" class="btn btn-primary">➕ Nuevo Talle</a>
     </div>
 

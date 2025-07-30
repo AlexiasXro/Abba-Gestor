@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Historial de ventas</h1>
+    <h4>Historial de ventas</h4>
 
     <form method="GET" action="{{ route('clientes.historial') }}" class="mb-4">
 

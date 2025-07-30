@@ -10,7 +10,7 @@ class CierresCajaSeeder extends Seeder
 {
     public function run()
     {
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $fecha = Carbon::now()->subDays($i)->format('Y-m-d');
             $ingresosEfectivo = rand(2000, 10000);
             $ingresosTarjeta = rand(1000, 5000);

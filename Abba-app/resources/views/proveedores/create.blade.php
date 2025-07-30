@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Nuevo Proveedor</h1>
+    <h4>Nuevo Proveedor</h4>
 
     <form action="{{ route('proveedores.store') }}" method="POST">
         @csrf

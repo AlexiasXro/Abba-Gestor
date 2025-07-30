@@ -3,7 +3,7 @@
 @section('content')
 <!--/resources/views/clientes/eliminados.blade.php-->
 <div class="container">
-    <h1 class="mb-4">Clientes eliminados</h1>
+    <h3 class="mb-4">Clientes eliminados</h3>
 
     <a href="{{ route('clientes.index') }}" class="btn btn-secondary mb-3">Volver a clientes activos</a>
 

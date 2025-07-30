@@ -9,7 +9,7 @@
 <!--Abba-app\resources\views\talles\create.blade.php 
 – Formulario de altas
 -->
-    <h2>➕ Nuevo Talle</h2>
+    <h4>➕ Nuevo Talle</h4>
 
     <form action="{{ route('talles.store') }}" method="POST">
         @csrf

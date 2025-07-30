@@ -9,7 +9,7 @@
 <!--Abba-app\resources\views\talles\edit.blade.php 
 – Formulario de edición
 -->
-    <h2>✏️ Editar Talle</h2>
+    <h4>✏️ Editar Talle</h4>
 
     <form action="{{ route('talles.update', $talle) }}" method="POST">
         @csrf

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h1>Cuotas pendientes</h1>
+    <h4>Cuotas pendientes</h4>
 
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>

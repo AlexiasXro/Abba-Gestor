@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Proveedores</h1>
+    <h4>Proveedores</h4>
     <a href="{{ route('proveedores.create') }}" class="btn btn-primary mb-2">Nuevo Proveedor</a>
 
     @if (session('success'))

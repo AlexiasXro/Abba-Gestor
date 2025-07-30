@@ -9,7 +9,7 @@
 <!--Abba-app\resources\views\talles\show.blade.php 
 (opcional)
 -->
-    <h2>📏 Detalle del Talle</h2>
+    <h4>📏 Detalle del Talle</h4>
 
     <p><strong>ID:</strong> {{ $talle->id }}</p>
     <p><strong>Talle:</strong> {{ $talle->talle }}</p>

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h3>Detalle de Devolución #{{ $devolucion->id }}</h3>
+    <h4>Detalle de Devolución #{{ $devolucion->id }}</h4>
 
     <div class="card mb-4">
         <div class="card-body">

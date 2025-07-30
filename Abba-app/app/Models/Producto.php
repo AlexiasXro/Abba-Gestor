@@ -12,7 +12,17 @@ class Producto extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'codigo', 'nombre', 'descripcion', 'precio', 'stock_minimo', 'activo', 'tipo'// ✅ Nuevo campo
+        'codigo', 
+        'nombre', 
+        'descripcion', 
+        'precio', 
+        'precio_base', 
+        'precio_venta', 
+        'precio_reventa', 
+        'stock_minimo', 
+        'activo', 
+        'tipo'
+        // ✅ Nuevos campos 'precio_base', 'precio_venta', 'precio_reventa'
     ];
 
     // Relación muchos a muchos con talles a través de la tabla pivote

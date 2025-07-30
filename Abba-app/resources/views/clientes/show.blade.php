@@ -3,7 +3,7 @@
 @section('content')
 <!--/resources/views/clientes/show.blade.php-->
 <div class="container">
-    <h1 class="mb-4">Detalle del Cliente</h1>
+    <h4 class="mb-4">Detalle del Cliente</h4>
 
     <a href="{{ route('clientes.index') }}" class="btn btn-secondary mb-3">Volver al listado</a>
     <a href="{{ route('clientes.edit', $cliente) }}" class="btn btn-warning mb-3">Editar Cliente</a>

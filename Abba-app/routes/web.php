@@ -111,7 +111,7 @@ Route::get('devoluciones/crear', [DevolucionController::class, 'create'])->name(
 use App\Http\Controllers\CompraController;
 // Rutas para compras   
 Route::resource('compras', CompraController::class)->except(['edit', 'update', 'destroy']);
-
+Route::post('/productos/store-desde-compra', [ProductoController::class, 'storeDesdeCompra'])->name('productos.store_desde_compra');
 use App\Http\Controllers\ProveedorController;
 // Rutas para proveedores
 Route::resource('proveedores', ProveedorController::class)->except(['show']);

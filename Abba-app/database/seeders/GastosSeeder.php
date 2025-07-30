@@ -10,17 +10,39 @@ class GastosSeeder extends Seeder
 {
     public function run()
     {
-        $categorias = ['Impuesto', 'Proveedor', 'Servicios', 'Otros'];
-        $metodosPago = ['efectivo', 'transferencia', 'tarjeta'];
+        $categorias = ['Impuesto', 'Proveedor', 'Servicios', 'Otros', 'Publicidad', 'Mantenimiento', 'Transporte'];
+        $metodosPago = ['efectivo', 'transferencia', 'tarjeta', 'débito'];
+        $descripciones = [
+            'Compra de materiales',
+            'Pago de electricidad',
+            'Publicidad en redes sociales',
+            'Alquiler local',
+            'Reparación maquinaria',
+            'Servicio de limpieza',
+            'Pago de agua',
+            'Transporte de mercadería',
+            'Compra de cajas y embalajes',
+            'Honorarios contador',
+            'Publicidad en radio local',
+            'Pago de seguridad',
+            'Gastos administrativos',
+            'Pago de internet',
+            'Capacitación personal',
+            'Mantenimiento de vehículo',
+            'Compra de etiquetas',
+            'Suministros de oficina',
+            'Pago de software',
+            'Gastos varios'
+        ];
 
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             Gasto::create([
-                'fecha' => Carbon::now()->subDays(rand(0, 30))->format('Y-m-d'),
-                'descripcion' => "Gasto prueba #$i",
-                'monto' => rand(1000, 5000),
+                'fecha' => Carbon::now()->subDays(rand(0, 60))->format('Y-m-d'),
+                'descripcion' => $descripciones[$i],
+                'monto' => rand(500, 8000),
                 'categoria' => $categorias[array_rand($categorias)],
                 'metodo_pago' => $metodosPago[array_rand($metodosPago)],
-                'proveedor' => 'Proveedor ' . chr(64 + $i),
+                'proveedor' => 'Proveedor ' . chr(65 + ($i % 26)),
             ]);
         }
     }

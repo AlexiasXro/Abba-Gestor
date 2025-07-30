@@ -42,7 +42,10 @@ class ProductoController extends Controller
             'codigo' => 'required|unique:productos,codigo',
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'precio' => 'required|numeric|min:0',
+            
+            'precio_venta' => 'nullable|numeric|min:0',// Nuevos campos
+            'precio_base' => 'nullable|numeric|min:0',// Nuevos campos
+            'precio_reventa' => 'nullable|numeric|min:0',// Nuevos campos
             'stock_minimo' => 'nullable|integer|min:0', // ahora es opcional
             'activo' => 'required|boolean',
             'talles' => 'nullable|array',
@@ -50,6 +53,8 @@ class ProductoController extends Controller
             'talles.*.stock' => 'required|integer|min:0',
         ]);
 
+        // Sincronizamos el campo 'precio' con 'precio_venta'
+        $validated['precio'] = $validated['precio_venta'];
         $datosProducto = collect($validated)->except('talles')->toArray(); // solo los campos del producto
         $producto = Producto::create($datosProducto);
 
@@ -86,13 +91,19 @@ class ProductoController extends Controller
             'codigo' => 'required|unique:productos,codigo,' . $producto->id,
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-            'precio' => 'required|numeric|min:0',
+            
+            'precio_base' => 'nullable|numeric|min:0',// Nuevos campos
+            'precio_venta' => 'nullable|numeric|min:0',// Nuevos campos
+            'precio_reventa' => 'nullable|numeric|min:0',// Nuevos campos    
             'stock_minimo' => 'required|integer|min:0',
             'activo' => 'required|boolean',
             'talles' => 'nullable|array',
             'talles.*.id' => 'required|exists:talles,id',
             'talles.*.stock' => 'required|integer|min:0',
         ]);
+           
+        // Sincronizamos el campo 'precio' con 'precio_venta'
+        $validated['precio'] = $validated['precio_venta'];
 
         $producto->update($validated);
 
@@ -123,4 +134,29 @@ class ProductoController extends Controller
         $producto->restore();
         return redirect()->route('productos.eliminados')->with('success', 'Producto restaurado correctamente');
     }
+
+    // Método para crear un producto rápido desde el modal compra
+    public function storeDesdeCompra(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'codigo' => 'nullable|string|max:100',
+        'precio_base' => 'required|numeric|min:0',
+    ]);
+
+    $producto = Producto::create([
+        'nombre' => $request->nombre,
+        'codigo' => $request->codigo,
+        'precio_base' => $request->precio_base,
+        // Agregá otros campos que uses o valores por defecto
+    ]);
+
+    // Si querés devolver a la vista directamente (no ajax), redirigí con mensaje:
+    return redirect()->back()->with('success', 'Producto agregado correctamente');
+
+    // O para ajax, podés devolver json:
+    // return response()->json(['producto' => $producto]);
+}
+
+
 }

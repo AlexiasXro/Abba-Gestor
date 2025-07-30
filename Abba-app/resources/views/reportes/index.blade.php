@@ -5,7 +5,7 @@
 @section('content')
         <div class="container">
 
-            <h2 class="mb-4">📊 Reportes</h2>
+            <h4 class="mb-4">📊 Reportes</h4>
 
             <!-- Tarjetas resumen -->
             <div class="row mb-4">

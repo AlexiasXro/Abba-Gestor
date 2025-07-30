@@ -22,11 +22,13 @@ class DatabaseSeeder extends Seeder
         // ✅ Ejecuta otros seeders que cargan datos base para el sistema
         $this->call([
             TalleSeeder::class,     // Inserta talles como 35, 36, 37, etc.
-            ProductoSeeder::class,  // Crea 5 productos y los vincula con los talles
-            ClienteSeeder::class,   // Crea 5 clientes ficticios
-             GastosSeeder::class,
-        CierresCajaSeeder::class,
-        VentasSeeder::class,
+            ProductoSeeder::class,  // Crea  productos y los vincula con los talles
+            ClienteSeeder::class,   // Crea  clientes ficticios
+             GastosSeeder::class,// Crea 20 gastos ficticios
+        CierresCajaSeeder::class,// Crea 20 cierres de caja ficticios
+        VentasSeeder::class,// Crea 20 ventas ficticias con productos y clientes
+        ProveedorSeeder::class, // Crea 20 proveedores ficticios;
+
         ]);
     }
 }

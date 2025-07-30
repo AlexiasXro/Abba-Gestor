@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-        <h3>Registrar Devolución</h3>
+        <h4>Registrar Devolución</h4>
 
         {{-- Mensajes de éxito y errores --}}
         @if(session('success'))

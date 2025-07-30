@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h1>Listado de Compras</h1>
+    <h4>Listado de Compras</h4>
     <a href="{{ route('compras.create') }}" class="btn btn-primary mb-3">Registrar Compra</a>
 
     <table class="table table-bordered">

@@ -3,7 +3,7 @@
 @section('content')
 <!--/resources/views/clientes/create.blade.php-->
 <div class="container">
-    <h1 class="mb-4">Nuevo Cliente</h1>
+    <h4 class="mb-4">Nuevo Cliente</h4>
 
     <a href="{{ route('clientes.index') }}" class="btn btn-secondary mb-3">Volver al listado</a>
 
