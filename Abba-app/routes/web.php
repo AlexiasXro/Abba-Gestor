@@ -116,3 +116,12 @@ use App\Http\Controllers\ProveedorController;
 // Rutas para proveedores
 Route::resource('proveedores', ProveedorController::class)->except(['show']);
 
+
+// Rutas para configuracion de margenes
+Route::get('/configuracion/margenes', [ConfiguracionController::class, 'editarMargenes'])->name('configuracion.margenes');
+Route::post('/configuracion/margenes', [ConfiguracionController::class, 'actualizarMargenes'])->name('configuracion.margenes.actualizar');
+
+
+// Rutas para aplicar recargo a productos
+Route::post('/producto/{producto}/recargo', [ProductoController::class, 'aplicarRecargo'])->name('producto.aplicarRecargo');
+

@@ -53,7 +53,7 @@
 
     <div class="card border-0 shadow-sm">
         <div class="card-body p-0">
-            <table class="table table-hover table-sm align-middle mb-0">
+            <table class="table table-bordered table-striped table-sm align-middle">
                 <thead class="table-light">
                     <tr class="text-muted small text-uppercase">
                         <th scope="col">Fecha</th>

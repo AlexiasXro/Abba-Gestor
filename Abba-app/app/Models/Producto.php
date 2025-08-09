@@ -56,5 +56,26 @@ class Producto extends Model
             ?->stock ?? 0;
     }
 
-    
+    // Método para aplicar recargo
+    public function aplicarRecargo(Request $request, Producto $producto)
+{
+    $request->validate([
+        'porcentaje' => 'required|numeric|min:1|max:100',
+    ]);
+
+    $porcentaje = $request->porcentaje;
+
+    // Si trabajás con precio_base como referencia
+    if ($producto->precio_base) {
+        $nuevoPrecio = $producto->precio_base * (1 + $porcentaje / 200);
+        $producto->precio_venta = round($nuevoPrecio, 2);
+        $producto->save();
+
+        return back()->with('success', "Se aplicó un recargo del $porcentaje% al producto.");
+    }
+
+    return back()->with('error', 'Este producto no tiene precio base definido.');
+}
+
+
 }

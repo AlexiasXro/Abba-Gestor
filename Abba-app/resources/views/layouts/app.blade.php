@@ -120,6 +120,11 @@
                     </li>
 
                     {{-- Selector de aspecto --}}
+                    <li>
+    <a href="{{ route('configuracion.margenes') }}" class="text-sm text-gray-800 hover:text-blue-600">
+        Márgenes de Precios
+    </a>
+</li>
 
                 </ul>
 

@@ -4,8 +4,8 @@
 <div class="container mt-4">
     <h2>Historial de Ventas</h2>
 
-    <table class="table table-striped mt-3">
-    <thead class="thead-dark">
+    <table class="table table-bordered table-striped table-sm align-middle">
+    <thead class="table-light">
         <tr>
             <th>#</th>
             <th>Fecha</th>

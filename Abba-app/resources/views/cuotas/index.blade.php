@@ -30,7 +30,7 @@
     <button type="submit" class="btn btn-primary">Filtrar</button>
 </form>
 
-<table class="table table-bordered">
+<table class="table table-bordered table-striped table-sm align-middle">
     <thead class="table-light">
         <tr>
             <th>Venta</th>

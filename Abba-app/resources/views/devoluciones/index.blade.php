@@ -35,7 +35,7 @@
 </form>
 
         {{-- Tabla --}}
-        <table class="table table-bordered table-hover">
+        <table class="table table-bordered table-striped table-sm align-middle">
             <thead class="table-light">
                 <tr>
                     <th>ID</th>

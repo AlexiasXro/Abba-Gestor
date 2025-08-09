@@ -24,7 +24,11 @@ class ProductoController extends Controller
     // Mostrar productos eliminados (soft deleted)
     public function eliminados()
     {
-        $productosEliminados = Producto::onlyTrashed()->orderBy('deleted_at', 'desc')->get();
+        $productosEliminados = Producto::onlyTrashed()
+    ->with('talles')
+    ->orderBy('deleted_at', 'desc')
+    ->paginate(15);
+
         return view('productos.eliminados', compact('productosEliminados'));
     }
 
@@ -157,6 +161,37 @@ class ProductoController extends Controller
     // O para ajax, podés devolver json:
     // return response()->json(['producto' => $producto]);
 }
+
+
+public function aplicarRecargo(Request $request, Producto $producto)
+{
+    $request->validate([
+        'recargo' => 'required|numeric|min:0',
+    ]);
+
+    try {
+        $recargo = $request->input('recargo');
+        $precioBase = $producto->precio_base;
+
+        if (!$precioBase) {
+            return back()->with('error', 'El producto no tiene precio base definido.');
+        }
+
+        // Cálculos
+        $nuevoPrecioVenta = $precioBase * (1 + $recargo / 100);
+        $nuevoPrecioReventa = $precioBase * (1 + ($recargo - 10) / 100);
+
+        // Actualiza el modelo
+        $producto->precio_venta = round($nuevoPrecioVenta, 2);
+        $producto->precio_reventa = round($nuevoPrecioReventa, 2);
+        $producto->save();
+
+        return back()->with('success', 'Precios actualizados correctamente.');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Error al actualizar precios: ' . $e->getMessage());
+    }
+}
+
 
 
 }

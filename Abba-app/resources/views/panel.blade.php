@@ -8,26 +8,26 @@
 
         <!-- Accesos rápidos -->
         <div class="row mb-4">
-            <div class="col-md-3 mb-3">
-                <a href="{{ route('ventas.create') }}" class="btn btn-primary btn-lg w-100 py-3">
+            <div class="col-md-3 ">
+                <a href="{{ route('ventas.create') }}" class="btn btn-primary btn-lg w-100 py-2">
                     Nueva Venta
                 </a>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <a href="{{ route('productos.index') }}" class="btn btn-success btn-lg w-100 py-3">
+            <div class="col-md-3 ">
+                <a href="{{ route('productos.index') }}" class="btn btn-success btn-lg w-100 py-2">
                     Productos
                 </a>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <a href="{{ route('clientes.index') }}" class="btn btn-info btn-lg w-100 py-3">
+            <div class="col-md-3 ">
+                <a href="{{ route('clientes.index') }}" class="btn btn-info btn-lg w-100 py-2">
                     Clientes
                 </a>
             </div>
 
-            <div class="col-md-3 mb-3">
-                <a href="{{ route('reportes.index') }}" class="btn btn-outline-dark w-100 py-3">📊 Ver Reportes</a>
+            <div class="col-md-3 ">
+                <a href="{{ route('reportes.index') }}" class="btn btn-outline-dark btn-lg w-100 py-2">📊 Ver Reportes</a>
             </div>
         </div>
 
@@ -35,9 +35,9 @@
 
 
 
-        <div class="row mb-3">
+        <div class="row mb-2 w-100">
             <!-- Ventas Hoy -->
-            <div class="col-md-4">
+            <div class="col-md-3 mb-2">
                 <!-- ... tarjeta de ventas como ya la tenés ... -->
                 <div class="card">
                     <div class="card-header bg-primary text-white">Ventas Hoy</div>
@@ -51,12 +51,12 @@
             </div>
 
             <!-- Productos con stock bajo -->
-            <div class="col-md-5">
+            <div class="col-md-3 mb-2">
                 <!-- ... tarjeta de stock como ya la tenés ... -->
                 <div class="card">
                     <div class="card-header bg-warning text-white">Productos con Stock Bajo</div>
                     <div class="card-body p-2 row">
-                        <div class="col-md-7">
+                        
                             <!-- Tabla de productos  -->
                             @if($productosBajoStock->isEmpty())
                                 <div class="alert alert-success">Todo el stock está en orden</div>
@@ -90,13 +90,13 @@
                                     </table>
                                 </div>
                             @endif
-                        </div>
+                        
                     </div>
                 </div>
             </div>
 
             <!-- Calendario -->
-            <div class="col-md-3">
+            <div class="col-md-3 mb-2">
                 <div class="card">
                     <div class="card-header bg-secondary text-white">📅 Calendario</div>
                     <div class="card-body">
@@ -122,6 +122,8 @@
                 </div>
             </div>
 
+            
+            
             <style>
                 .scroll-container {
                     max-height: 180px;
@@ -172,9 +174,9 @@
 
 
             <!-- Últimos ventas -->
-            <div class="row mt-8">
+            <div class="row ">
                 <div class="col-12 mb-3">
-                    <div class="card">
+                    <div class="card mb-2">
                         <div class="card-header bg-primary text-white">Detalles del día de venta</div>
                         <div class="card-body">
                             @if ($ventasHoyDetalle->isEmpty())
