@@ -10,11 +10,28 @@ class ClienteController extends Controller
 {
     //Abba-app/app/Http/Controllers/ClienteController.php
     // Mostrar todos los clientes activos
-    public function index()
+    public function index(Request $request)
     {
         $clientes = Cliente::latest()->get();
-        return view('clientes.index', compact('clientes'));
+        // Obtener valor del filtro
+         $filtro = $request->input('filtro');
+
+        $clientes = Cliente::query() // <- ya no necesita \App\Models
+            ->when($filtro, function ($query, $filtro) {
+                $query->where('nombre', 'like', "%{$filtro}%")
+                      ->orWhere('apellido', 'like', "%{$filtro}%")
+                      ->orWhere('email', 'like', "%{$filtro}%");
+            })
+            ->orderBy('apellido')
+            ->paginate(15);
+
+        return view('clientes.index', [
+            'clientes' => $clientes,
+            'filtro' => $filtro
+        ]);
     }
+
+    
 
     // Mostrar clientes eliminados (soft deleted)
     public function eliminados()
@@ -131,69 +148,38 @@ public function buscar(Request $request)
 // HISTORIAL DE LOS CLIENTE Y LO QUE COMPRARON 
 public function historial(Request $request)
 {
-    // Recibo filtros
-    $clienteQuery = $request->input('cliente'); // nombre, dni, teléfono
-    $fechaDesde = $request->input('fecha_desde');
-    $fechaHasta = $request->input('fecha_hasta');
-    $estado = $request->input('estado');
-    $metodoPago = $request->input('metodo_pago');
-    $montoMin = $request->input('monto_min');
-    $montoMax = $request->input('monto_max');
-    $numeroVenta = $request->input('numero_venta');
-
-    $ventas = Venta::query();
-
-    // Filtrar por cliente (buscar en nombre, dni o teléfono)
-    if ($clienteQuery) {
-        $clientesIds = Cliente::where('nombre', 'like', "%$clienteQuery%")
-            ->orWhere('dni', 'like', "%$clienteQuery%")
-            ->orWhere('telefono', 'like', "%$clienteQuery%")
-            ->pluck('id');
-
-        $ventas->whereIn('cliente_id', $clientesIds);
-    }
-
-    // Filtrar por número de venta (id o código)
-    if ($numeroVenta) {
-        $ventas->where('id', $numeroVenta);
-    }
-
-    // Filtrar por estado si existe
-    if ($estado) {
-        $ventas->where('estado', $estado);
-    }
-
-    // Filtrar por método de pago si existe
-    if ($metodoPago) {
-        $ventas->where('metodo_pago', $metodoPago);
-    }
-
-    // Filtrar por rango de fechas
-    if ($fechaDesde) {
-        $ventas->whereDate('created_at', '>=', $fechaDesde);
-    }
-    if ($fechaHasta) {
-        $ventas->whereDate('created_at', '<=', $fechaHasta);
-    }
-
-    // Filtrar por rango de monto
-    if ($montoMin) {
-        $ventas->where('total', '>=', $montoMin);
-    }
-    if ($montoMax) {
-        $ventas->where('total', '<=', $montoMax);
-    }
-
-    $ventas = $ventas->orderBy('created_at', 'desc')->paginate(10);
-
-    // Para mantener los filtros en la vista
     $filtros = $request->only([
-        'cliente', 'fecha_desde', 'fecha_hasta', 'estado', 'metodo_pago', 'monto_min', 'monto_max', 'numero_venta'
+        'cliente', 'numero_venta', 'estado', 'metodo_pago', 
+        'fecha_desde', 'fecha_hasta', 'monto_min', 'monto_max'
     ]);
 
-    return view('clientes.historial', compact('ventas', 'filtros'));
+    $ventas = Venta::query()
+        ->when($filtros['cliente'] ?? null, function($q, $cliente) {
+            $q->whereHas('cliente', function($q2) use ($cliente) {
+                $q2->where('nombre', 'like', "%$cliente%")
+                   ->orWhere('apellido', 'like', "%$cliente%")
+                   ->orWhere('dni', 'like', "%$cliente%")
+                   ->orWhere('telefono', 'like', "%$cliente%");
+            });
+        })
+        ->when($filtros['numero_venta'] ?? null, fn($q, $num) => $q->where('id', $num))
+        ->when($filtros['estado'] ?? null, fn($q, $estado) => $q->where('estado', $estado))
+        ->when($filtros['metodo_pago'] ?? null, fn($q, $mp) => $q->where('metodo_pago', $mp))
+        ->when($filtros['fecha_desde'] ?? null, fn($q, $fd) => $q->whereDate('created_at', '>=', $fd))
+        ->when($filtros['fecha_hasta'] ?? null, fn($q, $fh) => $q->whereDate('created_at', '<=', $fh))
+        ->when($filtros['monto_min'] ?? null, fn($q, $min) => $q->where('total', '>=', $min))
+        ->when($filtros['monto_max'] ?? null, fn($q, $max) => $q->where('total', '<=', $max))
+        ->orderBy('created_at', 'desc')
+        ->paginate(15)
+        ->withQueryString(); // mantiene los filtros en la paginación
+
+    return view('clientes.historial', [
+        'ventas' => $ventas,
+        'filtros' => $filtros
+    ]);
+}
 }
 
 
 
-}
+

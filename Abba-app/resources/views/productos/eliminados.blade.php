@@ -6,10 +6,20 @@
         <div class="alert alert-success">{{ session('restaurado') }}</div>
     @endif
 
-    <div class="container">
-        <h4>Productos Eliminados</h4>
-        <a href="{{ route('productos.index') }}" class="btn btn-secondary mb-3">Volver a Activos</a>
+    <x-header-bar 
+    title="Eliminados Productos"
+    :buttons="[
+        ['route' => route('productos.index'), 'text' => 'Volver a Activos', 'class' => 'btn-secondary']
+    ]"
+    filterName="buscar"
+    filterPlaceholder="Buscar por nombre o código..."
+    filterValue="{{ request('buscar') }}"
+    filterRoute="{{ route('productos.eliminados') }}"
+/>
 
+
+    <div class="container">
+        
         @php
             $todosLosTalles = \App\Models\Talle::orderBy('talle')->get();
         @endphp

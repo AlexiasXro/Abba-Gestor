@@ -23,6 +23,8 @@ class ProductoTalle extends Pivot
     public function producto()
     {
         return $this->belongsTo(Producto::class);
+        
+        
     }
 
     public function talle()

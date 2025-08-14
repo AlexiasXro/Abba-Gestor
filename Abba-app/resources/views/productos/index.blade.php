@@ -2,14 +2,19 @@
 
 @section('content')
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+
+{{-- resources/views/productos/index.blade.php --}}
+  
+
+
+    <x-header-bar title="Productos" :buttons="[
+            ['text' => 'Nuevo Producto', 'route' => route('productos.create'), 'class' => 'btn-primary'],
+            ['text' => 'Ver Eliminados', 'route' => route('productos.eliminados'), 'class' => 'btn-secondary']
+        ]"
+        filterName="filtro" :filterValue="$filtro ?? ''" filterPlaceholder="Buscar por nombre, código o proveedor"
+        :filterRoute="route('productos.index')" />
 
     <div class="container">
-        <h4>Productos</h4>
-        <a href="{{ route('productos.create') }}" class="btn btn-primary mb-3">Nuevo Producto</a>
-        <a href="{{ route('productos.eliminados') }}" class="btn btn-secondary mb-3">Ver Eliminados</a>
 
         @php
             $todosLosTalles = \App\Models\Talle::orderBy('talle')->get();
@@ -25,14 +30,15 @@
                         <th>Nombre</th>
                         <th>Precio</th>
                         <th>Precio costo</th>
-                        <th class="small">Factura B<hr class="my-0">Venta</th>
-                        <th class="small"> Factura A<hr class="my-0">Reventa</th>
+                        <th class="small">Factura B
+                            <hr class="my-0">Venta
+                        </th>
+                        <th class="small"> Factura A
+                            <hr class="my-0">Reventa
+                        </th>
                         <th>Stock Total</th>
+                        <th>Talles (Stock)</th>
 
-                        {{-- Talles --}}
-                        @foreach($todosLosTalles as $talle)
-                            <th>{{ $talle->talle }}</th>
-                        @endforeach
 
                         <th><i class="bi bi-hand-thumbs-up-fill text-success" title="Activo"></i></th>
                         <th>Acciones</th>
@@ -66,21 +72,29 @@
                             <td>{{ $producto->talles->sum('pivot.stock') }}</td>
 
                             {{-- Stock por talle --}}
-                            @foreach($todosLosTalles as $talle)
-                                @php
-                                    $talleProducto = $producto->talles->firstWhere('id', $talle->id);
-                                    $stock = $talleProducto ? $talleProducto->pivot->stock : 0;
-                                @endphp
-                                <td class="text-center">
-                                    @if($stock > 0)
-                                        <span class="text-success fw-bold">{{ $stock }}</span>
-                                    @else
-                                        <span class="text-danger fw-bold">❌</span>
-                                    @endif
-                                </td>
-                            @endforeach
+                            <td>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach($todosLosTalles as $talle)
+                                        @php
+                                            $talleProducto = $producto->talles->firstWhere('id', $talle->id);
+                                            $stock = $talleProducto ? $talleProducto->pivot->stock : 0;
+                                        @endphp
+
+                                        @if($stock > 0)
+                                            @php
+                                                $color = ($stock <= 1) ? 'text-danger' : 'text-black';
+                                            @endphp
+                                            <span class="{{ $color }}" style="font-size: 0.85rem;">
+                                                <strong style="margin-right: 2px;">{{ $talle->talle }}</strong>({{ $stock }})
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            </td>
 
                             <td>{{ $producto->activo ? 'Sí' : 'No' }}</td>
+
+
                             <td>
                                 <a href="{{ route('productos.show', $producto) }}" class="btn btn-info btn-sm" title="Ver">
                                     <i class="bi bi-eye"></i>

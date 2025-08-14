@@ -8,11 +8,25 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Proveedor extends Model
 {
     use SoftDeletes;
+
     protected $table = 'proveedores';
-     protected $fillable = ['nombre', 'cuit', 'email', 'telefono', 'direccion', 'observaciones'];
+
+    protected $fillable = [
+        'nombre',
+        'cuit',
+        'email',
+        'telefono',
+        'direccion',
+        'observaciones'
+    ];
 
     public function compras()
     {
         return $this->hasMany(Compra::class);
+    }
+
+    public function productos()
+    {
+        return $this->hasMany(Producto::class);
     }
 }

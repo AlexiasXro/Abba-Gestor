@@ -21,44 +21,31 @@ class CompraController extends Controller
         return view('compras.index', compact('compras'));
     }
 
-   public function create(Request $request)
+public function create(Request $request)
 {
-    // 1. Obtener todos los proveedores y talles (siempre necesarios para el formulario)
-    $proveedores = Proveedor::all();
+    $filtro = $request->input('filtro');
+
+    $query = Producto::query()->with('proveedor');
+
+    if ($filtro) {
+        $query->where(function($q) use ($filtro) {
+            $q->where('nombre', 'like', "%{$filtro}%")
+              ->orWhere('codigo', 'like', "%{$filtro}%")
+              ->orWhereHas('proveedor', function($q2) use ($filtro) {
+                  $q2->where('nombre', 'like', "%{$filtro}%");
+              });
+        });
+    }
+
+    $productos = $query->paginate(15);
+
+    $proveedores = Proveedor::orderBy('nombre')->get();
+
     $talles = Talle::all();
 
-    // 2. Obtener valores de búsqueda desde la URL
-    $proveedorId = $request->get('proveedor_id');         // Proveedor seleccionado
-    $search = $request->get('buscar_producto');           // Texto de búsqueda
-
-    // 3. Inicializar arreglo para IDs de productos previamente comprados al proveedor
-    $idsCompradosAntes = [];
-
-    // 4. Si hay proveedor seleccionado, buscar productos que ya le compramos antes
-    if ($proveedorId) {
-    $idsCompradosAntes = CompraDetalle::whereHas('compra', function ($q) use ($proveedorId) {
-        $q->where('proveedor_id', $proveedorId);
-    })->pluck('producto_id')->unique()->toArray(); // Obtenemos IDs únicos
+    return view('compras.create', compact('productos', 'proveedores', 'filtro', 'talles'));
 }
 
-    // 5. Buscar productos por nombre o código si se ingresó un término de búsqueda
-    $productos = Producto::query()
-        ->when($search, function ($query) use ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('nombre', 'like', "%{$search}%")
-                  ->orWhere('codigo', 'like', "%{$search}%");
-            });
-        })
-        ->get();
-
-    // 6. Reordenar productos: los que ya le compramos al proveedor aparecen primero
-    $productos = $productos->sortByDesc(function ($prod) use ($idsCompradosAntes) {
-        return in_array($prod->id, $idsCompradosAntes);
-    });
-
-    // 7. Enviar todo a la vista
-    return view('compras.create', compact('proveedores', 'productos', 'talles', 'search', 'proveedorId'));
-}
 
 
 

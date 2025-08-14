@@ -2,10 +2,11 @@
 
 @section('content')
 <!--/resources/views/clientes/edit.blade.php-->
-<div class="container">
-    <h4 class="mb-4">Editar Cliente</h4>
+<x-header-bar title="Editar Cliente" :buttons="[
+    ['text' => 'Volver al detalle', 'route' => route('clientes.show', $cliente), 'class' => 'btn-secondary']
+]" />
 
-    <a href="{{ route('clientes.show', $cliente) }}" class="btn btn-secondary mb-3">Volver al detalle</a>
+<div class="container">
 
     @if ($errors->any())
         <div class="alert alert-danger">

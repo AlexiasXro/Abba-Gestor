@@ -2,11 +2,11 @@
 
 @section('content')
 <!--/resources/views/clientes/eliminados.blade.php-->
+<x-header-bar title="Clientes Eliminados" :buttons="[
+    ['text' => 'Volver al listado', 'route' => route('clientes.index'), 'class' => 'btn-secondary']
+]" />
+
 <div class="container">
-    <h3 class="mb-4">Clientes eliminados</h3>
-
-    <a href="{{ route('clientes.index') }}" class="btn btn-secondary mb-3">Volver a clientes activos</a>
-
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif

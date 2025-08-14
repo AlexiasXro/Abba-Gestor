@@ -13,18 +13,23 @@
         </div>
     @endif
 
-    <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h4 class="mb-0">Editar Producto</h4>
+
+    <x-header-bar title="Editar Productos" :buttons="[
+            ['route' => route('productos.show', $producto), 'text' => 'Volver', 'class' => 'btn-outline-secondary']
+        ]">
+        <x-slot name="extraButtons">
             <button class="btn btn-warning btn-sm" onclick="abrirModalRecargo({{ $producto->id }})">
                 Modificar recargo
             </button>
-            <a href="{{ route('productos.show', $producto) }}" class="btn btn-sm btn-outline-secondary">
-                Volver
-            </a>
-        </div>
-        
-         @include('productos.partials.modal_recargo', ['producto' => $producto])
+        </x-slot>
+    </x-header-bar>
+
+
+    
+    <div class="container">
+
+
+        @include('productos.partials.modal_recargo', ['producto' => $producto])
 
 
         <form action="{{ route('productos.update', $producto) }}" method="POST" class="bg-light p-4 rounded shadow-sm">
@@ -56,6 +61,17 @@
                             rows="2">{{ old('descripcion', $producto->descripcion) }}</textarea>
                         <div class="form-text">Detalles adicionales. Opcional.</div>
                     </div>
+                    <div class="col-md-6">
+                        <label for="proveedor_id" class="form-label">Proveedor (opcional)</label>
+                        <select name="proveedor_id" id="proveedor_id" class="form-select">
+                            <option value="">-- Sin proveedor asignado --</option>
+                            @foreach ($proveedores as $prov)
+                                <option value="{{ $prov->id }}" {{ old('proveedor_id', $producto->proveedor_id) == $prov->id ? 'selected' : '' }}>
+                                    {{ $prov->nombre }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
 
                     <h6 class="fw-bold mt-4">Precios</h6>
                     <div class="row">
@@ -70,7 +86,7 @@
                         <div class="col-md-6 mb-3">
                             <div class="d-flex justify-content-between align-items-center mb-1">
                                 <label for="precio_venta" class="form-label mb-0">Precio Venta</label>
-                                
+
                             </div>
 
                             <input type="number" step="0.01" name="precio_venta" id="precio_venta"
@@ -118,44 +134,49 @@
 
                 <!-- Columna derecha (Talles y Stock) -->
 
-                <div class="col-md-4 w-25">
+<!-- Columna derecha (Talles y Stock) -->
+<div class="col-md-4 mb-3">
     <h6 class="fw-bold mb-3">Stock por Talle</h6>
     <div class="row">
         @foreach ($talles->chunk(ceil($talles->count() / 2)) as $columna)
             <div class="col-6">
-                <table class="table table-sm table-borderless align-middle mb-0">
-                    <tbody>
-                        @foreach ($columna as $talle)
-                            @php
-                                $stock = $producto->talles->firstWhere('id', $talle->id)?->pivot->stock ?? 0;
-                            @endphp
-                            <tr>
-                                <td class="text-center align-middle" style="width: 30%;">
-                                    <label class=" text-center form-label mb-0">{{ $talle->talle }}</label>
-                                    <input type="hidden" name="talles[{{ $loop->parent->index * ceil($talles->count() / 2) + $loop->index }}][id]" value="{{ $talle->id }}">
-                                </td>
-                                <td class="text-center align-middle">
-                                    <input type="number" name="talles[{{ $loop->parent->index * ceil($talles->count() / 2) + $loop->index }}][stock]"
-                                        class="form-control form-control-sm text-center" min="0" placeholder="Modificar"
-                                        title="Podés modificar el stock"
-                                        value="{{ old('talles.' . ($loop->parent->index * ceil($talles->count() / 2) + $loop->index) . '.stock', $stock) }}">
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless align-middle mb-0">
+                        <tbody>
+                            @foreach ($columna as $talle)
+                                @php
+                                    $stock = $producto->talles->firstWhere('id', $talle->id)?->pivot->stock ?? 0;
+                                @endphp
+                                <tr>
+                                    <td class="text-center align-middle" style="width: 30%;">
+                                        <label class="text-center form-label mb-0">{{ $talle->talle }}</label>
+                                        <input type="hidden"
+                                            name="talles[{{ $loop->parent->index * ceil($talles->count() / 2) + $loop->index }}][id]"
+                                            value="{{ $talle->id }}">
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <input type="number"
+                                            name="talles[{{ $loop->parent->index * ceil($talles->count() / 2) + $loop->index }}][stock]"
+                                            class="form-control form-control-sm text-center" min="0"
+                                            placeholder="Modificar" title="Podés modificar el stock"
+                                            value="{{ old('talles.' . ($loop->parent->index * ceil($talles->count() / 2) + $loop->index) . '.stock', $stock) }}">
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         @endforeach
     </div>
 </div>
-
 
             </div>
 
             <button type="submit" class="btn btn-primary mt-4">Actualizar Producto</button>
         </form>
 
-       
+
     </div>
 
     <script>

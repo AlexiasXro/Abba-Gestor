@@ -2,11 +2,15 @@
 
 @section('content')
     <!--/resources/views/clientes/index.blade.php-->
-    <div class="container">
-        <h4 class="mb-4">Clientes activos</h4>
 
-        <a href="{{ route('clientes.create') }}" class="btn btn-primary mb-3">+ Nuevo Cliente</a>
-        <a href="{{ route('clientes.eliminados') }}" class="btn btn-secondary mb-3 float-end">Ver eliminados</a>
+
+    <x-header-bar title="Clientes" :buttons="[
+            ['text' => 'Nuevo Cliente', 'route' => route('clientes.create'), 'class' => 'btn-primary'],
+            ['text' => 'Ver Eliminados', 'route' => route('clientes.eliminados'), 'class' => 'btn-secondary']
+        ]"
+        filterName="filtro" :filterValue="$filtro ?? ''" filterPlaceholder="Buscar por nombre, apellido o email"
+        :filterRoute="route('clientes.index')" />
+    <div class="container">
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>

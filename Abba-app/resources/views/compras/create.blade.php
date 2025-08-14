@@ -1,122 +1,74 @@
 @extends('layouts.app')
 
 @section('content')
-    <h4 class="mb-4">Registrar Compra</h4>
+    <div class="container">
 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+       <x-header-filter 
+    title="Crear Compra" 
+    filterName="filtro" 
+    :filterValue="$filtro ?? ''" 
+    placeholder="Nombre o código de producto / Nombre de proveedor" 
+    :route="route('compras.create')"
+/>
 
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
+
+        {{-- Formulario principal --}}
+        <form method="POST" action="{{ route('compras.store') }}">
+            @csrf
+
+            <div class="row mb-3">
+                <label class="form-label">Talles a comprar</label>
+                @foreach ($talles as $talle)
+                    <div class="col-md-2 mb-2">
+                        <div class="input-group">
+                            <span class="input-group-text">{{ $talle->talle }}</span>
+                            <input type="number" name="talles[{{ $talle->id }}]" class="form-control" min="0"
+                                value="{{ old('talles.' . $talle->id, 0) }}">
+                        </div>
+                    </div>
                 @endforeach
-            </ul>
-        </div>
-    @endif
+            </div>
 
-    {{-- Filtro de búsqueda de productos --}}
-    <form method="GET" action="{{ route('compras.create') }}" class="mb-4 border p-3 rounded bg-light">
-        <div class="row g-2">
             <div class="col-md-4">
-                <label class="form-label">Proveedor</label>
-                <select name="proveedor_id" class="form-control">
-                    <option value="">-- Todos los proveedores --</option>
-                    @foreach ($proveedores as $prov)
-                        <option value="{{ $prov->id }}" {{ $proveedorId == $prov->id ? 'selected' : '' }}>
-                            {{ $prov->nombre }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-5">
-                <label class="form-label">Buscar producto</label>
-                <input type="text" name="buscar_producto" class="form-control"
-                       placeholder="Nombre o código..."
-                       value="{{ old('buscar_producto', $search) }}">
-            </div>
-            <div class="col-md-3 d-flex align-items-end">
-                <button type="submit" class="btn btn-outline-secondary w-100">Filtrar productos</button>
-            </div>
-        </div>
-    </form>
-
-    {{-- Formulario principal --}}
-    <form method="POST" action="{{ route('compras.store') }}">
-        @csrf
-
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label>Proveedor *</label>
-                <select name="proveedor_id" class="form-control" required>
-                    <option value="">-- Seleccionar proveedor --</option>
-                    @foreach ($proveedores as $prov)
-                        <option value="{{ $prov->id }}" {{ old('proveedor_id', $proveedorId) == $prov->id ? 'selected' : '' }}>
-                            {{ $prov->nombre }}
-                        </option>
-                    @endforeach
-                </select>
+                <label for="fecha">Fecha</label>
+                <input type="date" name="fecha" id="fecha" class="form-control" value="{{ date('Y-m-d') }}" required>
             </div>
             <div class="col-md-4">
-                <label>Fecha</label>
-                <input type="date" name="fecha" class="form-control" value="{{ date('Y-m-d') }}" required>
+                <label for="metodo_pago">Método de Pago</label>
+                <input type="text" name="metodo_pago" id="metodo_pago" class="form-control">
             </div>
-            <div class="col-md-4">
-                <label>Método de Pago</label>
-                <input type="text" name="metodo_pago" class="form-control">
-            </div>
-        </div>
+    </div>
 
-        {{-- Modal nuevo producto --}}
-        <button type="button" class="btn btn-sm btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevoProducto">
-            + Nuevo producto
-        </button>
+    {{-- Lista productos filtrados --}}
+    <h5>Productos</h5>
+   @if($productos->count())
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nombre</th>
+                <th>Proveedor</th>
+                <th>Precio Venta</th>
+                <th>Stock Mínimo</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($productos as $producto)
+                <tr>
+                    <td>{{ $producto->codigo }}</td>
+                    <td>{{ $producto->nombre }}</td>
+                    <td>{{ $producto->proveedor->nombre ?? 'Sin proveedor' }}</td>
+                    <td>${{ number_format($producto->precio_venta, 2) }}</td>
+                    <td>{{ $producto->stock_minimo }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
 
-        {{-- Detalles --}}
-        <div id="detalles-container">
-            <h5>Detalles</h5>
-            <div class="detalle row mb-2" data-index="0">
-                <div class="col-md-4">
-                    <select name="detalles[0][producto_id]" class="form-control" required>
-                        <option value="">-- Seleccionar producto --</option>
-                        @foreach ($productos as $producto)
-                            <option value="{{ $producto->id }}">{{ $producto->nombre }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <select name="detalles[0][talle_id]" class="form-control" required>
-                        <option value="">-- Seleccionar talle --</option>
-                        @foreach($talles as $talle)
-                            <option value="{{ $talle->id }}">{{ $talle->talle }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" name="detalles[0][cantidad]" class="form-control" placeholder="Cantidad" min="1" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" step="0.01" name="detalles[0][precio_unitario]" class="form-control" placeholder="Precio $" required>
-                </div>
-                <div class="col-12 mt-1 text-end">
-                    <button type="button" class="btn btn-danger btn-sm btn-remove-detalle" style="display:none;">Eliminar</button>
-                </div>
-            </div>
-        </div>
+    {{ $productos->withQueryString()->links() }}
 
-        <button type="button" class="btn btn-outline-secondary btn-sm" id="btn-add-detalle">+ Agregar producto</button>
-
-        <div class="mt-4">
-            <button type="submit" class="btn btn-success">Guardar Compra</button>
-        </div>
-    </form>
-
-   {{-- Modal para crear producto --}}
-@include('compras.partials.modal_producto')
-
-{{-- Script para clonado de filas --}}
-@include('compras.partials.script_detalles')
+@else
+    <p>No se encontraron productos con ese filtro.</p>
+@endif
 
 @endsection

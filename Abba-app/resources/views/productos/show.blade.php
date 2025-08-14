@@ -17,22 +17,29 @@
     @endif
 
 
-    <div class="container ">
-        <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-            <h3 class="mb-0">Producto: {{ $producto->nombre }}</h3>
+    <x-header-bar title="Producto: {{ $producto->nombre }}" :buttons="[
+            ['route' => route('productos.edit', $producto), 'text' => 'Editar', 'class' => 'btn-warning'],
+            ['route' => route('productos.index'), 'text' => 'Volver', 'class' => 'btn-secondary']
+        ]" />
 
-            <div class="d-flex gap-2">
-              
-                <a href="{{ route('productos.edit', $producto) }}" class="btn btn-warning">Editar</a>
-                <a href="{{ route('productos.index') }}" class="btn btn-secondary">Volver</a>
-            </div>
-        </div>
+<div class="container mt-3">
 
+    <div class="row">
 
-        <div class="row">
-            <!-- Primera columna: Detalles -->
-            <div class="col-md-6 mb-2">
+        <!-- Primera columna: Detalles -->
+        <div class="col-md-6 mb-2">
+            <div class="table-responsive">
                 <table class="table table-bordered table-sm">
+                    <tr>
+                        <th>Miniatura</th>
+                        <td>
+                            @if($producto->imagen)
+                                <img src="{{ asset('storage/' . $producto->imagen) }}" alt="Imagen {{ $producto->nombre }}" class="img-thumbnail" style="max-width: 100px;">
+                            @else
+                                <em>No disponible</em>
+                            @endif
+                        </td>
+                    </tr>
                     <tr>
                         <th>Código</th>
                         <td>{{ $producto->codigo }}</td>
@@ -40,6 +47,16 @@
                     <tr>
                         <th>Descripción</th>
                         <td>{{ $producto->descripcion }}</td>
+                    </tr>
+                    <tr>
+                        <th>Proveedor</th>
+                        <td>
+                            @if($producto->proveedor)
+                                {{ $producto->proveedor->nombre }}
+                            @else
+                                <em>No asignado</em>
+                            @endif
+                        </td>
                     </tr>
                     <tr>
                         <th>Precio</th>
@@ -67,9 +84,11 @@
                     </tr>
                 </table>
             </div>
+        </div>
 
-            <!-- Segunda columna: Talles -->
-            <div class="col-md-6 mb-2">
+        <!-- Segunda columna: Talles -->
+        <div class="col-md-6 mb-2">
+            <div class="table-responsive">
                 <table class="table table-bordered table-sm" style="font-size: 0.8rem;">
                     <thead>
                         <tr>
@@ -87,8 +106,7 @@
                                     <td class="text-center" style="padding: 0.3rem;">{{ $talle->pivot->stock }}</td>
                                 @endforeach
                                 @if ($chunk->count() < 2)
-                                    {{-- Si hay un solo elemento, agregamos dos celdas vacías para completar la fila --}}
-                                    <td  class="text-center fw-bold"style="padding: 0.3rem;"></td>
+                                    <td class="text-center fw-bold" style="padding: 0.3rem;"></td>
                                     <td class="text-center" style="padding: 0.3rem;"></td>
                                 @endif
                             </tr>
@@ -96,13 +114,9 @@
                     </tbody>
                 </table>
             </div>
-
-
         </div>
-    </div>
-
-
-
 
     </div>
+
+</div>
 @endsection

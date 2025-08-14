@@ -1,83 +1,89 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <h4>Historial de ventas</h4>
+<x-header-bar title="Historial de Clientes" :buttons="[
+    ['text' => 'Nuevo Cliente', 'route' => route('clientes.create'), 'class' => 'btn-primary'],
+    ['text' => 'Ver Eliminados', 'route' => route('clientes.eliminados'), 'class' => 'btn-secondary']
+]" filterName="filtro" :filterValue="$filtro ?? ''" filterPlaceholder="Buscar por nombre, apellido o email"
+    :filterRoute="route('clientes.historial')" />
 
-    <form method="GET" action="{{ route('clientes.historial') }}" class="mb-4">
-
-        <div class="row g-3">
-
-            <div class="col-md-3">
-                <label>Cliente (nombre, DNI, teléfono)</label>
-                <input type="text" name="cliente" value="{{ $filtros['cliente'] ?? '' }}" class="form-control" />
-            </div>
-
-            <div class="col-md-3">
-                <label>Número de venta</label>
-                <input type="text" name="numero_venta" value="{{ $filtros['numero_venta'] ?? '' }}"
-                    class="form-control" />
-            </div>
-
-            <div class="col-md-3">
-                <label>Estado</label>
-                <select name="estado" class="form-select">
-                    <option value="">-- Todos --</option>
-                    <option value="pagado"
-                        {{ (isset($filtros['estado']) && $filtros['estado'] == 'pagado') ? 'selected' : '' }}>Pagado
-                    </option>
-                    <option value="pendiente"
-                        {{ (isset($filtros['estado']) && $filtros['estado'] == 'pendiente') ? 'selected' : '' }}>
-                        Pendiente</option>
-                    <option value="anulado"
-                        {{ (isset($filtros['estado']) && $filtros['estado'] == 'anulado') ? 'selected' : '' }}>Anulado
-                    </option>
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <label>Método de pago</label>
-                <select name="metodo_pago" class="form-select">
-                    <option value="">-- Todos --</option>
-                    <option value="efectivo"
-                        {{ (isset($filtros['metodo_pago']) && $filtros['metodo_pago'] == 'efectivo') ? 'selected' : '' }}>
-                        Efectivo</option>
-                    <option value="tarjeta"
-                        {{ (isset($filtros['metodo_pago']) && $filtros['metodo_pago'] == 'tarjeta') ? 'selected' : '' }}>
-                        Tarjeta</option>
-                    <!-- Añadí más métodos según tu sistema -->
-                </select>
-            </div>
-
-            <div class="col-md-3">
-                <label>Fecha desde</label>
-                <input type="date" name="fecha_desde" value="{{ $filtros['fecha_desde'] ?? '' }}"
-                    class="form-control" />
-            </div>
-
-            <div class="col-md-3">
-                <label>Fecha hasta</label>
-                <input type="date" name="fecha_hasta" value="{{ $filtros['fecha_hasta'] ?? '' }}"
-                    class="form-control" />
-            </div>
-
-            <div class="col-md-3">
-                <label>Monto mínimo</label>
-                <input type="number" name="monto_min" value="{{ $filtros['monto_min'] ?? '' }}" step="0.01"
-                    class="form-control" />
-            </div>
-
-            <div class="col-md-3">
-                <label>Monto máximo</label>
-                <input type="number" name="monto_max" value="{{ $filtros['monto_max'] ?? '' }}" step="0.01"
-                    class="form-control" />
-            </div>
-
+    <form method="GET" action="{{ route('clientes.historial') }}" class="mb-3">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2">
+        
+        {{-- Cliente --}}
+        <div class="col">
+            <input type="text" name="cliente" 
+                   value="{{ $filtros['cliente'] ?? '' }}" 
+                   class="form-control form-control-sm" 
+                   placeholder="Cliente (nombre, DNI, teléfono)">
         </div>
 
-        <button type="submit" class="btn btn-primary mt-3">Filtrar</button>
-        <a href="{{ route('clientes.historial') }}" class="btn btn-secondary mt-3 ms-2">Limpiar</a>
-    </form>
+        {{-- Número de venta --}}
+        <div class="col">
+            <input type="text" name="numero_venta" 
+                   value="{{ $filtros['numero_venta'] ?? '' }}" 
+                   class="form-control form-control-sm" 
+                   placeholder="N° Venta">
+        </div>
+
+        {{-- Estado --}}
+        <div class="col">
+            <select name="estado" class="form-select form-select-sm">
+                <option value="">-- Estado --</option>
+                <option value="pagado" {{ ($filtros['estado'] ?? '') == 'pagado' ? 'selected' : '' }}>Pagado</option>
+                <option value="pendiente" {{ ($filtros['estado'] ?? '') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                <option value="anulado" {{ ($filtros['estado'] ?? '') == 'anulado' ? 'selected' : '' }}>Anulado</option>
+            </select>
+        </div>
+
+        {{-- Método de pago --}}
+        <div class="col">
+            <select name="metodo_pago" class="form-select form-select-sm">
+                <option value="">-- Método --</option>
+                <option value="efectivo" {{ ($filtros['metodo_pago'] ?? '') == 'efectivo' ? 'selected' : '' }}>Efectivo</option>
+                <option value="tarjeta" {{ ($filtros['metodo_pago'] ?? '') == 'tarjeta' ? 'selected' : '' }}>Tarjeta</option>
+            </select>
+        </div>
+
+        {{-- Fecha desde --}}
+        <div class="col">
+            <input type="date" name="fecha_desde" 
+                   value="{{ $filtros['fecha_desde'] ?? '' }}" 
+                   class="form-control form-control-sm">
+        </div>
+
+        {{-- Fecha hasta --}}
+        <div class="col">
+            <input type="date" name="fecha_hasta" 
+                   value="{{ $filtros['fecha_hasta'] ?? '' }}" 
+                   class="form-control form-control-sm">
+        </div>
+
+        {{-- Monto mínimo --}}
+        <div class="col">
+            <input type="number" name="monto_min" step="0.01"
+                   value="{{ $filtros['monto_min'] ?? '' }}" 
+                   class="form-control form-control-sm" 
+                   placeholder="Monto min">
+        </div>
+
+        {{-- Monto máximo --}}
+        <div class="col">
+            <input type="number" name="monto_max" step="0.01"
+                   value="{{ $filtros['monto_max'] ?? '' }}" 
+                   class="form-control form-control-sm" 
+                   placeholder="Monto max">
+        </div>
+    </div>
+
+    {{-- Botones --}}
+    <div class="mt-2 d-flex flex-wrap gap-2">
+        <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+        <a href="{{ route('clientes.historial') }}" class="btn btn-secondary btn-sm">Limpiar</a>
+    </div>
+</form>
+
+<div class="container">
 
     @if($ventas->isEmpty())
     <p>No se encontraron ventas con esos filtros.</p>

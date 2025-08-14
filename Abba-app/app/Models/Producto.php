@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes; // Importar SoftDeletes
+use Illuminate\Http\Request;
 
 class Producto extends Model
 {
@@ -21,8 +22,9 @@ class Producto extends Model
         'precio_reventa', 
         'stock_minimo', 
         'activo', 
-        'tipo'
-        // ✅ Nuevos campos 'precio_base', 'precio_venta', 'precio_reventa'
+        'tipo',
+        'proveedor_id' 
+        // ✅ Nuevos campos 'precio_base', 'precio_venta', 'precio_reventa''proveedor_id' 
     ];
 
     // Relación muchos a muchos con talles a través de la tabla pivote
@@ -44,6 +46,12 @@ class Producto extends Model
     public function ventasDetalle()
     {
         return $this->hasMany(VentaDetalle::class);
+    }
+
+    // Nueva relación proveedor
+    public function proveedor()
+    {
+        return $this->belongsTo(Proveedor::class);
     }
 
     // Método para verificar stock por talle

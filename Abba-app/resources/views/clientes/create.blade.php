@@ -2,11 +2,13 @@
 
 @section('content')
 <!--/resources/views/clientes/create.blade.php-->
+
+<x-header-bar title="Nuevo Cliente" :buttons="[
+    ['text' => 'Volver al listado', 'route' => route('clientes.index'), 'class' => 'btn-secondary']
+]" />
+
 <div class="container">
-    <h4 class="mb-4">Nuevo Cliente</h4>
-
-    <a href="{{ route('clientes.index') }}" class="btn btn-secondary mb-3">Volver al listado</a>
-
+    
     @if ($errors->any())
         <div class="alert alert-danger">
             <ul class="mb-0">
