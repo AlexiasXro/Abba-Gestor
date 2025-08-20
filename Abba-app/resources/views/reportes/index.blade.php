@@ -107,28 +107,28 @@
                 </div>
             </div>
 
-           <h4 class="mt-4">Ganancia Total Acumulada: ${{ number_format($gananciaTotal, 2) }}</h4>
+            <h4 class="mt-4">Ganancia Total Acumulada: ${{ number_format($gananciaTotal, 2) }}</h4>
 
-<table class="table table-bordered table-striped mt-3">
-    <thead>
-        <tr>
-            <th>Producto</th>
-            <th>Ganancia Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse($productosRentabilidad as $item)
-            <tr>
-                <td>{{ $item->nombre }}</td>
-                <td>${{ number_format($item->ganancia_total, 2) }}</td>
-            </tr>
-        @empty
-            <tr>
-                <td colspan="2">No hay datos de rentabilidad aún.</td>
-            </tr>
-        @endforelse
-    </tbody>
-</table>
+            <table class="table table-bordered table-striped mt-3">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Ganancia Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($productosRentabilidad as $item)
+                        <tr>
+                            <td>{{ $item->nombre }}</td>
+                            <td>${{ number_format($item->ganancia_total, 2) }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="2">No hay datos de rentabilidad aún.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
 
 
             <div class="col-md-6 mb-4">

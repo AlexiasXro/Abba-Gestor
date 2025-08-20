@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+
+<x-header-bar
+    title="Detalle de Devolución"
+    :buttons="[
+        ['text' => 'Volver al Listado', 'route' => route('devoluciones.index'), 'class' => 'btn-secondary']
+    ]"
+/>
+
 <div class="container">
     <h4>Detalle de Devolución #{{ $devolucion->id }}</h4>
 

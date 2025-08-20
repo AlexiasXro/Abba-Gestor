@@ -3,6 +3,13 @@
 @section('title', 'Talles')
 
 @section('content')
+
+<x-header-bar
+    title="Listado de Talles"
+    :buttons="[
+        ['text' => '➕ Nuevo Talle', 'route' => route('talles.create'), 'class' => 'btn-primary']
+    ]"
+/>
 <!--Abba-app\resources\views\talles\index.blade.php
 – Listado de talles
 -->

@@ -1,12 +1,22 @@
 @extends('layouts.app')
 
 @section('content')
-    <h4>Proveedores</h4>
-    <a href="{{ route('proveedores.create') }}" class="btn btn-primary mb-2">Nuevo Proveedor</a>
 
-    @if (session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
+@if (session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+
+<x-header-bar
+    title="Listado de Proveedores"
+    :buttons="[
+        ['text' => '+ Nuevo Proveedor', 'route' => route('proveedores.create'), 'class' => 'btn-primary']
+    ]"
+    filterName="nombre"
+    filterPlaceholder="Buscar proveedor..."
+    filterRoute="{{ route('proveedores.index') }}"
+/>
+
+@include('components.filtros._proveedores')
 
     <table class="table table-bordered">
         <thead>

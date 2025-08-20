@@ -6,6 +6,14 @@
 
 @section('content')
 
+<x-header-bar
+    title="Editar Talle"
+    :buttons="[
+        ['text' => 'Volver al Listado', 'route' => route('talles.index'), 'class' => 'btn-secondary']
+    ]"
+/>
+
+
 <!--Abba-app\resources\views\talles\edit.blade.php 
 – Formulario de edición
 -->

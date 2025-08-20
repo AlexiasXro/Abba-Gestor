@@ -1,38 +1,84 @@
 @extends('layouts.app')
 
 @section('content')
+
+    <x-header-bar title="Listado de Ventas" :buttons="[
+            ['text' => '+ Nueva Venta', 'route' => route('ventas.create'), 'class' => 'btn-primary']
+        ]" filterName="cliente" filterValue="{{ request('cliente') }}"
+        filterPlaceholder="Buscar cliente, DNI o teléfono..." filterRoute="{{ route('ventas.index') }}" />
+
+
+
     <div class="container">
-        <h4>Listado de Devoluciones</h4>
 
-        {{-- Mensajes de éxito --}}
-        @if(session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
+    
 
-        <form method="GET" class="row g-2 mb-3">
-    <div class="col-md-2">
-        <input type="text" name="cliente" class="form-control" placeholder="Cliente" value="{{ request('cliente') }}">
-    </div>
-    <div class="col-md-2">
-        <input type="number" name="venta_id" class="form-control" placeholder="ID Venta" value="{{ request('venta_id') }}">
-    </div>
-    <div class="col-md-2">
-        <input type="number" name="producto_id" class="form-control" placeholder="ID Producto" value="{{ request('producto_id') }}">
-    </div>
-    <div class="col-md-2">
-        <select name="tipo" class="form-select">
-            <option value="">Tipo</option>
-            <option value="devolucion" {{ request('tipo') == 'devolucion' ? 'selected' : '' }}>Devolución</option>
-            <option value="garantia" {{ request('tipo') == 'garantia' ? 'selected' : '' }}>Garantía</option>
-        </select>
-    </div>
-    <div class="col-md-2">
-        <input type="date" name="fecha" class="form-control" value="{{ request('fecha') }}">
-    </div>
-    <div class="col-md-2">
-        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
-    </div>
-</form>
+        {{-- Filtros profesionales - Devoluciones --}}
+        <form method="GET" action="{{ route('devoluciones.index') }}" class="mb-3">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2">
+
+                {{-- ID de devolución --}}
+                <div class="col">
+                    <input type="text" name="id" value="{{ request('id') }}" class="form-control form-control-sm"
+                        placeholder="ID devolución">
+                </div>
+
+                {{-- Venta relacionada --}}
+                <div class="col">
+                    <input type="text" name="venta" value="{{ request('venta') }}" class="form-control form-control-sm"
+                        placeholder="N° Venta">
+                </div>
+
+                {{-- Cliente --}}
+                <div class="col">
+                    <input type="text" name="cliente" value="{{ request('cliente') }}" class="form-control form-control-sm"
+                        placeholder="Cliente (nombre, DNI, teléfono)">
+                </div>
+
+                {{-- Tipo de devolución --}}
+                <div class="col">
+                    <select name="tipo" class="form-select form-select-sm">
+                        <option value="">-- Tipo --</option>
+                        <option value="total" {{ request('tipo') == 'total' ? 'selected' : '' }}>Total</option>
+                        <option value="parcial" {{ request('tipo') == 'parcial' ? 'selected' : '' }}>Parcial</option>
+                    </select>
+                </div>
+
+                {{-- Motivo --}}
+                <div class="col">
+                    <input type="text" name="motivo" value="{{ request('motivo') }}" class="form-control form-control-sm"
+                        placeholder="Motivo">
+                </div>
+
+                {{-- Estado --}}
+                <div class="col">
+                    <select name="estado" class="form-select form-select-sm">
+                        <option value="">-- Estado --</option>
+                        <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
+                        <option value="procesada" {{ request('estado') == 'procesada' ? 'selected' : '' }}>Procesada</option>
+                        <option value="anulada" {{ request('estado') == 'anulada' ? 'selected' : '' }}>Anulada</option>
+                    </select>
+                </div>
+
+                {{-- Fecha desde --}}
+                <div class="col">
+                    <input type="date" name="fecha_desde" value="{{ request('fecha_desde') }}"
+                        class="form-control form-control-sm">
+                </div>
+
+                {{-- Fecha hasta --}}
+                <div class="col">
+                    <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta') }}"
+                        class="form-control form-control-sm">
+                </div>
+            </div>
+
+            {{-- Botones --}}
+            <div class="mt-2 d-flex flex-wrap gap-2">
+                <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
+                <a href="{{ route('devoluciones.index') }}" class="btn btn-secondary btn-sm">Limpiar</a>
+            </div>
+        </form>
 
         {{-- Tabla --}}
         <table class="table table-bordered table-striped table-sm align-middle">

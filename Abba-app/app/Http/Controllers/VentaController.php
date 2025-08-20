@@ -16,14 +16,43 @@ class VentaController extends Controller
 {
 
     //VentaController (app/Http/Controllers/VentaController.php)
-    public function index()
-    {
-        $ventas = Venta::with(['cliente', 'detalles.producto.talles'])
-            ->orderBy('created_at', 'desc')
-            ->get();
+   public function index(Request $request)
+{
+   $ventas = Venta::with(['cliente', 'detalles.producto.talles'])
+        ->when($request->filled('cliente'), function ($query) use ($request) {
+            $query->whereHas('cliente', function ($q) use ($request) {
+                $q->where('nombre', 'like', '%' . $request->cliente . '%')
+                  ->orWhere('apellido', 'like', '%' . $request->cliente . '%');
+            });
+        })
+        ->when($request->filled('producto'), function ($query) use ($request) {
+            $query->whereHas('detalles.producto', function ($q) use ($request) {
+                $q->where('nombre', 'like', '%' . $request->producto . '%');
+            });
+        })
+        ->when($request->filled('estado'), function ($query) use ($request) {
+            $query->where('estado', $request->estado);
+        })
+        ->when($request->filled('metodo_pago'), function ($query) use ($request) {
+            $query->where('tipo_pago', $request->metodo_pago);
+        })
+        // ->when($request->filled('vendedor'), function ($query) use ($request) {
+        //     $query->whereHas('vendedor', function ($q) use ($request) {
+        //         $q->where('name', 'like', '%' . $request->vendedor . '%');
+        //     });
+        // })
+        ->when($request->filled('fecha_desde'), function ($query) use ($request) {
+            $query->whereDate('created_at', '>=', $request->fecha_desde);
+        })
+        ->when($request->filled('fecha_hasta'), function ($query) use ($request) {
+            $query->whereDate('created_at', '<=', $request->fecha_hasta);
+        })
+        ->orderBy('created_at', 'desc')
+        ->paginate(15)
+        ->withQueryString();
 
-        return view('ventas.index', compact('ventas'));
-    }
+    return view('ventas.index', compact('ventas'));
+}
 
 
     // otros métodos como create, store, show, etc.

@@ -2,21 +2,18 @@
 @extends('layouts.app')
 
 @section('content')
+
+<x-header-bar
+    title="Registrar Gasto"
+    :buttons="[
+        ['text' => 'Volver al Listado', 'route' => route('gastos.index'), 'class' => 'btn-secondary']
+    ]"  
+/>
+
 <div class="container py-4">
     <div class="card shadow-sm border-0">
         <div class="card-body">
-            <h4 class="mb-4 text-dark fw-semibold">Registrar Gasto</h4>
-
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <strong>Errores:</strong>
-                    <ul class="mb-0">
-                        @foreach ($errors->all() as $error)
-                            <li class="small">{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+            
 
             <form action="{{ route('gastos.store') }}" method="POST" class="row g-3">
                 @csrf

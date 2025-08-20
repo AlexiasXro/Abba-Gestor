@@ -1,20 +1,25 @@
 @extends('layouts.app')
 
 @section('content')
- <!-- alertas -->
-@if ($errors->any())
-    <div class="mb-4 p-4 bg-red-400 border border-red-600 text-red-800 rounded">
-        <p><strong>Ups!</strong> Hay errores con los datos ingresados:</p>
-        <ul class="mt-2 list-disc list-inside">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
- <!-- fin de alerta-->
+ 
+  {{-- resources\views\ventas\create.blade.php --}}
+
+{{-- HEADER PRINCIPAL --}}
+
+<x-header-bar
+    title="Ventas"
+    action="create"
+    :buttons="[
+        ['text' => '+ Nueva Venta', 'route' => route('ventas.create'), 'class' => 'btn-primary']
+    ]"
+>
+   
+</x-header-bar>
+ 
+
+
     <div class="container">
-        <h1>Nueva Venta</h1>
+        
 
         <form method="POST" action="{{ route('ventas.store') }}">
             @csrf

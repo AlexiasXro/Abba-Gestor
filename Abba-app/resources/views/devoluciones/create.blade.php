@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+
+<x-header-bar
+    title="Registrar Devolución" 
+    :buttons="[
+        ['text' => '+ Nueva Devolución', 'route' => route('devoluciones.create'), 'class' => 'btn-primary']
+    ]"
+/>
+
     <div class="container">
         <h4>Registrar Devolución</h4>
 

@@ -6,6 +6,13 @@
 
 @section('content')
 
+<x-header-bar
+    title="Nuevo Talle"
+    :buttons="[
+        ['text' => 'Volver al Listado', 'route' => route('talles.index'), 'class' => 'btn-secondary']
+    ]"
+/>
+
 <!--Abba-app\resources\views\talles\create.blade.php 
 – Formulario de altas
 -->

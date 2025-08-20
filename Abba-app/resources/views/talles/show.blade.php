@@ -6,6 +6,13 @@
 
 @section('content')
 
+<x-header-bar
+    title="Detalle de Talle"
+    :buttons="[
+        ['text' => 'Volver al Listado', 'route' => route('talles.index'), 'class' => 'btn-secondary']
+    ]"
+/>
+
 <!--Abba-app\resources\views\talles\show.blade.php 
 (opcional)
 -->

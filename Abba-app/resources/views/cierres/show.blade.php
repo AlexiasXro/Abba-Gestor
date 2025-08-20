@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+
+<x-header-bar
+    title="Listado de Cierres de Caja"
+    :buttons="[
+        ['text' => '+ Nuevo Cierre', 'route' => route('cierres.create'), 'class' => 'btn-primary']
+    ]"
+/>
+
 <div class="container py-4" style="max-width: 600px;">
     <div class="card shadow-sm border-0">
         <div class="card-body">

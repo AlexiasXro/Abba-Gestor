@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+
+<x-header-bar
+    title="Nuevo Proveedor"
+    :buttons="[
+        ['text' => 'Volver al Listado', 'route' => route('proveedores.index'), 'class' => 'btn-secondary']
+    ]"
+/>
+
 <div class="container">
     <h4>Nuevo Proveedor</h4>
 

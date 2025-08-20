@@ -3,8 +3,8 @@
 @section('content')
 
 
-{{-- resources/views/productos/index.blade.php --}}
-  
+    {{-- resources/views/productos/index.blade.php --}}
+
 
 
     <x-header-bar title="Productos" :buttons="[
@@ -15,12 +15,17 @@
         :filterRoute="route('productos.index')" />
 
     <div class="container">
+        {{-- Filtros profesionales --}}
 
         @php
             $todosLosTalles = \App\Models\Talle::orderBy('talle')->get();
         @endphp
-        <div class="table-responsive">
 
+        @include('components.filtros._productos')
+
+        {{-- Verifica si hay productos --}}
+
+        <div class="table-responsive">
 
             <table class="table table-bordered table-striped table-sm align-middle">
                 <thead class="table-light text-center">
