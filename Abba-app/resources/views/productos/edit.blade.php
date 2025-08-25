@@ -25,14 +25,15 @@
     </x-header-bar>
 
 
-    
+
     <div class="container">
 
 
         @include('productos.partials.modal_recargo', ['producto' => $producto])
 
 
-        <form action="{{ route('productos.update', $producto) }}" method="POST" class="bg-light p-4 rounded shadow-sm">
+        <form action="{{ route('productos.update', $producto) }}" method="POST" enctype="multipart/form-data"
+            class="bg-light p-4 rounded shadow-xl">
             @csrf
             @method('PUT')
 
@@ -46,6 +47,43 @@
                                 value="{{ old('codigo', $producto->codigo) }}" required>
                             <div class="form-text">Código interno o del proveedor.</div>
                         </div>
+                        <div class="mb-3">
+                            <label for="imagen" class="form-label">Imagen del producto</label>
+                            <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*">
+                        </div>
+
+
+
+                        <div class="mb-3">
+                            @if(isset($producto) && $producto->imagen)
+                                <!-- Imagen existente (edit) -->
+                                <img id="preview" src="{{ asset('storage/' . $producto->imagen) }}" alt="Vista previa"
+                                    style="max-width: 200px; max-height: 200px; display: block;">
+                            @else
+                                <!-- Preview vacío (create) -->
+                                <img id="preview" src="#" alt="Vista previa"
+                                    style="max-width: 200px; max-height: 200px; display: none;">
+                            @endif
+                        </div>
+
+
+
+                        <script>
+                            const inputImagen = document.getElementById('imagen');
+                            const preview = document.getElementById('preview');
+
+                            inputImagen.addEventListener('change', function (event) {
+                                const file = event.target.files[0];
+                                if (!file) return;
+
+                                const reader = new FileReader();
+                                reader.onload = function (e) {
+                                    preview.src = e.target.result;
+                                    preview.style.display = 'block';
+                                }
+                                reader.readAsDataURL(file);
+                            });
+                        </script>
 
                         <div class="col-md-6">
                             <label for="nombre" class="form-label">Nombre</label>
@@ -134,48 +172,47 @@
 
                 <!-- Columna derecha (Talles y Stock) -->
 
-<!-- Columna derecha (Talles y Stock) -->
-<div class="col-md-4 mb-3">
-    <h6 class="fw-bold mb-3">Stock por Talle</h6>
-    <div class="row">
-        @foreach ($talles->chunk(ceil($talles->count() / 2)) as $columna)
-            <div class="col-6">
-                <div class="table-responsive">
-                    <table class="table table-sm table-borderless align-middle mb-0">
-                        <tbody>
-                            @foreach ($columna as $talle)
-                                @php
-                                    $stock = $producto->talles->firstWhere('id', $talle->id)?->pivot->stock ?? 0;
-                                @endphp
-                                <tr>
-                                    <td class="text-center align-middle" style="width: 30%;">
-                                        <label class="text-center form-label mb-0">{{ $talle->talle }}</label>
-                                        <input type="hidden"
-                                            name="talles[{{ $loop->parent->index * ceil($talles->count() / 2) + $loop->index }}][id]"
-                                            value="{{ $talle->id }}">
-                                    </td>
-                                    <td class="text-center align-middle">
-                                        <input type="number"
-                                            name="talles[{{ $loop->parent->index * ceil($talles->count() / 2) + $loop->index }}][stock]"
-                                            class="form-control form-control-sm text-center" min="0"
-                                            placeholder="Modificar" title="Podés modificar el stock"
-                                            value="{{ old('talles.' . ($loop->parent->index * ceil($talles->count() / 2) + $loop->index) . '.stock', $stock) }}">
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <!-- Columna derecha (Talles y Stock) -->
+                <div class="col-md-4 mb-3">
+                    <h6 class="fw-bold mb-3">Stock por Talle</h6>
+                    <div class="row">
+                        @foreach ($talles->chunk(ceil($talles->count() / 2)) as $columna)
+                            <div class="col-6">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-borderless align-middle mb-0">
+                                        <tbody>
+                                            @foreach ($columna as $talle)
+                                                @php
+                                                    $stock = $producto->talles->firstWhere('id', $talle->id)?->pivot->stock ?? 0;
+                                                @endphp
+                                                <tr>
+                                                    <td class="text-center align-middle" style="width: 30%;">
+                                                        <label class="text-center form-label mb-0">{{ $talle->talle }}</label>
+                                                        <input type="hidden"
+                                                            name="talles[{{ $loop->parent->index * ceil($talles->count() / 2) + $loop->index }}][id]"
+                                                            value="{{ $talle->id }}">
+                                                    </td>
+                                                    <td class="text-center align-middle">
+                                                        <input type="number"
+                                                            name="talles[{{ $loop->parent->index * ceil($talles->count() / 2) + $loop->index }}][stock]"
+                                                            class="form-control form-control-sm text-center" min="0"
+                                                            placeholder="Modificar" title="Podés modificar el stock"
+                                                            value="{{ old('talles.' . ($loop->parent->index * ceil($talles->count() / 2) + $loop->index) . '.stock', $stock) }}">
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
-        @endforeach
-    </div>
-</div>
 
             </div>
 
             <button type="submit" class="btn btn-primary mt-4">Actualizar Producto</button>
         </form>
-
 
     </div>
 
@@ -194,8 +231,5 @@
                 }
             });
         });
-
-
-
     </script>
 @endsection

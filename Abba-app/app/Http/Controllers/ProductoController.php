@@ -6,6 +6,9 @@ use App\Models\Producto;
 use App\Models\Proveedor;
 use App\Models\Talle;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;// <- para manejar storage
+use Intervention\Image\Facades\Image;        // <- para redimensionar imágenes
+
 
 class ProductoController extends Controller
 {
@@ -40,30 +43,44 @@ class ProductoController extends Controller
         return view('productos.create', compact('talles', 'proveedores'));
     }
 
-    // Guardar producto nuevo
+        // -------------------
+    // CREAR PRODUCTO
+    // -------------------
     public function store(Request $request)
     {
         $validated = $request->validate([
             'codigo' => 'required|unique:productos,codigo',
             'nombre' => 'required|string|max:255',
             'descripcion' => 'nullable|string',
-
-            'precio_venta' => 'nullable|numeric|min:0',// Nuevos campos
-            'precio_base' => 'nullable|numeric|min:0',// Nuevos campos
-            'precio_reventa' => 'nullable|numeric|min:0',// Nuevos campos
-            'stock_minimo' => 'nullable|integer|min:0', // ahora es opcional
+            'precio_venta' => 'nullable|numeric|min:0',
+            'precio_base' => 'nullable|numeric|min:0',
+            'precio_reventa' => 'nullable|numeric|min:0',
+            'stock_minimo' => 'nullable|integer|min:0',
             'activo' => 'required|boolean',
             'talles' => 'nullable|array',
             'talles.*.id' => 'required|exists:talles,id',
             'talles.*.stock' => 'required|integer|min:0',
-            'proveedor_id' => 'nullable|exists:proveedores,id', //Nuevos campos
+            'proveedor_id' => 'nullable|exists:proveedores,id',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
         ]);
 
-        // Sincronizamos el campo 'precio' con 'precio_venta'
-        $validated['precio'] = $validated['precio_venta'];
-        $datosProducto = collect($validated)->except('talles')->toArray(); // solo los campos del producto
+        // Preparar datos del producto
+        $datosProducto = collect($validated)->except('talles')->toArray();
+
+        // Sincronizar precio general
+        $datosProducto['precio'] = $datosProducto['precio_venta'] ?? 0;
+
+        // Guardar imagen si se subió
+        if ($request->hasFile('imagen')) {
+            $datosProducto['imagen'] = $request->file('imagen')->store('productos', 'public');
+        }
+
+//dd($datosProducto, $request->file('imagen'));
+
+        // Crear producto
         $producto = Producto::create($datosProducto);
 
+        // Guardar talles
         if (!empty($validated['talles'])) {
             $syncData = [];
             foreach ($validated['talles'] as $item) {
@@ -75,9 +92,67 @@ class ProductoController extends Controller
         return redirect()->route('productos.index')->with('success', 'Producto creado correctamente');
     }
 
+    // -------------------
+    // ACTUALIZAR PRODUCTO
+    // -------------------
+    public function update(Request $request, Producto $producto)
+    {
+        $validated = $request->validate([
+            'codigo' => 'required|unique:productos,codigo,' . $producto->id,
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'nullable|string',
+            'precio_venta' => 'nullable|numeric|min:0',
+            'precio_base' => 'nullable|numeric|min:0',
+            'precio_reventa' => 'nullable|numeric|min:0',
+            'stock_minimo' => 'nullable|integer|min:0',
+            'activo' => 'required|boolean',
+            'talles' => 'nullable|array',
+            'talles.*.id' => 'required|exists:talles,id',
+            'talles.*.stock' => 'required|integer|min:0',
+            'proveedor_id' => 'nullable|exists:proveedores,id',
+            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+        ]);
+
+        $datosProducto = collect($validated)->except('talles')->toArray();
+
+        // Sincronizar precio general
+        $datosProducto['precio'] = $datosProducto['precio_venta'] ?? 0;
+
+        // Guardar nueva imagen si se subió
+        // Guardar nueva imagen si se subió
+        if ($request->hasFile('imagen')) {
+            // eliminar imagen anterior si existía
+            if ($producto->imagen) {
+                Storage::disk('public')->delete($producto->imagen);
+            }
+            $datosProducto['imagen'] = $request->file('imagen')->store('productos', 'public');
+        }
+
+       
+
+        // Actualizar producto
+        $producto->update($datosProducto);
+
+        // Sincronizar talles
+        if (!empty($validated['talles'])) {
+            $syncData = [];
+            foreach ($validated['talles'] as $item) {
+                $syncData[$item['id']] = ['stock' => $item['stock']];
+            }
+            $producto->talles()->sync($syncData);
+        } else {
+            $producto->talles()->detach();
+        }
+
+        return redirect()->route('productos.show', $producto)->with('success', 'Producto actualizado correctamente');
+    }
+
+
     public function show(Producto $producto)
     {
         $producto->load('talles', 'proveedor');
+        
+       
         return view('productos.show', compact('producto'));
     }
 
@@ -92,43 +167,7 @@ class ProductoController extends Controller
 
 
 
-    // Actualizar producto
-    public function update(Request $request, Producto $producto)
-    {
-        $validated = $request->validate([
-            'codigo' => 'required|unique:productos,codigo,' . $producto->id,
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-
-            'precio_base' => 'nullable|numeric|min:0',// Nuevos campos
-            'precio_venta' => 'nullable|numeric|min:0',// Nuevos campos
-            'precio_reventa' => 'nullable|numeric|min:0',// Nuevos campos    
-            'stock_minimo' => 'required|integer|min:0',
-            'activo' => 'required|boolean',
-            'talles' => 'nullable|array',
-            'talles.*.id' => 'required|exists:talles,id',
-            'talles.*.stock' => 'required|integer|min:0',
-            'proveedor_id' => 'nullable|exists:proveedores,id', //Nuevos campos
-        ]);
-
-        // Sincronizamos el campo 'precio' con 'precio_venta'
-        $validated['precio'] = $validated['precio_venta'];
-
-        $producto->update($validated);
-
-        if (!empty($validated['talles'])) {
-            $syncData = [];
-            foreach ($validated['talles'] as $item) {
-                $syncData[$item['id']] = ['stock' => $item['stock']];
-            }
-            $producto->talles()->sync($syncData);
-        } else {
-            $producto->talles()->detach();
-        }
-
-        return redirect()->route('productos.show', $producto)->with('success', 'Producto actualizado correctamente');
-    }
-
+    
     // Mostrar productos eliminados (soft deleted)
     public function eliminados()
     {
@@ -137,8 +176,8 @@ class ProductoController extends Controller
         // Aplicar filtro de búsqueda si existe
         if ($buscar = request('buscar')) {
             $query->where(function ($q) use ($buscar) {
-                        $q->where('nombre', 'like', '%' . $buscar . '%')
-                        ->orWhere('codigo', 'like', '%' . $buscar . '%');
+                $q->where('nombre', 'like', '%' . $buscar . '%')
+                    ->orWhere('codigo', 'like', '%' . $buscar . '%');
 
             });
 

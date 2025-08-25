@@ -23,8 +23,10 @@ class Producto extends Model
         'stock_minimo', 
         'activo', 
         'tipo',
-        'proveedor_id' 
-        // ✅ Nuevos campos 'precio_base', 'precio_venta', 'precio_reventa''proveedor_id' 
+        'proveedor_id',
+        'imagen'
+
+        // ✅ Nuevos campos 'precio_base', 'precio_venta', 'precio_reventa''proveedor_id' imagen 
     ];
 
     // Relación muchos a muchos con talles a través de la tabla pivote

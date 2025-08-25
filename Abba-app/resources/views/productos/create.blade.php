@@ -15,13 +15,13 @@
     @endif
     <!--fin alerta-->
 
-    
-<x-header-bar title="Crear Productos" :buttons="[
-    ['route' => route('productos.index'), 'text' => 'Volver', 'class' => 'btn-secondary']
-]" />
+
+    <x-header-bar title="Crear Productos" :buttons="[
+            ['route' => route('productos.index'), 'text' => 'Volver', 'class' => 'btn-secondary']
+        ]" />
 
 
-    <form action="{{ route('productos.store') }}" method="POST">
+    <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <!-- Columna izquierda -->
@@ -32,6 +32,41 @@
                         <input type="text" name="codigo" id="codigo" class="form-control" value="{{ old('codigo') }}"
                             required>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="imagen" class="form-label">Imagen del producto</label>
+                        <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*">
+                    </div>
+
+                    <div class="mb-3">
+                        @if(isset($producto) && $producto->imagen)
+                            <!-- Imagen existente (edit) -->
+                            <img id="preview" src="{{ asset('storage/' . $producto->imagen) }}" alt="Vista previa"
+                                style="max-width: 200px; max-height: 200px; display: block;">
+                        @else
+                            <!-- Preview vacío (create) -->
+                            <img id="preview" src="#" alt="Vista previa"
+                                style="max-width: 200px; max-height: 200px; display: none;">
+                        @endif
+                    </div>
+
+                    <script>
+                        const inputImagen = document.getElementById('imagen');
+                        const preview = document.getElementById('preview');
+
+                        inputImagen.addEventListener('change', function (event) {
+                            const file = event.target.files[0];
+                            if (!file) return;
+
+                            const reader = new FileReader();
+                            reader.onload = function (e) {
+                                preview.src = e.target.result;
+                                preview.style.display = 'block';
+                            }
+                            reader.readAsDataURL(file);
+                        });
+                    </script>
+
 
                     <div class="col-md-6">
                         <label for="nombre" class="form-label">Nombre</label>
