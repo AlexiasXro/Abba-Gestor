@@ -20,6 +20,7 @@
             ['route' => route('productos.index'), 'text' => 'Volver', 'class' => 'btn-secondary']
         ]" />
 
+    <div class="container mt-2">
 
     <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
@@ -185,7 +186,7 @@
         </div>
         <button type="submit" class="btn btn-primary mt-3">Crear Producto</button>
     </form>
-
+</div>
 
     <script>
         // Script para calcular precios automáticamente

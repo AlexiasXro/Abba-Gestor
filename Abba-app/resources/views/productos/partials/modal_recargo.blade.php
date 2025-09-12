@@ -1,6 +1,4 @@
 
-
-
 <!-- Modal Abba\Abba-app\resources\views\productos\partials-->
 <!-- Modal -->
 <div id="modal-recargo-{{ $producto->id }}"

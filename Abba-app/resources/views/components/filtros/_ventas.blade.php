@@ -9,7 +9,7 @@
     </button>
 
     {{-- Contenido colapsable --}}
-    <div class="collapse mt-2 {{ request()->except(['page']) ? 'show' : '' }}" id="filtrosVentas">
+    <div class="collapse  {{ request()->except(['page']) ? 'show' : '' }}" id="filtrosVentas">
         <form method="GET" action="{{ route('ventas.index') }}" class="mb-3">
             <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2">
 

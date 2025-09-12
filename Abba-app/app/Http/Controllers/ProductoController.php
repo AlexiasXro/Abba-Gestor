@@ -27,7 +27,7 @@ class ProductoController extends Controller
                         $q->where('nombre', 'like', "%{$filtro}%");
                     });
             })
-            ->paginate(15);
+            ->paginate(8);
 
         return view('productos.index', compact('productos', 'filtro'));
     }
@@ -118,7 +118,7 @@ class ProductoController extends Controller
         // Sincronizar precio general
         $datosProducto['precio'] = $datosProducto['precio_venta'] ?? 0;
 
-        // Guardar nueva imagen si se subió
+        
         // Guardar nueva imagen si se subió
         if ($request->hasFile('imagen')) {
             // eliminar imagen anterior si existía
@@ -147,7 +147,14 @@ class ProductoController extends Controller
         return redirect()->route('productos.show', $producto)->with('success', 'Producto actualizado correctamente');
     }
 
+    public function showPorCodigo($codigo)
+{
+    $producto = Producto::where('codigo', $codigo)->firstOrFail();
+    return view('productos.show', compact('producto'));
+}
 
+
+//Detalles del producto
     public function show(Producto $producto)
     {
         $producto->load('talles', 'proveedor');
@@ -208,6 +215,13 @@ class ProductoController extends Controller
     }
 
 
+    //-------------imprecion QR
+public function qrIndex()
+{
+    $productos = Producto::all(); // O filtrá los que quieras
+    return view('productos.qr', compact('productos'));
+}
+
 
 
 
@@ -263,6 +277,12 @@ class ProductoController extends Controller
             return back()->with('error', 'Error al actualizar precios: ' . $e->getMessage());
         }
     }
+public function showPorCodigo($codigo)
+{
+    $producto = Producto::where('codigo', $codigo)->firstOrFail();
+    return view('productos.show', compact('producto'));
+}
+
 
 
 

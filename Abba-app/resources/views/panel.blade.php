@@ -8,28 +8,29 @@
 
         <!-- Accesos rápidos -->
         <div class="row mb-4">
-            <div class="col-md-3 ">
+            <div class="col-md-3 mb-2">
                 <a href="{{ route('ventas.create') }}" class="btn btn-primary btn-lg w-100 py-2">
                     Nueva Venta
                 </a>
             </div>
 
-            <div class="col-md-3 ">
+            <div class="col-md-3 mb-2">
                 <a href="{{ route('productos.index') }}" class="btn btn-success btn-lg w-100 py-2">
                     Productos
                 </a>
             </div>
 
-            <div class="col-md-3 ">
+            <div class="col-md-3 mb-2">
                 <a href="{{ route('clientes.index') }}" class="btn btn-info btn-lg w-100 py-2">
                     Clientes
                 </a>
             </div>
 
-            <div class="col-md-3 ">
+            <div class="col-md-3 mb-2">
                 <a href="{{ route('reportes.index') }}" class="btn btn-outline-dark btn-lg w-100 py-2">📊 Ver Reportes</a>
             </div>
         </div>
+
 
 
 
@@ -50,80 +51,93 @@
                 </div>
             </div>
 
-            <!-- Productos con stock bajo -->
-            <div class="col-md-3 mb-2">
-                <!-- ... tarjeta de stock como ya la tenés ... -->
-                <div class="card">
-                    <div class="card-header bg-warning text-white">Productos con Stock Bajo</div>
-                    <div class="card-body p-2 row">
-                        
-                            <!-- Tabla de productos  -->
-                            @if($productosBajoStock->isEmpty())
-                                <div class="alert alert-success">Todo el stock está en orden</div>
-                            @else
-                                <div class="scroll-container">
-                                    <table class="table table-sm mb-0">
-                                        <thead class="sticky-top bg-light">
-                                            <tr>
-                                                <th>Producto</th>
-                                                <th>Talle</th>
-                                                <th>Stock</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach ($productosBajoStock as $productoId => $items)
-                                                @foreach ($items as $index => $item)
-                                                    <tr class="{{ $item->stock == 0 ? 'table-danger' : '' }}">
-                                                        @if ($index === 0)
-                                                            <td rowspan="{{ $items->count() }}">
-                                                                <a href="{{ route('productos.show', $item->producto_id) }}">
-                                                                    {{ optional($item->producto)->nombre ?? 'Producto eliminado' }}
-                                                                </a>
-                                                            </td>
-                                                        @endif
-                                                        <td>{{ $item->talle->talle }}</td>
-                                                        <td>{{ $item->stock }}</td>
-                                                    </tr>
-                                                @endforeach
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </div>
-                            @endif
-                        
-                    </div>
-                </div>
-            </div>
+<!-- Productos con stock bajo -->
+<div class="col-md-3 mb-2">
+    <div class="card">
+        <div class="card-header bg-warning text-white">Productos con Stock Bajo</div>
+        <div class="card-body p-2">
 
-            <!-- Calendario -->
-            <div class="col-md-3 mb-2">
-                <div class="card">
-                    <div class="card-header bg-secondary text-white">📅 Calendario</div>
-                    <div class="card-body">
-                        <!-- Calendario interactivo -->
-                        <div class="scroll-fechas">
-                            <ul class="list-group small">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Día del Amigo <span class="badge bg-danger">Alta</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Día del Padre <span class="badge bg-warning text-dark">Media</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Día de la Madre <span class="badge bg-warning text-dark">Media</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Black Friday <span class="badge bg-danger">Alta</span>
-                                </li>
-                                
-                            </ul>
+            @if($productosBajoStock->isEmpty())
+                <div class="alert alert-success">Todo el stock está en orden</div>
+            @else
+                <div class="scroll-container" style="max-height: 180px; overflow-y: auto;">
+                    @foreach ($productosBajoStock as $productoId => $items)
+                        <div class="mb-1">
+                            <a href="{{ route('productos.show', $productoId) }}" class="text-danger">
+                                {{ optional($items[0]->producto)->nombre ?? 'Producto eliminado' }}
+                            </a>
+                            <div class="d-flex flex-wrap gap-1 ">
+                                @foreach ($items as $item)
+                                    <span class="badge {{ $item->stock == 0 ? 'text-dark' : ' text-dark' }}">
+                                        {{ $item->talle->talle }} ({{ $item->stock }})
+                                    </span>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
+                </div>
+            @endif
+
+        </div>
+    </div>
+</div>
+
+
+
+ <!-- Calendario unificado -->
+    <div class="col-md-3 mb-2">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">📅 Calendario</div>
+            <div class="card-body p-2 row">
+                <div class="scroll-container" style="max-height: 180px; overflow-y: auto;">
+                    <table class="table table-sm mb-0">
+                        <thead class="sticky-top bg-light">
+                            <tr>
+                                <th>Evento</th>
+                                <th>Prioridad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Día del Amigo</td>
+                                <td><span class="badge text-danger">Alta</span></td>
+                            </tr>
+                            <tr>
+                                <td>Día del Padre</td>
+                                <td><span class="badge text-info text-dark">Media</span></td>
+                            </tr>
+                            <tr>
+                                <td>Día de la Madre</td>
+                                <td><span class="badge text-info text-dark">Media</span></td>
+                            </tr>
+                            <tr>
+                                <td>Black Friday</td>
+                                <td><span class="badge text-danger">Alta</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </div>
+    </div>
 
-            
-            
+    <!-- Contenedor vacío para futura sección -->
+    <div class="col-md-3 mb-2">
+        <div class="card">
+            <div class="card-header bg-info text-white">Próxima Función</div>
+            <div class="card-body">
+                <div class="scroll-container" style="max-height: 180px; overflow-y: auto;"></div>
+                <div class="text-center text-muted">
+                    Aquí podrás agregar nuevas funcionalidades más adelante.
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Stock scrol -->
             <style>
                 .scroll-container {
                     max-height: 180px;
@@ -238,34 +252,36 @@
                                     @if($ultimosClientes->isEmpty())
                                         <p>No hay clientes registrados recientemente</p>
                                     @else
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Nombre</th>
-                                                    <th>Teléfono</th>
-                                                    <th>Email</th>
-                                                    <th>Registrado</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($ultimosClientes as $cliente)
+                                            <div class="table-responsive" style="max-height: 200px; overflow-y: auto;"></div>
+                                            <table class="table table-hover">
+                                                <thead>
                                                     <tr>
-                                                        <td>{{ $cliente->nombre }} {{ $cliente->apellido }}</td>
-                                                        <td>{{ $cliente->telefono ?? 'N/A' }}</td>
-                                                        <td>{{ $cliente->email ?? 'N/A' }}</td>
-                                                        <td>{{ $cliente->created_at->diffForHumans() }}</td>
+                                                        <th>Nombre</th>
+                                                        <th>Teléfono</th>
+                                                        <th>Email</th>
+                                                        <th>Registrado</th>
                                                     </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($ultimosClientes as $cliente)
+                                                        <tr>
+                                                            <td>{{ $cliente->nombre }} {{ $cliente->apellido }}</td>
+                                                            <td>{{ $cliente->telefono ?? 'N/A' }}</td>
+                                                            <td>{{ $cliente->email ?? 'N/A' }}</td>
+                                                            <td>{{ $cliente->created_at->diffForHumans() }}</td>
+                                                        </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     @endif
-                                </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
+
+
+            </div>
 
 
 @endsection

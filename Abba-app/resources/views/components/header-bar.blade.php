@@ -7,21 +7,11 @@
     'buttons' => [],
 ])
 
-{{-- Estilos internos para el header --}}
-<style>
-.header-gradient {
-    background: linear-gradient(90deg, #cfe2ff, #e2d9f3, #d1e7dd);
-    color: #fff;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    font-weight: 600;
-}
-</style>
-
-<div class="d-flex flex-wrap align-items-center justify-content-between mb-2 gap-2 p-2" 
-     style="font-size: 0.9rem; 
-            background: linear-gradient(90deg, #6c5ca3, #7f6fbf, #5a7f6b);
-            border-radius: 4px;">
+<div class="container-fluid"  style="font-size: 0.9rem; 
+            background: linear-gradient(90deg, #eeebf5ff, #402ba0d8, #343235ff);
+            border-radius: 0px;">
+<div class="d-flex flex-wrap align-items-center justify-content-between  gap-2 p-2" 
+     ">
 
     {{-- Título e ícono --}}
     <div class="d-flex align-items-center gap-3 flex-grow-1 flex-wrap">
@@ -48,23 +38,25 @@
             </form>
         @endif
     </div>
+   
 
     {{-- Botones --}}
-    <div class="d-flex align-items-center gap-2 flex-wrap">
+    <div class="d-flex align-items-center gap-2 flex-wrap ">
         @if(!empty($buttons))
             @foreach ($buttons as $button)
-                <a href="{{ $button['route'] }}" class="btn btn-sm {{ $button['class'] ?? 'btn-secondary' }}">
+                <a href="{{ $button['route'] }}" class="btn btn-sm {{ $button['class'] ?? 'btn-success' }}">
                     {{ $button['text'] }}
                 </a>
             @endforeach
         @endif
 
         {{-- Botón "Atrás" con ícono siempre visible --}}
-        <a href="javascript:history.back()" class="btn btn-sm btn-outline-secondary d-flex align-items-center gap-1">
-            <span style="font-size: 0.9rem;">⬅️</span> Atrás
+        <a href="javascript:history.back()" class="btn btn-sm btn-success d-flex align-items-center gap-1">
+            <i class="bi bi-arrow-left me-1"></i> Atrás
         </a>
 
         {{-- Botones extra opcionales --}}
         {{ $extraButtons ?? '' }}
     </div>
+</div>
 </div>

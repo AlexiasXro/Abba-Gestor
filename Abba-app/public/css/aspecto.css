@@ -131,3 +131,136 @@ body.aspecto-gris-oscuro .navbar {
     background-color: #424242 !important; /* gris oscuro */
     color: white;
 }
+
+/*  */
+
+.sticker-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 2cm); /* 10 stickers por fila */
+    gap: 2mm;
+    padding: 10mm;
+    justify-content: center;
+}
+
+.sticker {
+    width: 2cm;
+    height: 2cm;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 1mm;
+    font-size: 7px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@media print {
+    button {
+        display: none;
+    }
+}
+
+
+.points-animation {
+    background: radial-gradient(circle at 20% 20%, rgba(68, 0, 255, 0.4), transparent),
+                radial-gradient(circle at 80% 40%, rgba(0, 238, 255, 0.4), transparent),
+                radial-gradient(circle at 50% 80%, rgba(111, 0, 255, 0.4), transparent);
+    background-size: 200% 200%;
+    animation: moveGradient 6s infinite alternate;
+    z-index: 0;
+}
+
+@keyframes moveGradient {
+    0% {
+        background-position: 0% 0%, 50% 50%, 100% 100%;
+    }
+    100% {
+        background-position: 100% 100%, 0% 50%, 50% 0%;
+    }
+}
+
+.bg-light {
+    z-index: 1;
+    position: relative;
+}
+
+
+.cartel {
+    h3 {
+        color: #d4d4ffff; /* lavanda claro */
+        font-size: 1.7rem;
+        margin-bottom: 15px;
+    }
+
+    p {
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #fff;
+    }
+
+    .btn-pro {
+        margin-top: 20px;
+        padding: 10px 25px;
+        font-size: 1rem;
+        background-color: #6a0dad; /* violeta */
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s;
+
+        &:hover {
+            background-color: #8a2be2; /* violeta más claro */
+        }
+    }
+
+    .link-simulado {
+        color: #dcdcff;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover {
+            color: #ffffff;
+        }
+    }
+    @media (max-width: 576px) {
+  .cartel h3 {
+    font-size: 1.3rem; /* más chico en mobile */
+  }
+  .points-animation {
+    padding: 1.5rem !important; /* menos padding en pantallas chicas */
+  }
+}
+
+.qr-hover:hover {
+    background-color: #6125bbff; /* violeta clarito */
+    border-radius: 14px; /* opcional, para que se vea más prolijo */
+    transition: background-color 0.3s ease;
+}
+}
+
+/* LU NAV------*/
+/* Fondo negro para el dropdown */
+.custom-hover {  
+    border-radius: 6px;
+    padding: 0.5rem 0;
+}
+
+/* Items: texto blanco y transición suave */
+.custom-hover .dropdown-item {
+    padding: 0.5rem 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Hover: se mueve a la derecha y aparece borde violeta */
+.custom-hover .dropdown-item:hover {
+    background-color: #e4e4e4ff; /* hover negro */
+    padding-left: 1.2rem; /* ligera indentación a la derecha */
+    border-left: 6px solid #6a04caff; /* borde violeta a la izquierda */
+}
+
+/* fin-LU NAV-------*/
+
+

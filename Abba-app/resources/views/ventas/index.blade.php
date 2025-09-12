@@ -9,7 +9,7 @@
         ]" filterName="cliente" filterPlaceholder="Buscar cliente..."
         :filterValue="request('cliente')" filterRoute="{{ route('ventas.index') }}" />
 
-    <div class="container mt-4">
+    <div class="container mt-1">
 
         @include('components.filtros._ventas')
 

@@ -13,7 +13,7 @@
     @endif
     <!--fin alerta -->
 
-    <div class="container">
+    <div class="container mt-1">
 
         <!-- ENCABEZADO -->
         <div class="row mb-4 align-items-center  no-print">

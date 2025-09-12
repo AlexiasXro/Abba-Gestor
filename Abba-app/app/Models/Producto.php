@@ -29,6 +29,9 @@ class Producto extends Model
         // ✅ Nuevos campos 'precio_base', 'precio_venta', 'precio_reventa''proveedor_id' imagen 
     ];
 
+
+    
+
     // Relación muchos a muchos con talles a través de la tabla pivote
     public function talles()
     {

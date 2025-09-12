@@ -18,7 +18,7 @@
  
 
 
-    <div class="container">
+    <div class="container mt-1">
         
 
         <form method="POST" action="{{ route('ventas.store') }}">
