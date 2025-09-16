@@ -40,6 +40,9 @@
                         <div id="qrcode-show {{ $producto->codigo }}" class="mt-2"></div>
                     </td>
                 </div>
+
+  
+
             </div>
 
             <!-- Detalles principales -->
@@ -117,6 +120,4 @@
 
 
 
-<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
-<script src="{{ asset('js/qrcode-productos.js') }}"></script>
 @endsection

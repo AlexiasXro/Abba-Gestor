@@ -1,11 +1,13 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4 class="text-dark fw-semibold">Historial de Cierres de Caja</h4>
-        <a href="{{ route('cierres.create') }}" class="btn btn-dark btn-sm">+ Nuevo Cierre</a>
-    </div>
+<div class="container ">
+    <x-header-bar 
+        title="Historial de Cierres de Caja"
+        :buttons="[
+            ['text' => '+ Nuevo Cierre', 'route' => route('cierres.create'), 'class' => 'btn-dark btn-sm']
+        ]"
+    />
 
     @if(session('success'))
         <div class="alert alert-success small">

@@ -14,6 +14,7 @@ use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\GastoController;
 use App\Http\Controllers\CierreCajaController;
 use App\Http\Controllers\ScannerController;
+use App\Models\Producto;
 
 
 
@@ -23,6 +24,9 @@ use App\Http\Controllers\ScannerController;
 Route::get('/', function () {
     return view('panel');
 });
+
+
+
 
 
 // Redireccionar / a /panel (o directamente llamar al método)
@@ -50,7 +54,9 @@ Route::post('/cuotas/pagar/{id}', [CuotaController::class, 'pagar'])->name('cuot
 Route::get('/productos/qr', [ProductoController::class, 'qrIndex'])->name('productos.qr');
 Route::get('/scanner', [ScannerController::class, 'index'])->name('scanner.index');
 
-//Nueva ruta para mostrar producto por código
+
+
+
 
 
 // Rutas para productos_____________________________________________________
@@ -59,8 +65,7 @@ Route::prefix('productos')->name('productos.')->group(function () {
     Route::get('/eliminados', [ProductoController::class, 'eliminados'])->name('eliminados');
     Route::get('/create', [ProductoController::class, 'create'])->name('create');
     Route::post('/', [ProductoController::class, 'store'])->name('store');
-    // Nueva ruta para mostrar producto por código
-    Route::get('/productos/{codigo}', [ProductoController::class, 'showPorCodigo'])->name('productos.show');
+  
     Route::get('/{producto}', [ProductoController::class, 'show'])->name('show');
     Route::get('/{producto}/edit', [ProductoController::class, 'edit'])->name('edit');
     Route::put('/{producto}', [ProductoController::class, 'update'])->name('update');
@@ -134,4 +139,22 @@ Route::post('/configuracion/margenes', [ConfiguracionController::class, 'actuali
 
 // Rutas para aplicar recargo a productos
 Route::post('/producto/{producto}/recargo', [ProductoController::class, 'aplicarRecargo'])->name('producto.aplicarRecargo');
+
+
+// Ruta para la vista de impresión de códigos QR
+Route::get('/scanner/qr_impr', function () {
+    $productos = Producto::all(); // o filtrados si querés
+    return view('scanner.qr_impr', compact('productos'));
+});
+
+
+use Milon\Barcode\DNS1D;
+
+
+
+Route::get('/barcode/{codigo}', function ($codigo) {
+    $barcode = new DNS1D();
+    return response($barcode->getBarcodePNG($codigo, 'C128'))
+        ->header('Content-Type', 'image/png');
+});
 

@@ -13,8 +13,9 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const qrContainer = document.getElementById(p.containerId || `qrcode-${p.codigo}`);
             if (!qrContainer) return;
+            
             new QRCode(qrContainer, {
-                text: p.url,
+                text: p.codigo,
                 width: 60,
                 height: 60,
                 colorDark: "#000",

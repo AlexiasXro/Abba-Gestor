@@ -147,11 +147,7 @@ class ProductoController extends Controller
         return redirect()->route('productos.show', $producto)->with('success', 'Producto actualizado correctamente');
     }
 
-    public function showPorCodigo($codigo)
-{
-    $producto = Producto::where('codigo', $codigo)->firstOrFail();
-    return view('productos.show', compact('producto'));
-}
+
 
 
 //Detalles del producto

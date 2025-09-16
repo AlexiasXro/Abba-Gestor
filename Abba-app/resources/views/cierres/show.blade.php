@@ -2,6 +2,7 @@
 
 @section('content')
 
+<div class="container">
 <x-header-bar
     title="Listado de Cierres de Caja"
     :buttons="[

@@ -17,6 +17,7 @@ class Gasto extends Model
         'descripcion',
         'categoria',
         'user_id', // si lo estás asociando a un usuario
+        'metodo_pago',
     ];
 
     protected $dates = ['deleted_at'];

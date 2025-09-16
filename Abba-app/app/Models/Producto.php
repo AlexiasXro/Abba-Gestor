@@ -29,6 +29,11 @@ class Producto extends Model
         // ✅ Nuevos campos 'precio_base', 'precio_venta', 'precio_reventa''proveedor_id' imagen 
     ];
 
+    //AGREGADO PARA RUTA POR CÓDIGO
+public function getRouteKeyName()
+{
+    return 'codigo';
+}
 
     
 

@@ -1,136 +1,7 @@
 /* aspectos.css */
 
 /* Estilos base para todos */
-body {
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-.navbar {
-    transition: background-color 0.3s ease;
-}
 
-/* Claro */
-body.aspecto-claro {
-    background-color: #f8f9fa !important;
-    color: #212529 !important;
-}
-body.aspecto-claro .navbar {
-    background-color: #343a40 !important; /* oscuro clásico */
-    color: white;
-}
-
-/* Oscuro */
-body.aspecto-oscuro {
-    background-color: #1e1e2f !important;
-    color: #f1f1f1 !important;
-}
-body.aspecto-oscuro .navbar {
-    background-color: #000000 !important;
-    color: white;
-}
-
-/* Celeste */
-body.aspecto-celeste {
-    background-color: #e8f0fe !important;
-    color: #1e1e1e !important;
-}
-body.aspecto-celeste .navbar {
-    background-color: #0d6efd !important; /* celeste bootstrap */
-    color: white;
-}
-
-/* Beige */
-body.aspecto-beige {
-    background-color: #fdf6ee !important;
-    color: #3e2f1c !important;
-}
-body.aspecto-beige .navbar {
-    background-color: #c19a6b !important; /* marrón claro */
-    color: white;
-}
-
-/* Rosa pastel */
-body.aspecto-rosado {
-    background-color: #ffe4e1 !important;
-    color: #5c1e1e !important;
-}
-body.aspecto-rosado .navbar {
-    background-color: #d36c6c !important;
-    color: white;
-}
-
-/* Verde oliva */
-body.aspecto-oliva {
-    background-color: #f4f8f0 !important;
-    color: #3a4722 !important;
-}
-body.aspecto-oliva .navbar {
-    background-color: #556b2f !important;
-    color: white;
-}
-
-/* Gris minimalista */
-body.aspecto-gris {
-    background-color: #eeeeee !important;
-    color: #2c2c2c !important;
-}
-body.aspecto-gris .navbar {
-    background-color: #6c757d !important;
-    color: white;
-}
-/* Azul marino */
-body.aspecto-azul-marino {
-    background-color: #e0f7fa !important;
-    color: #002147 !important;
-}
-body.aspecto-azul-marino .navbar {
-    background-color: #001f3f !important; /* azul marino */
-    color: white;
-}
-/* Naranja vibrante */
-body.aspecto-naranja {
-    background-color: #fff3e0 !important;
-    color: #ff5722 !important; /* naranja oscuro */
-}
-body.aspecto-naranja .navbar {
-    background-color: #ff9800 !important; /* naranja vibrante */
-    color: white;
-}
-/* Morado suave */
-body.aspecto-morado {
-    background-color: #f3e5f5 !important;
-    color: #6a1b9a !important; /* morado oscuro */
-}           
-body.aspecto-morado .navbar {
-    background-color: #8e24aa !important; /* morado suave */
-    color: white;
-}
-/* Amarillo claro */
-body.aspecto-amarillo { 
-    background-color: #fffde7 !important;
-    color: #f57f17 !important; /* amarillo oscuro */
-}
-body.aspecto-amarillo .navbar {
-    background-color: #ffeb3b !important; /* amarillo claro */
-    color: white;
-}
-/* Rojo suave */
-body.aspecto-rojo {
-    background-color: #ffebee !important;
-    color: #b71c1c !important; /* rojo oscuro */
-}
-body.aspecto-rojo .navbar {
-    background-color: #f44336 !important; /* rojo suave */
-    color: white;
-}
-/* Gris oscuro */
-body.aspecto-gris-oscuro {      
-    background-color: #303030 !important;
-    color: #e0e0e0 !important; /* gris claro */
-}           
-body.aspecto-gris-oscuro .navbar {
-    background-color: #424242 !important; /* gris oscuro */
-    color: white;
-}
 
 /*  */
 
@@ -188,7 +59,7 @@ body.aspecto-gris-oscuro .navbar {
 
 .cartel {
     h3 {
-        color: #d4d4ffff; /* lavanda claro */
+        color: #212157ff; /* lavanda claro */
         font-size: 1.7rem;
         margin-bottom: 15px;
     }
@@ -196,7 +67,7 @@ body.aspecto-gris-oscuro .navbar {
     p {
         font-size: 1rem;
         line-height: 1.5;
-        color: #fff;
+        color: #212157ff;
     }
 
     .btn-pro {
@@ -262,5 +133,14 @@ body.aspecto-gris-oscuro .navbar {
 }
 
 /* fin-LU NAV-------*/
+
+/*card form*/
+.gradient-border {
+    border: 3px solid transparent;   /* grosor del borde */
+    border-radius: 10px;             /* opcional */
+    background: #fff;                /* fondo blanco */
+    background-clip: padding-box;    /* mantiene fondo dentro del borde */
+    border-image: linear-gradient(135deg, rgba(68, 0, 255, 0.8), rgba(0, 238, 255, 0.8)) 1;
+}
 
 

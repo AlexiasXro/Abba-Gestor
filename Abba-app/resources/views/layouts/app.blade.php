@@ -185,20 +185,8 @@
                             @endforelse
                         </ul>
                     </li>
-
-
-                    
-
-                    
                 </ul>
 
-                {{-- Fecha actual --}}
-                <ul class="navbar-nav ms-auto align-items-center me-3">
-                    <li class="nav-item text-white small d-flex align-items-center">
-                        <i class="bi bi-calendar me-1"></i>
- {{ now()->format('d/m/Y') }}
-                    </li>
-                </ul>
 
                 {{-- Salida --}}
                 <ul class="navbar-nav">
@@ -244,6 +232,15 @@
 
     <!--Generador  de QR-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+
+    <script>
+document.getElementById("tipoCodigo").addEventListener("change", function () {
+    const tipo = this.value;
+    document.querySelectorAll(".qr-codigo").forEach(el => el.style.display = tipo === "qr" ? "block" : "none");
+    document.querySelectorAll(".barra-codigo").forEach(el => el.style.display = tipo === "barra" ? "block" : "none");
+});
+</script>
 
 </body>
 

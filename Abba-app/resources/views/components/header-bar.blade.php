@@ -36,6 +36,17 @@
                 >
                 <button type="submit" class="btn btn-primary p-1 btn-sm">Buscar</button>
             </form>
+    
+            <div class="d-flex align-items-center gap-2">
+    <label for="tipoCodigo" class="form-label mb-0 text-white">Ver:</label>
+    <select id="tipoCodigo" class="form-select form-select-sm" style="width: 140px;">
+        <option value="qr">Código QR</option>
+        <option value="barra">Código de barras</option>
+    </select>
+</div>
+
+
+
         @endif
     </div>
    

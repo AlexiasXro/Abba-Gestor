@@ -52,7 +52,10 @@ class GastoController extends Controller
             'monto' => 'required|numeric|min:0.01',      // El monto es obligatorio, numérico y mayor a cero
             'descripcion' => 'nullable|string',          // La descripción es opcional y debe ser texto
             'categoria' => 'nullable|string',            // La categoría también es opcional
+            'metodo_pago' => 'required|string',
+
         ]);
+        
 
         // Crea un nuevo registro de gasto con los datos validados
         Gasto::create($request->all());
