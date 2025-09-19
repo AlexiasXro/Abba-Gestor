@@ -113,16 +113,19 @@ php artisan serve
 
 ## (Opcional) Crear acceso directo para iniciar el sistema
 
-Abrí el Bloc de Notas y pegá esto:
+Cómo hacerlo (paso a paso con Chrome/Edge)
 
-```bat
-@echo off
-cd C:\Proyectos\abba
-php artisan serve
-pause
-```
+Abrí tu sistema en el navegador, por ejemplo:
 
-Guardalo como `iniciar_abba.bat` (en tipo de archivo elegí “Todos los archivos”).
+http://localhost:8000/panel
 
-Hacé doble clic sobre ese archivo para iniciar el sistema fácilmente.
+
+En Chrome → Menú (⋮ arriba a la derecha) → Más herramientas → Crear acceso directo…
+(en Edge aparece como Aplicaciones → Instalar este sitio como una aplicación).
+
+Poné un nombre (ej: Gestor ABBA) y tildá Abrir como ventana.
+
+Te aparecerá un icono en el escritorio como si fuera un programa.
+
+(Opcional) Cambiá el icono al de tu sistema (.ico) para que quede profesional.
 

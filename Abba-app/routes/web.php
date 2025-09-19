@@ -21,16 +21,47 @@ use App\Models\Producto;
 
 
 
+
+
 Route::get('/', function () {
-    return view('panel');
+    return redirect()->route('login');
 });
 
+// Mostrar formulario de login
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+
+// Procesar login (POST)
+Route::post('/login', [AuthController::class, 'login']);
+
+// Logout
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Opcional: mostrar formulario de registro
+Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
+
+// Opcional: procesar registro
+Route::post('/register', [AuthController::class, 'register']);
+
+// Panel o dashboard (solo usuarios autenticados)
+Route::middleware('auth')->group(function () {
+    Route::get('/panel', function () {
+        return view('panel');
+    })->name('panel');
+});
+
+// Ruta para formulario de recuperación de contraseña (opcional) NO HACE NADA AUN
+Route::get('/password/reset', function() {
+    return "Formulario de recuperación de contraseña";
+})->name('password.request');
+
+//Rutas para alertas y logueo?------------------------------------------
+Route::get('/alertas/stock', [AlertaController::class, 'stockBajo'])->name('alertas.stock');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/panel', [PanelController::class, 'index'])->name('panel');
 
 
 
 
-// Redireccionar / a /panel (o directamente llamar al método)
-Route::get('/', [PanelController::class, 'index'])->name('panel');
 // Rutas para ventas____________________________________________________
 Route::resource('ventas', VentaController::class)->except(['edit', 'update', 'destroy']);
 Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.index');
@@ -80,10 +111,7 @@ Route::prefix('productos')->name('productos.')->group(function () {
 //________________________________________________________________________________
 
 
-//Rutas para alertas y logueo?------------------------------------------
-Route::get('/alertas/stock', [AlertaController::class, 'stockBajo'])->name('alertas.stock');
-Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
-//----------------------------------------------
+
 
 
 // Rutas para clientes____________________________________________________________________

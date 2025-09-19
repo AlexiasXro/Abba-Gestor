@@ -1,4 +1,6 @@
 @extends('layouts.app')
+@section('title', 'Productos')
+
 
 @section('content')
     {{-- resources/views/productos/index.blade.php --}}
@@ -16,6 +18,15 @@
 
     <x-header-bar title="Productos" :buttons="$headerButtons" filterName="filtro" :filterValue="$filtro ?? ''"
         filterPlaceholder="Buscar por nombre, código o proveedor" :filterRoute="route('productos.index')" />
+        <div class="d-flex align-items-center gap-2">
+        <label for="tipoCodigo" class="form-label mb-0 text-white">Ver:</label>
+        <select id="tipoCodigo" class="form-select form-select-sm" style="width: 140px;">
+            <option value="qr">Código QR</option>
+            <option value="barra">Código de barras</option>
+        </select>
+    </div>
+
+
 
     <div class="container mt-3">
         {{-- Filtros profesionales --}}
@@ -64,6 +75,8 @@
                         <tr>
                             {{-- Código y QR --}}
                             <td class="text-center align-middle"> 
+
+
                             <div class="qr-codigo">
                                 <div id="qrcode-index{{ $producto->codigo }}">
                                     {{-- Tu lógica actual para mostrar el QR va acá --}}
@@ -76,6 +89,7 @@
                                 
                                 {!! DNS1D::getBarcodeHTML($producto->codigo, 'C128', 1.5, 40) !!}
                             </div>
+                            
                             </td>
 
 

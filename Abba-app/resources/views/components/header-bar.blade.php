@@ -1,3 +1,5 @@
+<!-- Abba-app\resources\views\components\header-bar.blade.php -->
+
 @props([
     'title' => 'Título',
     'filterName' => null,
@@ -7,12 +9,10 @@
     'buttons' => [],
 ])
 
-<div class="container-fluid"  style="font-size: 0.9rem; 
-            background: linear-gradient(90deg, #eeebf5ff, #402ba0d8, #343235ff);
-            border-radius: 0px;">
-<div class="d-flex flex-wrap align-items-center justify-content-between  gap-2 p-2" 
-     ">
+<div class="container">
 
+    {{-- Título e ícono --}}
+    <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 p-2 border-bottom mb-3">
     {{-- Título e ícono --}}
     <div class="d-flex align-items-center gap-3 flex-grow-1 flex-wrap">
         <h4 class="d-flex align-items-center mb-0" style="font-weight: 600; min-width: 200px;">
@@ -22,6 +22,7 @@
             </span>
             {{ $title }}
         </h4>
+  
 
         {{-- Filtro opcional --}}
         @if(!empty($filterRoute) && !empty($filterName))
@@ -36,38 +37,30 @@
                 >
                 <button type="submit" class="btn btn-primary p-1 btn-sm">Buscar</button>
             </form>
-    
-            <div class="d-flex align-items-center gap-2">
-    <label for="tipoCodigo" class="form-label mb-0 text-white">Ver:</label>
-    <select id="tipoCodigo" class="form-select form-select-sm" style="width: 140px;">
-        <option value="qr">Código QR</option>
-        <option value="barra">Código de barras</option>
-    </select>
-</div>
-
-
 
         @endif
+        
     </div>
    
 
     {{-- Botones --}}
-    <div class="d-flex align-items-center gap-2 flex-wrap ">
-        @if(!empty($buttons))
-            @foreach ($buttons as $button)
-                <a href="{{ $button['route'] }}" class="btn btn-sm {{ $button['class'] ?? 'btn-success' }}">
-                    {{ $button['text'] }}
-                </a>
-            @endforeach
-        @endif
+    {{-- Botones --}}  
+<div class="d-flex align-items-center gap-2 flex-wrap ">
+    @if(!empty($buttons))
+        @foreach ($buttons as $button)
+            <a href="{{ $button['route'] }}" class="btn btn-sm {{ $button['class'] ?? 'btn-success' }}">
+                {{ $button['text'] }}
+            </a>
+        @endforeach
+    @endif
+    {{-- Botones extra opcionales --}}
+    {{ $extraButtons ?? '' }}
 
-        {{-- Botón "Atrás" con ícono siempre visible --}}
-        <a href="javascript:history.back()" class="btn btn-sm btn-success d-flex align-items-center gap-1">
-            <i class="bi bi-arrow-left me-1"></i> Atrás
-        </a>
+    {{-- Botón "Atrás" con ícono siempre visible --}}
+    <a href="javascript:history.back()" class="btn btn-sm btn-success d-flex align-items-center gap-1">
+        <i class="bi bi-arrow-left me-1"></i> Atrás
+    </a>
 
-        {{-- Botones extra opcionales --}}
-        {{ $extraButtons ?? '' }}
-    </div>
+    
 </div>
-</div>
+ </div>

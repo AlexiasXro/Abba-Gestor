@@ -95,5 +95,14 @@ public function getRouteKeyName()
     return back()->with('error', 'Este producto no tiene precio base definido.');
 }
 
+public function getPrecioAttribute()
+{
+    return $this->precio_venta; // o el que quieras usar como "principal"
+}
 
+public function setPrecioAttribute($value)
+{
+    // opcional: cuando se guarda "precio", también se guarda en precio_venta
+    $this->attributes['precio_venta'] = $value;
+}
 }

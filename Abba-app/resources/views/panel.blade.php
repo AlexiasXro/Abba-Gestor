@@ -1,8 +1,13 @@
 @extends('layouts.app')
+@php
+    $productosBajoStock = $productosBajoStock ?? collect();
+@endphp
+
 
 @section('title', 'Panel de Control')
 
 @section('content')
+
     <div class="container-fluid ">
         <h4>Panel de Control</h4>
 

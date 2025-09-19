@@ -1,5 +1,8 @@
 @extends('layouts.app')
 
+@section('title', 'Ventas')
+
+
 @section('content')
     {{-- resources\views\ventas\index.blade.php --}}
 

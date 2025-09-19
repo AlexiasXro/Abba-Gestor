@@ -1,0 +1,82 @@
+@echo off
+title Instalador Gestor ABBA con NSSM y Logs
+setlocal enabledelayedexpansion
+
+:: -----------------------------
+:: CONFIGURACION
+:: -----------------------------
+set SERVICE_NAME=abba-laravel
+set XAMPP_INSTALLER_URL=https://downloadsapachefriends.global.ssl.fastly.net/8.2.12/xampp-windows-x64-8.2.12-0-VS16-installer.exe
+set XAMPP_INSTALLER=%TEMP%\xampp_installer.exe
+set XAMPP_DIR=C:\xampp
+
+:: -----------------------------
+:: DETECTAR PHP / XAMPP
+:: -----------------------------
+echo 🔍 Verificando PHP / XAMPP...
+
+where php >nul 2>nul
+if %ERRORLEVEL%==0 (
+    for /f "delims=" %%i in ('where php') do set PHP_PATH=%%i
+    echo ✅ PHP detectado en !PHP_PATH!
+) else (
+    if exist "%XAMPP_DIR%\php\php.exe" (
+        set PHP_PATH=%XAMPP_DIR%\php\php.exe
+        echo ✅ PHP detectado en %PHP_PATH%
+    ) else (
+        echo ⚠️ No se encontro PHP. Instalando XAMPP...
+        powershell -Command "Invoke-WebRequest -Uri %XAMPP_INSTALLER_URL% -OutFile %XAMPP_INSTALLER%"
+        echo 🚀 Ejecutando instalador XAMPP (silencioso)...
+        %XAMPP_INSTALLER% --mode unattended --disable-components xampp_dev,xampp_perl,xampp_phpmyadmin
+        if exist "%XAMPP_DIR%\php\php.exe" (
+            set PHP_PATH=%XAMPP_DIR%\php\php.exe
+            echo ✅ XAMPP instalado correctamente.
+        ) else (
+            echo ❌ No se pudo instalar XAMPP. Verifique permisos de administrador.
+            pause
+            exit /b 1
+        )
+    )
+)
+
+:: -----------------------------
+:: DETECTAR PROYECTO
+:: -----------------------------
+set PROJECT_DIR=%~dp0
+echo 📂 Proyecto detectado en %PROJECT_DIR%
+
+:: -----------------------------
+:: CREAR CARPETA DE LOGS
+:: -----------------------------
+if not exist "%PROJECT_DIR%logs" mkdir "%PROJECT_DIR%logs"
+
+:: -----------------------------
+:: INSTALAR SERVICIO CON NSSM
+:: -----------------------------
+where nssm >nul 2>nul
+if %ERRORLEVEL% NEQ 0 (
+    echo ❌ NSSM no esta instalado. Copie nssm.exe a C:\Windows\System32 y vuelva a ejecutar.
+    pause
+    exit /b 1
+)
+
+echo ⚙️ Instalando servicio con NSSM...
+nssm install %SERVICE_NAME% "%PHP_PATH%" artisan serve --host=127.0.0.1 --port=8000
+nssm set %SERVICE_NAME% AppDirectory "%PROJECT_DIR%"
+
+:: Configurar logs para el servicio
+nssm set %SERVICE_NAME% AppStdout "%PROJECT_DIR%logs\server-out.log"
+nssm set %SERVICE_NAME% AppStderr "%PROJECT_DIR%logs\server-err.log"
+nssm set %SERVICE_NAME% AppStdoutCreationDisposition 4
+nssm set %SERVICE_NAME% AppStderrCreationDisposition 4
+
+:: Arranque automático
+sc config %SERVICE_NAME% start= auto
+
+:: Iniciar servicio
+nssm start %SERVICE_NAME%
+
+echo.
+echo ✅ Instalacion completa. El servicio %SERVICE_NAME% esta ejecutandose.
+echo 🌐 Accede en: http://127.0.0.1:8000/login
+pause

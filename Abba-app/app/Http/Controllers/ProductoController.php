@@ -8,6 +8,7 @@ use App\Models\Talle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;// <- para manejar storage
 use Intervention\Image\Facades\Image;        // <- para redimensionar imágenes
+use Milon\Barcode\DNS1D;
 
 
 class ProductoController extends Controller

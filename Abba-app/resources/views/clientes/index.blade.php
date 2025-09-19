@@ -1,5 +1,7 @@
 @extends('layouts.app')
 
+@section('title', 'Clientes')
+
 @section('content')
     <!--/resources/views/clientes/index.blade.php-->
 
@@ -10,7 +12,8 @@
         ]"
         filterName="filtro" :filterValue="$filtro ?? ''" filterPlaceholder="Buscar por nombre, apellido o email"
         :filterRoute="route('clientes.index')" />
-    <div class="container">
+    
+        <div class="container">
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>

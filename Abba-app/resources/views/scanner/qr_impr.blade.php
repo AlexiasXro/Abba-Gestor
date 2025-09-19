@@ -4,7 +4,7 @@
     {{-- resources/views/scanner/qr_impr.blade.php --}}
 
     @php
-        // Botones del header para la vista de impresión de QR
+        
         $headerButtons = [
             ['text' => '← Volver', 'route' => url()->previous(), 'class' => 'btn-outline-secondary'],
         ];
@@ -24,8 +24,6 @@
     <h4 class="mb-0">Seleccionar Códigos para Imprimir</h4>
     <button type="button" class="btn btn-success" onclick="imprimirSeleccionados()">🖨️ Imprimir Seleccionados</button>
 </div>
-
-
     <form id="qrForm">
         <div class="row">
             @foreach($productos as $producto)
@@ -42,8 +40,6 @@
                 </div>
             @endforeach
         </div>
-
-        
     </form>
 </div>
 
