@@ -1,182 +1,268 @@
 @extends('layouts.app')
 
 @section('content')
- 
-  {{-- resources\views\ventas\create.blade.php --}}
 
-{{-- HEADER PRINCIPAL --}}
+        {{-- resources\views\ventas\create.blade.php --}}
 
-<x-header-bar
-    title="Ventas"
-    action="create"
-    :buttons="[
+
+
+        <x-header-bar title="Ventas" action="create" :buttons="[
         ['text' => '+ Nueva Venta', 'route' => route('ventas.create'), 'class' => 'btn-primary']
-    ]"
->
-   
-</x-header-bar>
- 
+    ]">
 
+        </x-header-bar>
 
-    <div class="container mt-1">
-        
 
         <form method="POST" action="{{ route('ventas.store') }}">
             @csrf
 
-            <!-- Input de búsqueda -->
-            <div class="col-md-6">
-                <label for="busqueda_cliente" class="form-label">Buscar Cliente</label>
-                <input type="text" id="busqueda_cliente" class="form-control" placeholder="Nombre, DNI o Teléfono">
-            </div>
+            <div class="row">
+                <!-- IZQUIERDA -->
+                <div class="col-md-8">
 
-            <!-- Select de cliente -->
-            <div class="col-md-6">
-                <label for="cliente_id" class="form-label">Cliente</label>
-                <select class="form-select" id="cliente_id" name="cliente_id">
-                    <option value="">-- Seleccionar cliente --</option>
-                    @foreach($clientes as $cliente)
-                        <option value="{{ $cliente->id }}">{{ $cliente->nombre }} {{ $cliente->apellido }}</option>
-                    @endforeach
-                </select>
-                <button type="button" class="btn btn-sm btn-link" data-bs-toggle="modal"
-                    data-bs-target="#modalNuevoCliente">
-                    + Nuevo cliente
+                    {{-- ================== CONTENEDOR CLIENTE ================== --}}
+                    <div class="card border-0 shadow-sm mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h5 class="fw-bold text-primary mb-0">👤 Cliente</h5>
+                                <button type="button" class="btn btn-sm btn-link" data-bs-toggle="modal"
+                                    data-bs-target="#modalNuevoCliente">
+                                    + Nuevo cliente
+                                </button>
+                            </div>
+
+                            {{-- Input búsqueda --}}
+                            <div class="mb-3">
+                                <label for="buscarCliente" class="form-label"></label>
+                                <input type="text" id="buscarCliente" class="form-control" placeholder="Nombre, DNI o Teléfono...">
+                                <ul id="sugerenciasCliente" class="list-group position-absolute w-50 mt-1" style="z-index: 1050; display:none;"></ul>
+                                </div>
+                                {{-- Card cliente seleccionado --}}
+                                {{-- Card compacto de cliente seleccionado --}}
+                                <div id="clienteSeleccionado"
+                                    class="d-none my-2 p-2 border rounded bg-light d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <span id="clienteInfo" class="text-truncate" style="max-width: 400px;">
+                                            <!-- Aquí va "Juan Pérez - DNI 12345678 - Tel 11223344" -->
+                                        </span>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" id="cambiarCliente">Cambiar</button>
+                                </div>
+
+                                {{-- Campo oculto con cliente_id para enviar al backend --}}
+                                <input type="hidden" name="cliente_id" id="clienteId">
+
+                            </div>
+                        </div>
+
+                   {{-- ================== SCRIPT BÚSQUEDA ================== --}}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const buscarCliente = document.getElementById("buscarCliente");
+    const sugerencias = document.getElementById("sugerenciasCliente");
+    const clienteCard = document.getElementById("clienteSeleccionado");
+    const clienteId = document.getElementById("clienteId");
+
+    buscarCliente.addEventListener("input", async () => {
+        const query = buscarCliente.value.trim();
+        if (query.length < 2) {
+            sugerencias.style.display = "none";
+            return;
+        }
+
+        try {
+            const resp = await fetch(`/clientes/buscar?query=${encodeURIComponent(query)}`);
+            const clientes = await resp.json();
+
+            sugerencias.innerHTML = "";
+            if (clientes.length === 0) {
+                sugerencias.style.display = "none";
+                return;
+            }
+
+            clientes.forEach(c => {
+                const item = document.createElement("li");
+                item.className = "list-group-item list-group-item-action";
+                item.textContent = `${c.nombre} ${c.apellido ?? ""} - DNI: ${c.dni ?? "N/A"} - Tel: ${c.telefono ?? "N/A"}`;
+                item.addEventListener("click", () => seleccionarCliente(c));
+                sugerencias.appendChild(item);
+            });
+
+            sugerencias.style.display = "block";
+        } catch (e) {
+            console.error("Error buscando clientes:", e);
+        }
+    });
+
+    function seleccionarCliente(c) {
+        clienteId.value = c.id;
+        clienteCard.innerHTML = `
+            <div class="d-flex align-items-center justify-content-between p-2 border rounded bg-light">
+                <div>
+                    <span>${c.nombre} ${c.apellido ?? ""} - DNI: ${c.dni ?? "-"} - Tel: ${c.telefono ?? "-"}</span>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('clienteSeleccionado').innerHTML='';document.getElementById('clienteId').value='';document.getElementById('buscarCliente').focus();">
+                    Cambiar
                 </button>
             </div>
-
-            <!--Total de productos sumados-->
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label class="form-label"><strong>Total estimado:</strong></label>
-                    <input type="text" id="total_mostrado" class="form-control" readonly value="$0.00">
-                </div>
-            </div>
-
-
-            <div class="row mb-3">
-                <div class="col-12">
-                    <h4>Productos</h4>
-                    <div id="productos-container">
-                        <!-- Los productos se agregarán aquí dinámicamente con JavaScript -->
-                    </div>
-                    <button type="button" class="btn btn-primary mt-2" id="agregar-producto">
-                        Agregar Producto
-                    </button>
-                </div>
-            </div>
-
-            <div class="row mb-3">
-                <div class="col-md-4">
-                    <label for="metodo_pago" class="form-label">Método de Pago</label>
-                    <select class="form-select" id="metodo_pago" name="metodo_pago" required>
-                        <option value="">-- Seleccionar método --</option>
-                        <option value="efectivo">Efectivo</option>
-                        <option value="tarjeta">Tarjeta</option>
-                        <option value="transferencia">Transferencia</option>
-                        <!-- FALTA ESTA: -->
-                        <option value="cuotas">Pago en Cuotas</option>
-                    </select>
-                </div>
-
-                <!-- FORMULARIO CUOTAS -->
-                <div id="cuotas-container" class="d-none">
-                    <div class="row mt-3">
-                        <div class="col-md-4">
-                            <label for="entrega_inicial" class="form-label">Entrega Inicial</label>
-                            <input type="number" class="form-control" name="entrega_inicial" id="entrega_inicial" min="0"
-                                step="0.01">
-                        </div>
-                        <div class="col-md-4">
-                            <label for="cantidad_cuotas" class="form-label">Cantidad de Cuotas</label>
-                            <input type="number" class="form-control" name="cantidad_cuotas" id="cantidad_cuotas" min="1"
-                                value="2">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- RESUMEN DE CUOTAS -->
-                <div id="resumen-cuotas" class="mt-3 d-none">
-                    <div class="alert alert-info">
-                        <strong>Resumen de Cuotas:</strong><br>
-                        Entrega Inicial: <span id="resumen-entrega">$0.00</span><br>
-                        Cuota Final (ganancia): <span id="resumen-cuota-final">$0.00</span><br>
-                        Total Venta: <span id="resumen-total">$0.00</span>
-                    </div>
-                </div>
-
-               
-                <!-- Monto entregado solo para efectivo -->
-                <div class="col-md-4 d-none" id="monto-entregado-container">
-                    <label for="monto_pagado" class="form-label">Monto Entregado</label>
-                    <input type="number" class="form-control" id="monto_pagado" name="monto_pagado" min="0" step="0.01"
-                        value="0">
-                    <small id="vuelto-text" class="form-text text-success mt-1"></small>
-                </div>
-
-                <!-- Tipo de tarjeta solo para tarjeta -->
-                <div class="col-md-4 d-none" id="tipo-tarjeta-container">
-                    <label for="tipo_tarjeta" class="form-label">Tipo de Tarjeta (opcional)</label>
-                    <select class="form-select" id="tipo_tarjeta" name="tipo_tarjeta">
-
-                        <option value="">-- Seleccionar tipo --</option>
-                        <option value="debito">Débito</option>
-                        <option value="credito">Crédito</option>
-                    </select>
-                </div>
-
-                <!-- Número de operación solo para transferencia -->
-                <div class="col-md-4 d-none" id="numero-operacion-container">
-                    <label for="numero_operacion" class="form-label">Número de Operación (opcional)</label>
-                    <input type="text" class="form-control" id="numero_operacion" name="numero_operacion" maxlength="50">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-12">
-                    <button type="submit" class="btn btn-success">Registrar Venta</button>
-                </div>
-            </div>
-            <!-- Template para agregar productos dinámicamente -->
-            @include('ventas.partials.producto-template')
-
-
-        </form>
-
-        <!-- Incluir modal -->
-        @include('clientes.partials.modal')
-    </div>
-
-
-
-    <!-- Incluimos jQuery y Select2 
-                <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-                -->
-
-    <script>
-        // Objeto con stock disponible por producto y talle, generado desde backend Laravel con
-        // Estructura: { productoId: { talleId: stock, ... }, ... }
-        // ventas.js depende de esa variable para validar stock.
-       window.stockDisponible = @json(
-        $productos->mapWithKeys(function ($producto) {
-            return [
-                $producto->id => $producto->talles->mapWithKeys(function ($talle) {
-                    return [$talle->id => $talle->pivot->stock];
-                })->toArray()
-            ];
-        })->toArray()
-    );
-    //console.log('StockDisponible:', window.stockDisponible);
+        `;
+        clienteCard.classList.remove("d-none");
+        sugerencias.style.display = "none";
+        buscarCliente.value = "";
+    }
+});
 </script>
 
 
+    <!-- CONTENEDOR PRODUCTOS -->
+    <div class="card border-0 shadow-sm mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h5 class="fw-bold text-primary mb-0">🛒 Productos
+                <div class="d-flex gap-2 align-items-center">
+                    <input type="text" id="busqueda-producto" class="form-control form-control-sm"
+                        placeholder="Buscar producto...">
+                    <div class="d-flex align-items-center gap-1">
+                        <label for="cantidad-mostrar" class="mb-0 small text-muted">Mostrar:</label>
+                        <select id="cantidad-mostrar" class="form-select form-select-sm">
+                            <option value="10">10 productos</option>
+                            <option value="20">20 productos</option>
+                            <option value="50">50 productos</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive" style="max-height: 300px; overflow-y:auto;">
+                <table class="table table-sm align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Código</th>
+                            <th>Producto</th>
+                            <th>Talle</th>
+                            <th style="width:60px;">Cant.</th>
+                            <th>P.Reventa</th>
+                            <th>Precio</th>
+                            <th>Desc. $
+                            <th style="width:100px;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productos-container">
+                        @foreach($productos as $producto)
+                            <tr data-id="{{ $producto->id }}">
+                                <td>{{ $producto->codigo }}</td>
+                                <td>{{ $producto->nombre }}</td>
+                                <td>
+                                    <select class="form-select form-select-sm talle-select"
+                                        style="width:auto; min-width:100px;">
+                                        @foreach ($producto->talles as $talle)
+                                            <option value="{{ $talle->id }}" @if($talle->pivot->stock <= 0) disabled
+                                            @endif>
+                                                {{ $talle->talle }} (Stock: {{ $talle->pivot->stock }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                                <td>
+                                    <input type="number"
+                                        class="form-control form-control-sm cantidad-input text-center"
+                                        style="width:60px; min-width:40px;" min="1" value="1">
+                                </td>
+                                <td>${{ number_format($producto->precio_reventa, 2) }}</td>
+                                <td>${{ number_format($producto->precio, 2) }}</td>
+                                <td>
+                                    <input type="number" class="form-control form-control-sm descuento-dinero"
+                                        min="0" step="0.01" value="0">
+                                
+                                <td>
+                                                            <button type="button" class="btn btn-success btn-sm agregar-carrito">
+                                                                <i class="bi bi-cart-plus"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
 
-    <script src="{{ asset('js/ventas.js') }}"></script>
-    <script src="{{ asset('js/cuotas.js') }}"></script>
-    <script src="{{ asset('js/clientes-autocomplete.js') }}"></script>
-    <script src="{{ asset('js/modal-cierre.js') }}"></script>
+                        </div>
 
 
+                        <!-- DERECHA: DETALLES DE PAGO -->
+                        <div class="col-md-4">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="fw-bold text-primary mb-0">💰 Total Venta</h5>
+                                        <span class="fs-5 fw-bold" id="total-venta-monto">$0.00</span>
+                                    </div>
+
+
+                                    <!-- Tipo de Documento -->
+                                    <!-- Alerta para select tipo documento -->
+                                    <div id="alert-tipo-doc" class="text-danger small mt-1 d-none">Seleccione primero un cliente</div>
+
+                                    <!-- Select tipo documento -->
+                                    <div class="mb-3 mt-2">
+                                        <label for="tipo_documento" class="form-label">Tipo de Documento</label>
+                                        <select class="form-select form-select-sm" id="tipo_documento" name="tipo_documento" disabled>
+                                            <option value="">Seleccione un tipo</option>
+                                            <option value="factura">Factura</option>
+                                            <option value="remito">Remito</option>
+                                            <option value="ticket">Ticket</option>
+                                            <option value="nota_credito">Nota de Crédito</option>
+                                        </select>
+                                    </div>
+
+
+                                    <!-- Número de venta -->
+                                    <div class="mb-3">
+                                        <label for="numero_venta" class="form-label">Número de Venta</label>
+                                        <input type="text" class="form-control form-control-sm" id="numero_venta" name="numero_venta"
+                                            readonly value="{{ old('numero_venta', $ultimo_numero_venta ?? '') }}">
+                                    </div>
+
+                                    <!-- Método de pago -->
+                                    <div class="mb-3">
+                                        <label for="metodo_pago" class="form-label">Método de Pago</label>
+                                        <select class="form-select form-select-sm" id="metodo_pago" name="metodo_pago" required>
+                                            <option value="">-- Seleccionar método --</option>
+                                            <option value="efectivo">Efectivo</option>
+                                            <option value="tarjeta">Tarjeta</option>
+                                            <option value="transferencia">Transferencia</option>
+                                            <option value="cuotas">Pago en Cuotas</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Subtotal y descuento -->
+                                    <div class="mb-3 d-flex justify-content-between">
+                                        <span>Subtotal:</span>
+                                        <span id="subtotal">$0.00</span>
+                                    </div>
+                                    <div class="mb-3 d-flex justify-content-between">
+                                        <span>Descuento Total:</span>
+                                        <span id="descuento-total">$0.00</span>
+                                    </div>
+
+                                    <!-- Botón Confirmar -->
+                                    <div class="d-grid mt-3">
+                                        <button type="button" class="btn btn-success" id="btn-confirmar-venta" data-bs-toggle="modal"
+                                            data-bs-target="#modal-detalle-pago">
+                                            Confirmar Venta
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+                            <!-- Template dinámico -->
+                            @include('ventas.partials.producto-template')
+                </form>
+
+                <!-- Modal cliente -->
+                @include('clientes.partials.modal')
+                
 @endsection

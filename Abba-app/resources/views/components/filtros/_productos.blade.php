@@ -1,5 +1,5 @@
 <div class="mb-2">
-    {{-- Botón toggle --}}
+    {{-- Botón toggle  C:\Users\Romin\Documents\Proyecto-CODE\Abba\Abba-app\resources\views\components\filtros\_productos.blade.php--}}
     <button class="btn btn-outline-primary btn-sm" type="button"
             data-bs-toggle="collapse" data-bs-target="#filtrosProductos"
             aria-expanded="{{ request()->except(['page']) ? 'true' : 'false' }}"
@@ -8,92 +8,92 @@
     </button>
 
     {{-- Contenido colapsable --}}
-    <div class="collapse mt-2 {{ request()->except(['page']) ? 'show' : '' }}" id="filtrosProductos">
-        <form method="GET" action="{{ route('productos.index') }}">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2">
+{{-- Contenido colapsable --}}
+<div class="collapse mt-2 {{ request()->except(['page']) ? 'show' : '' }}" id="filtrosProductos">
+    <form method="GET" action="{{ route('productos.index') }}">
+        <div class="row g-1">
 
-                
-                {{-- Precio mínimo --}}
-                <div class="col">
-                    <input type="number" name="precio_min" step="0.01"
-                           value="{{ request('precio_min') }}"
-                           class="form-control form-control-sm"
-                           placeholder="Precio min">
-                </div>
-
-                {{-- Precio máximo --}}
-                <div class="col">
-                    <input type="number" name="precio_max" step="0.01"
-                           value="{{ request('precio_max') }}"
-                           class="form-control form-control-sm"
-                           placeholder="Precio max">
-                </div>
-
-                {{-- Precio costo mínimo --}}
-                <div class="col">
-                    <input type="number" name="precio_costo_min" step="0.01"
-                           value="{{ request('precio_costo_min') }}"
-                           class="form-control form-control-sm"
-                           placeholder="Precio costo min">
-                </div>
-
-                {{-- Precio costo máximo --}}
-                <div class="col">
-                    <input type="number" name="precio_costo_max" step="0.01"
-                           value="{{ request('precio_costo_max') }}"
-                           class="form-control form-control-sm"
-                           placeholder="Precio costo max">
-                </div>
-
-                {{-- Factura B --}}
-                <div class="col">
-                    <select name="factura_b" class="form-select form-select-sm">
-                        <option value="">-- Factura B --</option>
-                        <option value="venta" {{ request('factura_b')=='venta'?'selected':'' }}>Venta</option>
-                        <option value="reventa" {{ request('factura_b')=='reventa'?'selected':'' }}>Reventa</option>
-                    </select>
-                </div>
-
-                {{-- Factura A --}}
-                <div class="col">
-                    <select name="factura_a" class="form-select form-select-sm">
-                        <option value="">-- Factura A --</option>
-                        <option value="venta" {{ request('factura_a')=='venta'?'selected':'' }}>Venta</option>
-                        <option value="reventa" {{ request('factura_a')=='reventa'?'selected':'' }}>Reventa</option>
-                    </select>
-                </div>
-
-                {{-- Stock mínimo --}}
-                <div class="col">
-                    <input type="number" name="stock_min"
-                           value="{{ request('stock_min') }}"
-                           class="form-control form-control-sm"
-                           placeholder="Stock min">
-                </div>
-
-                {{-- Stock máximo --}}
-                <div class="col">
-                    <input type="number" name="stock_max"
-                           value="{{ request('stock_max') }}"
-                           class="form-control form-control-sm"
-                           placeholder="Stock max">
-                </div>
-
-                {{-- Talle (Stock) --}}
-                <div class="col">
-                    <input type="text" name="talle"
-                           value="{{ request('talle') }}"
-                           class="form-control form-control-sm"
-                           placeholder="Talle">
-                </div>
-
+            {{-- Código --}}
+            <div class="col-12 col-sm-6 col-md-3">
+                <input type="text" name="codigo"
+                       value="{{ request('codigo') }}"
+                       class="form-control form-control-sm"
+                       placeholder="Código"
+                       style="padding:0.25rem 0.4rem; font-size:0.8rem;">
             </div>
 
-            {{-- Botones --}}
-            <div class="mt-2 d-flex flex-wrap gap-2">
-                <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-                <a href="{{ route('productos.index') }}" class="btn btn-secondary btn-sm">Limpiar</a>
+            {{-- Nombre --}}
+            <div class="col-12 col-sm-6 col-md-3">
+                <input type="text" name="nombre"
+                       value="{{ request('nombre') }}"
+                       class="form-control form-control-sm"
+                       placeholder="Nombre"
+                       style="padding:0.25rem 0.4rem; font-size:0.8rem;">
             </div>
-        </form>
-    </div>
+
+            {{-- Precio min / max juntos --}}
+            <div class="col-12 col-sm-6 col-md-3 d-flex gap-1">
+                <input type="number" name="precio_min" step="0.01"
+                       value="{{ request('precio_min') }}"
+                       class="form-control form-control-sm"
+                       placeholder="Precio min"
+                       style="padding:0.25rem 0.4rem; font-size:0.8rem;">
+                <input type="number" name="precio_max" step="0.01"
+                       value="{{ request('precio_max') }}"
+                       class="form-control form-control-sm"
+                       placeholder="Precio max"
+                       style="padding:0.25rem 0.4rem; font-size:0.8rem;">
+            </div>
+
+            {{-- Precio costo min / max juntos --}}
+            <div class="col-12 col-sm-6 col-md-3 d-flex gap-1">
+                <input type="number" name="precio_costo_min" step="0.01"
+                       value="{{ request('precio_costo_min') }}"
+                       class="form-control form-control-sm"
+                       placeholder="Costo min"
+                       style="padding:0.25rem 0.4rem; font-size:0.8rem;">
+                <input type="number" name="precio_costo_max" step="0.01"
+                       value="{{ request('precio_costo_max') }}"
+                       class="form-control form-control-sm"
+                       placeholder="Costo max"
+                       style="padding:0.25rem 0.4rem; font-size:0.8rem;">
+            </div>
+
+            {{-- Stock min / max juntos --}}
+            <div class="col-12 col-sm-6 col-md-3 d-flex gap-1">
+                <input type="number" name="stock_min"
+                       value="{{ request('stock_min') }}"
+                       class="form-control form-control-sm"
+                       placeholder="Stock min"
+                       style="padding:0.25rem 0.4rem; font-size:0.8rem;">
+                <input type="number" name="stock_max"
+                       value="{{ request('stock_max') }}"
+                       class="form-control form-control-sm"
+                       placeholder="Stock max"
+                       style="padding:0.25rem 0.4rem; font-size:0.8rem;">
+            </div>
+
+            {{-- Talle (select dinámico) --}}
+            <div class="col-12 col-sm-6 col-md-3">
+                <select name="talle" class="form-select form-select-sm">
+    <option value="">-- Talle --</option>
+    @foreach($tallesDisponibles as $talle)
+        <option value="{{ $talle->id }}" {{ request('talle') == $talle->id ? 'selected' : '' }}>
+            {{ $talle->nombre }}
+        </option>
+    @endforeach
+</select>
+            </div>
+
+        </div>
+
+        {{-- Botones --}}
+        <div class="mt-2 d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary btn-sm" style="padding:0.25rem 0.5rem;">Filtrar</button>
+            <a href="{{ route('productos.index') }}" class="btn btn-secondary btn-sm" style="padding:0.25rem 0.5rem;">Limpiar</a>
+        </div>
+    </form>
 </div>
+</div>
+    
+

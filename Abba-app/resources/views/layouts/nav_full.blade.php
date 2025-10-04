@@ -3,7 +3,7 @@
 
         <div class="container ">
             <!-- LOGO -->
-            <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url('/panel') }}">
                 <img src="{{ asset('images/AbbaShoes Negative.svg') }}" alt="Logo" style="height: 30px" class="me-2" />
                 Gestor
             </a>

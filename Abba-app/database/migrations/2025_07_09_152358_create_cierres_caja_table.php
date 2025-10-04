@@ -7,19 +7,28 @@ use Illuminate\Support\Facades\Schema;
 class CreateCierresCajaTable extends Migration
 {
     public function up()
-    {
-        Schema::create('cierres_caja', function (Blueprint $table) {
-            $table->id();
-            $table->date('fecha')->unique();
-            $table->decimal('ingresos_efectivo', 10, 2)->default(0);
-            $table->decimal('ingresos_tarjeta', 10, 2)->default(0);
-            $table->decimal('egresos', 10, 2)->default(0);
-            $table->decimal('monto_contado', 10, 2)->nullable();
-            $table->decimal('diferencia', 10, 2)->nullable();
-            $table->text('observaciones')->nullable();
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('cierres_caja', function (Blueprint $table) {
+        $table->id();
+        $table->date('fecha')->unique(); // un cierre por día
+
+        // ingresos
+        $table->decimal('ingreso_efectivo', 12, 2)->default(0);
+        $table->decimal('ingreso_tarjeta', 12, 2)->default(0);
+        $table->decimal('ingreso_cuotas', 12, 2)->default(0);
+        $table->decimal('otros_ingresos', 12, 2)->default(0);
+
+        // egresos
+        $table->decimal('egresos', 12, 2)->default(0);
+
+        // saldo final (ingresos - egresos)
+        $table->decimal('saldo_dia', 12, 2)->default(0);
+
+        $table->text('observaciones')->nullable();
+        $table->timestamps();
+    });
+}
+
 
     public function down()
     {

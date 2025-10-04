@@ -69,6 +69,7 @@ Route::get('/ventas', [VentaController::class, 'index'])->name('ventas.index');
 Route::post('/clientes/rapido', [ClienteController::class, 'rapido'])->name('clientes.rapido');
 //buscar cliente______________________________________
 Route::get('/clientes/buscar', [ClienteController::class, 'buscar'])->name('clientes.buscar');
+
 //historial cliente___________________________________________
 Route::get('clientes/historial', [ClienteController::class, 'historial'])->name('clientes.historial');
 

@@ -5,6 +5,123 @@
 
 /*  */
 
+/* Sobrescribir colores de botones Bootstrap */
+/* Primary - Pastel violeta */
+/* Primary - violeta fuerte */
+/* Contenedores */
+
+
+.bg-primary { background-color: #5131f1ff; color: #fff; }
+.bg-success { background-color: #00b894; color: #fff; }
+.bg-warning { background-color: #fdcb6e; color: #212529; } /* más oscuro para legibilidad */
+.bg-danger { background-color: #d63031; color: #fff; }
+.bg-secondary { background-color: #5ce2e7ff; color: #2e2d2dff; } /* ejemplo */
+/* Borde primario personalizado */
+.border-primary {
+    border-color: #5131f1 !important;
+}
+.btn-primary {
+    background-color: #5131f1ff;
+    border-color: #5131f1ff;
+    color: #fff;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #7a6fe0;
+    border-color: #7a6fe0;
+}
+
+/* Success - verde brillante */
+.btn-success {
+    background-color: #00b894;
+    border-color: #00b894;
+    color: #fff;
+}
+.btn-success:hover,
+.btn-success:focus {
+    background-color: #009f82;
+    border-color: #009f82;
+}
+
+/* Warning - amarillo intenso */
+.btn-warning {
+    background-color: #fdcb6e;
+    border-color: #fdcb6e;
+    color: #212529;
+}
+.btn-warning:hover,
+.btn-warning:focus {
+    background-color: #fbbf52;
+    border-color: #fbbf52;
+}
+
+/* Danger - rojo fuerte */
+.btn-danger {
+    background-color: #d63031;
+    border-color: #d63031;
+    color: #fff;
+}
+.btn-danger:hover,
+.btn-danger:focus {
+    background-color: #c12727;
+    border-color: #c12727;
+}
+
+/* Secondary - gris oscuro para buen contraste */
+.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background-color: #5a6268;
+    border-color: #5a6268;
+}
+
+/* Info - azul intenso */
+.btn-info {
+    background-color: #3498db;
+    border-color: #3498db;
+    color: #fff;
+}
+.btn-info:hover,
+.btn-info:focus {
+    background-color: #2980b9;
+    border-color: #2980b9;
+}
+
+/* Light - gris claro para contenedores claros */
+.btn-light {
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+    color: #212529;
+}
+.btn-light:hover,
+.btn-light:focus {
+    background-color: #e2e6ea;
+    border-color: #e2e6ea;
+}
+
+/* Dark - negro/gris muy oscuro */
+.btn-dark {
+    background-color: #343a40;
+    border-color: #343a40;
+    color: #fff;
+}
+.btn-dark:hover,
+.btn-dark:focus {
+    background-color: #23272b;
+    border-color: #23272b;
+}
+
+
+
+
+
+
+
+
 .sticker-grid {
     display: grid;
     grid-template-columns: repeat(10, 2cm); /* 10 stickers por fila */

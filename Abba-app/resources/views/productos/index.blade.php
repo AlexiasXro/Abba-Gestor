@@ -17,14 +17,25 @@
     @endphp
 
     <x-header-bar title="Productos" :buttons="$headerButtons" filterName="filtro" :filterValue="$filtro ?? ''"
-        filterPlaceholder="Buscar por nombre, código o proveedor" :filterRoute="route('productos.index')" />
-        <div class="d-flex align-items-center gap-2">
-        <label for="tipoCodigo" class="form-label mb-0 text-white">Ver:</label>
-        <select id="tipoCodigo" class="form-select form-select-sm" style="width: 140px;">
-            <option value="qr">Código QR</option>
-            <option value="barra">Código de barras</option>
-        </select>
-    </div>
+        filterPlaceholder="Buscar..." :filterRoute="route('productos.index')">
+
+        <x-slot name="filterExtra">
+            <div class="d-flex align-items-center gap-2 ms-2">
+                <label for="tipoCodigo" class="form-label mb-0 text-white">Ver:</label>
+                <select id="tipoCodigo" class="form-select form-select-sm" style="width: 140px;">
+                    <option value="qr">Código QR</option>
+                    <option value="barra">Código de barras</option>
+                </select>
+                <a href="{{ url('/scanner/qr_impr') }}" target="_blank"
+                    class="btn btn-sm btn-primary d-flex align-items-center gap-1" data-bs-toggle="tooltip"
+                    title="Imprimir código">
+                    <i class="bi bi-printer"></i> Código
+                </a>
+            </div>
+
+        </x-slot>
+    </x-header-bar>
+
 
 
 
@@ -40,19 +51,19 @@
                         <th>Código</th>
                         <th>Imagen</th>
                         <th>Nombre</th>
-                        <th>Precio</th>
+                        <!-- <th>Precio</th> -->
                         <th>Precio costo</th>
-                        <th class="small">Factura B
+                        <th class="small">
                             <hr class="my-0">Venta
                         </th>
-                        <th class="small">Factura A
+                        <th class="small">
                             <hr class="my-0">Reventa
                         </th>
                         <th>Stock Total</th>
                         <th>Talles (Stock)</th>
                         <th><i class="bi bi-hand-thumbs-up-fill text-success" title="Activo"></i></th>
                         <th>Acciones
-                          <a href="{{ url('/scanner/qr_impr') }}" target="_blank" class="btn btn-primary">Ir a QRs</a>
+
 
                     </tr>
                 </thead>
@@ -60,36 +71,37 @@
                 <script>
                     window.productosQR = [
                         @foreach($productos as $p)
-                            {
-                                        codigo: "{{ $p->codigo }}",
-                                        url: "{{ route('productos.show', $p->codigo) }}",
-                                        containerId: "qrcode-index{{ $p->codigo }}"
-                                    }@if(!$loop->last), @endif
+                                    {
+                                codigo: "{{ $p->codigo }}",
+                                url: "{{ route('productos.show', $p->codigo) }}",
+                                containerId: "qrcode-index{{ $p->codigo }}"
+                            }@if(!$loop->last), @endif
                         @endforeach
-        ];
+            ];
                 </script>
 
-                
+
                 <tbody class="text-center">
                     @forelse($productos as $producto)
                         <tr>
                             {{-- Código y QR --}}
-                            <td class="text-center align-middle"> 
+                            <td class="text-center align-middle">
 
 
-                            <div class="qr-codigo">
-                                <div id="qrcode-index{{ $producto->codigo }}">
-                                    {{-- Tu lógica actual para mostrar el QR va acá --}}
-                                    <p class="mb-0 text-muted small">{{ $producto->codigo }}</p>
+                                <div class="qr-codigo">
+                                    <div id="qrcode-index{{ $producto->codigo }}">
+                                        {{-- Tu lógica del QR Librerías y QR JS
+                                        src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"--}}
+                                        <p class="mb-0 text-muted small">{{ $producto->codigo }}</p>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Código de barras -->
-                            <div class="barra-codigo mb-2" style="display: none;">
-                                
-                                {!! DNS1D::getBarcodeHTML($producto->codigo, 'C128', 1.5, 40) !!}
-                            </div>
-                            
+                                <!-- Código de barras -->
+                                <div class="barra-codigo mb-2" style="display: none;">
+
+                                    {!! DNS1D::getBarcodeHTML($producto->codigo, 'C128', 1.5, 40) !!}
+                                </div>
+
                             </td>
 
 
@@ -107,7 +119,7 @@
 
                             {{-- Datos --}}
                             <td>{{ $producto->nombre }}</td>
-                            <td>${{ number_format($producto->precio, 2) }}</td>
+                            <!-- <td>${{ number_format($producto->precio, 2) }}</td> -->
                             <td>${{ number_format($producto->precio_base ?? 0, 2) }}</td>
                             <td>${{ number_format($producto->precio_venta ?? 0, 2) }}</td>
                             <td>${{ number_format($producto->precio_reventa ?? 0, 2) }}</td>
@@ -141,10 +153,11 @@
                                         <i class="bi bi-eye"></i>
                                     </a>
 
-                                    <a href="url: {{ route('productos.show', $producto->codigo) }}"
-                                        class="btn btn-warning btn-sm" title="Editar">
+                                    <a href="{{ route('productos.show', $producto->codigo) }}" class="btn btn-warning btn-sm"
+                                        title="Editar">
                                         <i class="bi bi-pencil"></i>
                                     </a>
+
 
                                     <form action="{{ route('productos.destroy', $producto) }}" method="POST" class="d-inline"
                                         onsubmit="return confirm('¿Seguro que querés eliminar este producto?')">

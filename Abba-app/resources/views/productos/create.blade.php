@@ -22,65 +22,43 @@
 
     <div class="container mt-2">
 
-        <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data" class="">
             @csrf
             <div class="row">
                 <!-- Columna izquierda -->
-                <div class="col-md-8">
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="codigo" class="form-label">Código</label>
+                <div class="col-md-8 card shadow-sm rounded mb-3">
+                    <div class="row my-2 ">
+                        <div class="col-md-6 p-2">
+                            <label for="codigo" class="form-label">Código<span class="text-danger">*</span></label>
                             <input type="text" name="codigo" id="codigo" class="form-control" value="{{ old('codigo') }}"
                                 required>
                         </div>
-
-                        <div class="mb-3">
-                            <label for="imagen" class="form-label">Imagen del producto</label>
-                            <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*">
+                        <div class="col-md-6 p-2">
+                            <label for="precio_base" class="form-label fw-bold ">
+                                Precio costo <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" step="0.01" name="precio_base" id="precio_base"
+                                class="form-control border border-2 border-primary shadow-sm"
+                                value="{{ old('precio_base', $producto->precio_base ?? '') }}" required autofocus>
+                            <small class="text-muted">Complete este campo primero: a partir de aquí se calculan los demás
+                                precios.</small>
                         </div>
 
-                        <div class="mb-3">
-                            @if(isset($producto) && $producto->imagen)
-                                <!-- Imagen existente (edit) -->
-                                <img id="preview" src="{{ asset('storage/' . $producto->imagen) }}" alt="Vista previa"
-                                    style="max-width: 200px; max-height: 200px; display: block;">
-                            @else
-                                <!-- Preview vacío (create) -->
-                                <img id="preview" src="#" alt="Vista previa"
-                                    style="max-width: 200px; max-height: 200px; display: none;">
-                            @endif
-                        </div>
-
-                        <script>
-                            const inputImagen = document.getElementById('imagen');
-                            const preview = document.getElementById('preview');
-
-                            inputImagen.addEventListener('change', function (event) {
-                                const file = event.target.files[0];
-                                if (!file) return;
-
-                                const reader = new FileReader();
-                                reader.onload = function (e) {
-                                    preview.src = e.target.result;
-                                    preview.style.display = 'block';
-                                }
-                                reader.readAsDataURL(file);
-                            });
-                        </script>
-
-
-                        <div class="col-md-6">
-                            <label for="nombre" class="form-label">Nombre</label>
+                        <div class="col-md-6 p-2">
+                            <label for="nombre" class="form-label">Nombre<span class="text-danger">*</span></label>
                             <input type="text" name="nombre" id="nombre" class="form-control" value="{{ old('nombre') }}"
                                 required>
                         </div>
 
-                        <div class="col-md-6">
-                            <label for="descripcion" class="form-label">Descripción</label>
-                            <textarea name="descripcion" id="descripcion"
-                                class="form-control">{{ old('descripcion') }}</textarea>
+
+
+                        <div class="col-md-6 p-2">
+                            <label for="precio_venta" class="form-label">Precio venta (final)</label>
+                            <input type="number" step="0.01" name="precio_venta" id="precio_venta" class="form-control"
+                                value="{{ old('precio_venta', $producto->precio_venta ?? '') }}">
                         </div>
-                        <div class="col-md-6">
+
+                        <div class="col-md-6 p-2">
                             <label for="proveedor_nombre" class="form-label">Proveedor (opcional)</label>
                             <input list="proveedores-list" id="proveedor_nombre" name="proveedor_nombre"
                                 class="form-control" autocomplete="off" value="{{ old('proveedor_nombre') }}"
@@ -93,112 +71,165 @@
                             <input type="hidden" name="proveedor_id" id="proveedor_id" value="{{ old('proveedor_id') }}">
                         </div>
 
-                        <script>
-                            document.addEventListener('DOMContentLoaded', () => {
-                                const inputNombre = document.getElementById('proveedor_nombre');
-                                const inputId = document.getElementById('proveedor_id');
-                                const dataList = document.getElementById('proveedores-list');
 
-                                // Cuando el usuario cambie el texto
-                                inputNombre.addEventListener('input', () => {
-                                    const val = inputNombre.value;
-                                    // Buscar en options del datalist el que coincida exactamente
-                                    const option = Array.from(dataList.options).find(opt => opt.value === val);
-                                    if (option) {
-                                        // Si coincide, setear el id oculto
-                                        inputId.value = option.getAttribute('data-id');
-                                    } else {
-                                        // Si no coincide, limpiar el id oculto
-                                        inputId.value = '';
-                                    }
-                                });
-                            });
-                        </script>
-
-                        <div class="col-md-6">
-                            <label for="precio_base" class="form-label fw-bold text-primary">
-                                ⭐ Precio base (costo) <span class="text-danger">*</span>
-                            </label>
-                            <input type="number" step="0.01" name="precio_base" id="precio_base"
-                                class="form-control border border-2 border-primary shadow-sm"
-                                value="{{ old('precio_base', $producto->precio_base ?? '') }}" required autofocus>
-                            <small class="text-muted">Complete este campo primero: a partir de aquí se calculan los demás
-                                precios.</small>
-                        </div>
-
-
-
-
-                        <div class="col-md-6">
-                            <label for="precio_venta" class="form-label">Precio venta (final)</label>
-                            <input type="number" step="0.01" name="precio_venta" id="precio_venta" class="form-control"
-                                value="{{ old('precio_venta', $producto->precio_venta ?? '') }}">
-                        </div>
-
-                        <div class="col-md-6">
+                        <div class="col-md-6 p-2">
                             <label for="precio_reventa" class="form-label">Precio reventa (mayorista)</label>
                             <input type="number" step="0.01" name="precio_reventa" id="precio_reventa" class="form-control"
                                 value="{{ old('precio_reventa', $producto->precio_reventa ?? '') }}">
                         </div>
+
                         <!-- Fin de campos de precios adicionales -->
 
-                        <div class="col-md-6">
-                            <label for="stock_minimo" class="form-label">Stock mínimo</label>
+                        <div class="col-md-6 p-2">
+                            <label for="stock_minimo" class="form-label">Stock mínimo<span
+                                    class="text-danger">*</span></label>
                             <input type="number" name="stock_minimo" id="stock_minimo" class="form-control"
                                 value="{{ old('stock_minimo', 3) }}" required>
+                                <small class="text-muted">Se usa para alertas de reposición.</small>
+                                 
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6 p-2">
                             <label for="activo" class="form-label">Activo<i class="bi bi-hand-thumbs-up-fill text-success"
                                     title="Activo"></i></label>
                             <select name="activo" id="activo" class="form-select" required>
                                 <option value="1" {{ old('activo') == '1' ? 'selected' : '' }}>Sí</option>
                                 <option value="0" {{ old('activo') == '0' ? 'selected' : '' }}>No</option>
                             </select>
+                             <small class="text-muted">Marcá "No" si no se vende más.</small>
                         </div>
 
-                        <div class="col-md-6">
-                            <label for="precio" class="form-label">Precio (alias)</label>
-                            <input type="number" step="0.01" name="precio" id="precio" class="form-control"
-                                value="{{ old('precio', $producto->precio ?? '') }}" readonly
-                                placeholder="Se calcula a partir del precio base">
-                            <small class="text-muted">⚠️ Este campo es solo informativo. Ingrese el valor en <strong>Precio
-                                    base</strong>.</small>
+                        <div class="col-md-6 p-2">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea name="descripcion" id="descripcion"
+                                class="form-control">{{ old('descripcion') }}</textarea>
+                        </div>
+                        <div class="col-md-6 p-2">
+    <div class="border rounded shadow-sm p-2 text-center" style="max-width: 220px; margin: 0 auto;">
+        @if(isset($producto) && $producto->imagen)
+            <!-- Imagen existente (edit) -->
+            <img id="preview" src="{{ asset('storage/' . $producto->imagen) }}" alt="Vista previa"
+                 class="img-fluid" style="max-height: 200px;">
+        @else
+            <!-- Preview vacío (create) -->
+            <img id="preview" src="#" alt="Vista previa" class="img-fluid" style="max-height: 200px; display: none;">
+        @endif
+    </div>
+</div>
+
+<div class="col-md-6 p-2">
+    <label for="imagen" class="form-label">Imagen del producto</label>
+    <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*">
+</div>
+
+
+
+                        <div class="card-footer text-end">
+    <button type="submit" class="btn btn-primary">
+        <i class="bi bi-plus-circle"></i> Crear Producto
+    </button>
+</div>
+
+                    </div>
+                </div>
+
+
+                <!-- Columna derecha -->
+                <div class="col-md-4 d-flex justify-content-start">
+
+                    <div style="max-width: 180px; width: 100%;">
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm rounded" style="font-size: 0.9rem;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="text-center" style="width: 60px;">Talle</th>
+                                        <th class="text-center" style="width: 90px;">Stock</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($talles as $talle)
+                                        <tr>
+                                            <td class="text-center">
+                                                {{ $talle->talle }}
+                                                <input type="hidden" name="talles[{{ $loop->index }}][id]"
+                                                    value="{{ $talle->id }}">
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="input-group input-group-sm"
+                                                    style="max-width: 90px; margin: 0 auto;">
+                                                    <input type="number" name="talles[{{ $loop->index }}][stock]"
+                                                        class="form-control form-control-sm text-center stock-input" min="0"
+                                                        value="0" style="padding: 0.25rem;">
+                                                    <button type="button" class="btn btn-outline-secondary increment"
+                                                        style="padding: 0.25rem 0.4rem;">+</button>
+                                                    <button type="button" class="btn btn-outline-secondary decrement"
+                                                        style="padding: 0.25rem 0.4rem;">-</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 w-25">
 
-                    <h4>Talles y Stock</h4>
-                    <table class="table table-bordered table-sm" style="font-size: 0.9rem;">
-                        <thead>
-                            <tr>
-                                <th>Talle</th>
-                                <th>Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($talles as $talle)
-                                <tr>
-                                    <td>
-                                        {{ $talle->talle }}
-                                        <input type="hidden" name="talles[{{ $loop->index }}][id]" value="{{ $talle->id }}">
-                                    </td>
-                                    <td>
-                                        <input type="number" name="talles[{{ $loop->index }}][stock]"
-                                            class="form-control form-control-sm text-center" min="0" value="0">
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+
+
             </div>
-            <button type="submit" class="btn btn-primary mt-3">Crear Producto</button>
         </form>
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const inputNombre = document.getElementById('proveedor_nombre');
+            const inputId = document.getElementById('proveedor_id');
+            const dataList = document.getElementById('proveedores-list');
+
+            // Cuando el usuario cambie el texto
+            inputNombre.addEventListener('input', () => {
+                const val = inputNombre.value;
+                // Buscar en options del datalist el que coincida exactamente
+                const option = Array.from(dataList.options).find(opt => opt.value === val);
+                if (option) {
+                    // Si coincide, setear el id oculto
+                    inputId.value = option.getAttribute('data-id');
+                } else {
+                    // Si no coincide, limpiar el id oculto
+                    inputId.value = '';
+                }
+            });
+        });
+
+        const inputImagen = document.getElementById('imagen');
+        const preview = document.getElementById('preview');
+
+        inputImagen.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        });
+
+        document.querySelectorAll('.increment').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.closest('.input-group').querySelector('.stock-input');
+                input.value = parseInt(input.value) + 1;
+            });
+        });
+
+        document.querySelectorAll('.decrement').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const input = btn.closest('.input-group').querySelector('.stock-input');
+                if (parseInt(input.value) > 0) input.value = parseInt(input.value) - 1;
+            });
+        });
         // Script para calcular precios automáticamente
         document.addEventListener('DOMContentLoaded', function () {
             const inputBase = document.getElementById('precio_base');
@@ -218,5 +249,3 @@
         });
     </script>
 @endsection
-
-

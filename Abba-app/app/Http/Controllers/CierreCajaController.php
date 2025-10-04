@@ -13,11 +13,21 @@ class CierreCajaController extends Controller
     /**
      * Muestra todos los cierres de caja, ordenados por fecha descendente.
      */
-    public function index()
-    {
-        $cierres = CierreCaja::orderByDesc('fecha')->get();
-        return view('cierres.index', compact('cierres'));
-    }
+    public function index(Request $request)
+{
+    $mes = $request->input('mes', now()->month);
+    $anio = $request->input('anio', now()->year);
+
+    $cierres = CierreCaja::whereYear('fecha', $anio)
+        ->whereMonth('fecha', $mes)
+        ->orderBy('fecha', 'desc')
+        ->get();
+
+    $totalMes = $cierres->sum('saldo_dia');
+
+    return view('cierres.index', compact('cierres', 'mes', 'anio', 'totalMes'));
+}
+
 
     /**
      * Muestra el formulario para registrar el cierre del día.
@@ -51,30 +61,37 @@ class CierreCajaController extends Controller
     /**
      * Registra un nuevo cierre de caja. Valida que no exista un cierre para esa fecha.
      */
-    public function store(Request $request)
-    {
-        $request->validate([
-            'fecha' => 'required|date',
-            'monto_efectivo' => 'required|numeric|min:0',
-            'monto_cuotas' => 'required|numeric|min:0',
-            'monto_total' => 'required|numeric',
-        ]);
+   public function store(Request $request)
+{
+    $fecha = $request->input('fecha') ?? now()->toDateString();
 
-        // Evita duplicado antes de guardar
-        if (CierreCaja::whereDate('fecha', $request->fecha)->exists()) {
-            return back()->with('error', 'Ya existe un cierre para esta fecha.');
-        }
-
-        // Guarda el cierre
-        CierreCaja::create([
-            'fecha' => $request->fecha,
-            'monto_efectivo' => $request->monto_efectivo,
-            'monto_cuotas' => $request->monto_cuotas,
-            'monto_total' => $request->monto_total,
-        ]);
-
-        return redirect()->route('cierres.index')->with('success', 'Cierre de caja registrado correctamente.');
+    // Validar que no exista ya
+    if (CierreCaja::where('fecha', $fecha)->exists()) {
+        return back()->with('error', 'Ya existe un cierre para este día.');
     }
+
+    $ingresoEfectivo = $request->input('ingreso_efectivo', 0);
+    $ingresoTarjeta  = $request->input('ingreso_tarjeta', 0);
+    $ingresoCuotas   = $request->input('ingreso_cuotas', 0);
+    $otrosIngresos   = $request->input('otros_ingresos', 0);
+    $egresos         = $request->input('egresos', 0);
+
+    $saldo = $ingresoEfectivo + $ingresoTarjeta + $ingresoCuotas + $otrosIngresos - $egresos;
+
+    CierreCaja::create([
+        'fecha'            => $fecha,
+        'ingreso_efectivo' => $ingresoEfectivo,
+        'ingreso_tarjeta'  => $ingresoTarjeta,
+        'ingreso_cuotas'   => $ingresoCuotas,
+        'otros_ingresos'   => $otrosIngresos,
+        'egresos'          => $egresos,
+        'saldo_dia'        => $saldo,
+        'observaciones'    => $request->input('observaciones'),
+    ]);
+
+    return redirect()->route('cierres.index')->with('success', 'Cierre registrado correctamente.');
+}
+
 
     /**
      * Muestra el detalle de un cierre específico.
@@ -83,4 +100,22 @@ class CierreCajaController extends Controller
     {
         return view('cierres.show', compact('cierre'));
     }
+
+
+    public function cierreMensual($anio, $mes)
+{
+    $total = CierreCaja::whereYear('fecha', $anio)
+        ->whereMonth('fecha', $mes)
+        ->sum('saldo_dia');
+
+    return view('reportes.cierre_mensual', compact('anio', 'mes', 'total'));
+}
+
+public function cierreAnual($anio)
+{
+    $total = CierreCaja::whereYear('fecha', $anio)->sum('saldo_dia');
+
+    return view('reportes.cierre_anual', compact('anio', 'total'));
+}
+
 }

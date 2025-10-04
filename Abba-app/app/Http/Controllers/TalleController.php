@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Talle;
-
 use Illuminate\Http\Request;
 
 class TalleController extends Controller
@@ -24,9 +23,10 @@ class TalleController extends Controller
     {
         $request->validate([
             'talle' => 'required|string|max:10|unique:talles,talle',
+            'tipo'  => 'required|string|in:calzado,ropa,niño,unico',
         ]);
 
-        Talle::create($request->only('talle'));
+        Talle::create($request->only('talle', 'tipo'));
 
         return redirect()->route('talles.index')->with('success', 'Talle creado correctamente.');
     }
@@ -45,9 +45,10 @@ class TalleController extends Controller
     {
         $request->validate([
             'talle' => 'required|string|max:10|unique:talles,talle,' . $talle->id,
+            'tipo'  => 'required|string|in:calzado,ropa,niño,unico',
         ]);
 
-        $talle->update($request->only('talle'));
+        $talle->update($request->only('talle', 'tipo'));
 
         return redirect()->route('talles.index')->with('success', 'Talle actualizado correctamente.');
     }

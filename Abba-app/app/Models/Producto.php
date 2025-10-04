@@ -105,4 +105,5 @@ public function setPrecioAttribute($value)
     // opcional: cuando se guarda "precio", también se guarda en precio_venta
     $this->attributes['precio_venta'] = $value;
 }
+
 }

@@ -113,8 +113,7 @@ class ClienteController extends Controller
 
 
 
-    // Registro rápido de clientes en views/ventas/create
-   public function rapido(Request $request)
+public function rapido(Request $request)
 {
     $validated = $request->validate([
         'nombre' => 'required|string|max:255',
@@ -125,7 +124,8 @@ class ClienteController extends Controller
 
     $clienteNuevo = Cliente::create($validated);
 
-    return response()->view('clientes.partials.option', ['cliente' => $clienteNuevo]);
+    // Devuelve el card compacto
+    return response()->view('ventas.partials.cliente_seleccionado', ['cliente' => $clienteNuevo]);
 }
 
 
@@ -133,17 +133,36 @@ class ClienteController extends Controller
  // Búsqueda de clientes al vender. views/ventas/create
 public function buscar(Request $request)
 {
-    $query = $request->input('query');
+    $query = strtolower($request->input('query'));
 
-    $clientes = Cliente::where('nombre', 'like', "%{$query}%")
-        ->orWhere('apellido', 'like', "%{$query}%")
+    if (strlen($query) < 2) {
+        return response()->json([]);
+    }
+
+    $clientes = Cliente::whereRaw('lower(nombre) like ?', ["%{$query}%"])
+        ->orWhereRaw('lower(apellido) like ?', ["%{$query}%"])
         ->orWhere('dni', 'like', "%{$query}%")
         ->orWhere('telefono', 'like', "%{$query}%")
         ->limit(10)
         ->get();
 
+    // Por ahora SIN deudas
+    $clientes = $clientes->map(function ($c) {
+        return [
+            'id' => $c->id,
+            'nombre' => $c->nombre,
+            'apellido' => $c->apellido,
+            'dni' => $c->dni,
+            'telefono' => $c->telefono,
+            'deuda' => null, // futuro
+        ];
+    });
+
     return response()->json($clientes);
 }
+
+
+
 
 // HISTORIAL DE LOS CLIENTE Y LO QUE COMPRARON 
 public function historial(Request $request)

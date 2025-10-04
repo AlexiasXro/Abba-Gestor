@@ -15,39 +15,61 @@
         </div>
     @endif
 
-    <div class="card border-0 shadow-sm">
-        <div class="card-body p-0">
-            <table class="table table-bordered table-striped table-sm align-middle">
-                <thead class="table-light">
-                    <tr class="text-muted small text-uppercase">
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Ventas Efectivo ($)</th>
-                        <th scope="col">Ventas Cuotas ($)</th>
-                        <th scope="col">Total Gastos ($)</th>
-                        <th scope="col">Saldo Final ($)</th>
-                        <th class="text-end" scope="col">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($cierres as $cierre)
-                        <tr>
-                            <td>{{ \Carbon\Carbon::parse($cierre->fecha)->format('d/m/Y') }}</td>
-                            <td>{{ number_format($cierre->monto_efectivo, 2, ',', '.') }}</td>
-                            <td>{{ number_format($cierre->monto_cuotas, 2, ',', '.') }}</td>
-                            <td>{{ number_format($cierre->monto_total - ($cierre->monto_efectivo + $cierre->monto_cuotas), 2, ',', '.') }}</td>
-                            <td class="fw-bold text-success">{{ number_format($cierre->monto_total, 2, ',', '.') }}</td>
-                            <td class="text-end">
-                                <a href="{{ route('cierres.show', $cierre) }}" class="btn btn-outline-secondary btn-sm">Ver</a>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">No se registraron cierres de caja.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+   
+
+
+<div class="container">
+    <h1>Cierres de Caja - {{ $mes }}/{{ $anio }}</h1>
+
+    <form method="GET" class="mb-3 d-flex gap-2">
+        <select name="mes" class="form-select">
+            @for ($i = 1; $i <= 12; $i++)
+                <option value="{{ $i }}" {{ $mes == $i ? 'selected' : '' }}>
+                    {{ \Carbon\Carbon::create()->month($i)->translatedFormat('F') }}
+                </option>
+            @endfor
+        </select>
+        <input type="number" name="anio" value="{{ $anio }}" class="form-control" style="width:120px;">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+    </form>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Efectivo</th>
+                <th>Tarjeta</th>
+                <th>Cuotas</th>
+                <th>Otros</th>
+                <th>Egresos</th>
+                <th>Saldo Día</th>
+                <th>Obs.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($cierres as $cierre)
+                <tr>
+                    <td>{{ $cierre->fecha }}</td>
+                    <td>${{ number_format($cierre->ingreso_efectivo,2) }}</td>
+                    <td>${{ number_format($cierre->ingreso_tarjeta,2) }}</td>
+                    <td>${{ number_format($cierre->ingreso_cuotas,2) }}</td>
+                    <td>${{ number_format($cierre->otros_ingresos,2) }}</td>
+                    <td class="text-danger">-${{ number_format($cierre->egresos,2) }}</td>
+                    <td class="fw-bold {{ $cierre->saldo_dia >= 0 ? 'text-success' : 'text-danger' }}">
+                        ${{ number_format($cierre->saldo_dia,2) }}
+                    </td>
+                    <td>{{ $cierre->observaciones }}</td>
+                </tr>
+            @endforeach
+        </tbody>
+        <tfoot>
+            <tr class="table-secondary">
+                <td colspan="6" class="text-end"><strong>Total del Mes</strong></td>
+                <td colspan="2" class="fw-bold">${{ number_format($totalMes,2) }}</td>
+            </tr>
+        </tfoot>
+    </table>
 </div>
+
+
 @endsection

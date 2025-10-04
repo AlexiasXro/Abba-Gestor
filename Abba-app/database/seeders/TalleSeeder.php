@@ -7,15 +7,20 @@ use App\Models\Talle;
 
 class TalleSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
-        // Solo talles de calzado (del 35 al 45)
-        $tallesCalzado = range(35, 45);
-
-        foreach ($tallesCalzado as $numero) {
-            Talle::create([
-                'talle' => $numero
-            ]);
+        // Talles de calzado
+        $tallesCalzado = range(35, 45); // 35,36,...45
+        foreach ($tallesCalzado as $talle) {
+            Talle::firstOrCreate(['talle' => $talle]);
         }
+
+        // Talles de ropa
+        $tallesRopa = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+        foreach ($tallesRopa as $talle) {
+            Talle::firstOrCreate(['talle' => $talle]);
+        }
+
+        $this->command->info('Talles de calzado y ropa cargados con éxito.');
     }
 }

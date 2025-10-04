@@ -6,6 +6,7 @@ use App\Models\Producto;
 use App\Models\Proveedor;
 use App\Models\Talle;
 use Illuminate\Http\Request;
+use App\Models\ProductoTalle;
 use Illuminate\Support\Facades\Storage;// <- para manejar storage
 use Intervention\Image\Facades\Image;        // <- para redimensionar imágenes
 use Milon\Barcode\DNS1D;
@@ -15,23 +16,59 @@ class ProductoController extends Controller
 {
     //Abba-app\app\Http\Controllers\ProductoController.php
     // Mostrar productos activos
-    public function index(Request $request)
-    {
-        $filtro = $request->input('filtro');
+public function index(Request $request)
+{
+    $filtro = $request->input('filtro');
 
-        $productos = Producto::query()
-            ->with('proveedor')
-            ->when($filtro, function ($query, $filtro) {
-                $query->where('nombre', 'like', "%{$filtro}%")
-                    ->orWhere('codigo', 'like', "%{$filtro}%")
-                    ->orWhereHas('proveedor', function ($q) use ($filtro) {
-                        $q->where('nombre', 'like', "%{$filtro}%");
-                    });
-            })
-            ->paginate(8);
+    $productos = Producto::query()
+        ->with('proveedor', 'talles')
+        ->when($filtro, function ($query, $filtro) {
+            $query->where('nombre', 'like', "%{$filtro}%")
+                ->orWhere('codigo', 'like', "%{$filtro}%")
+                ->orWhereHas('proveedor', function ($q) use ($filtro) {
+                    $q->where('nombre', 'like', "%{$filtro}%");
+                });
+        });
 
-        return view('productos.index', compact('productos', 'filtro'));
+    // Filtros avanzados
+    if ($request->filled('precio_min')) {
+        $productos->where('precio', '>=', $request->precio_min);
     }
+    if ($request->filled('precio_max')) {
+        $productos->where('precio', '<=', $request->precio_max);
+    }
+    if ($request->filled('precio_costo_min')) {
+        $productos->where('precio_base', '>=', $request->precio_costo_min);
+    }
+    if ($request->filled('precio_costo_max')) {
+        $productos->where('precio_base', '<=', $request->precio_costo_max);
+    }
+    if ($request->filled('stock_min')) {
+        $productos->where('stock', '>=', $request->stock_min);
+    }
+    if ($request->filled('stock_max')) {
+        $productos->where('stock', '<=', $request->stock_max);
+    }
+
+    // Filtrar por talle
+    if ($request->filled('talle')) {
+        $productos->whereHas('talles', function($q) use ($request) {
+            $q->where('id', $request->talle);
+        });
+    }
+
+   $productos = $productos->orderBy('created_at', 'desc')->paginate(6);
+
+
+    // Obtener talles disponibles para el select (solo con stock > 0)
+   // <-- Aquí generamos los talles disponibles para el select
+    $tallesDisponibles = Talle::whereHas('productos', function($q){
+        $q->wherePivot('stock', '>', 0);
+    })->get();
+
+    return view('productos.index', compact('productos', 'filtro', 'tallesDisponibles'));
+}
+
 
 
 

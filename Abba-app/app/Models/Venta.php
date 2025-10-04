@@ -36,9 +36,17 @@ class Venta extends Model
         return $this->hasMany(VentaDetalle::class);
     }
 
-    public function cuotas()
+public function cuotas()
 {
-    return $this->hasMany(Cuota::class);
+    return $this->hasManyThrough(Cuota::class, Venta::class);
+}
+
+public function getDeudaAttribute()
+{
+    // Total de cuotas pendientes (no pagadas)
+    return $this->cuotas()
+        ->where('pagada', false)
+        ->sum('monto');
 }
 
 }

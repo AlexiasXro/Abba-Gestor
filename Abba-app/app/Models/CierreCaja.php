@@ -10,10 +10,14 @@ class CierreCaja extends Model
 
     protected $fillable = [
         'fecha',
-        'monto_efectivo',
-        'monto_cuotas',
-        'monto_total',
+        'ingreso_efectivo',
+        'ingreso_tarjeta',
+        'ingreso_cuotas',
+        'otros_ingresos',
+        'egresos',
+        'saldo_dia',
         'observaciones',
     ];
 }
+
 

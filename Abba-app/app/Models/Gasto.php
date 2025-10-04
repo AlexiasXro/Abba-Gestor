@@ -16,14 +16,9 @@ class Gasto extends Model
         'monto',
         'descripcion',
         'categoria',
-        'user_id', // si lo estás asociando a un usuario
         'metodo_pago',
+        
     ];
 
     protected $dates = ['deleted_at'];
-
-    public function usuario()
-    {
-        return $this->belongsTo(User::class, 'user_id');
-    }
 }

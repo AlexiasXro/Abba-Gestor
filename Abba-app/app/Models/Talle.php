@@ -10,7 +10,7 @@ class Talle extends Model
     //Abba-app\app\Models\Talle.php
     use HasFactory;
 
-    protected $fillable = ['talle'];
+     protected $fillable = ['talle', 'tipo'];
 
     // Relación muchos a muchos con productos a través de la tabla pivote
     public function productos()

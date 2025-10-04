@@ -57,8 +57,8 @@
         font-family: &quot;Segoe UI&quot;, Tahoma, Geneva, Verdana, sans-serif;
         line-height: 1.5;
         color: #212529;
-        background: linear-gradient(90deg, #402ba0d8, #eeebf5ff, #d8d5dfff, #eeebf5ff, #402ba0d8); 
-        padding: 1.5rem; 
+        background: linear-gradient(180deg, #f5f5f5ff, #e9e9e9ff, #e4e4e4ff, #8f7bf0ff); 
+       
         min-height: 100vh;
         border-radius: 0px;
         overflow-x: hidden;
