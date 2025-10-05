@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Producto;
 use App\Models\Proveedor;
+use App\Models\Categoria;
 use App\Models\Talle;
 use Illuminate\Http\Request;
 use App\Models\ProductoTalle;
@@ -78,175 +79,216 @@ public function index(Request $request)
     {
         $talles = Talle::all();
         $proveedores = Proveedor::orderBy('nombre')->get();
-        return view('productos.create', compact('talles', 'proveedores'));
+         $categorias = Categoria::orderBy('nombre')->get();
+        return view('productos.create', compact('talles', 'proveedores','categorias'));
     }
 
         // -------------------
     // CREAR PRODUCTO
     // -------------------
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'codigo' => 'required|unique:productos,codigo',
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'precio_venta' => 'nullable|numeric|min:0',
-            'precio_base' => 'nullable|numeric|min:0',
-            'precio_reventa' => 'nullable|numeric|min:0',
-            'stock_minimo' => 'nullable|integer|min:0',
-            'activo' => 'required|boolean',
-            'talles' => 'nullable|array',
-            'talles.*.id' => 'required|exists:talles,id',
-            'talles.*.stock' => 'required|integer|min:0',
-            'proveedor_id' => 'nullable|exists:proveedores,id',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
-        ]);
+{
+    $validated = $request->validate([
+        'codigo' => 'required|unique:productos,codigo',
+        'nombre' => 'required|string|max:255',
+        'descripcion' => 'nullable|string',
+        'precio_venta' => 'nullable|numeric|min:0',
+        'precio_base' => 'nullable|numeric|min:0',
+        'precio_reventa' => 'nullable|numeric|min:0',
+        'stock_minimo' => 'nullable|integer|min:0',
+        'activo' => 'required|boolean',
+        'categoria_id' => 'required|exists:categorias,id',
+        'talles' => 'nullable|array',
+        'talles.*.id' => 'required|exists:talles,id',
+        'talles.*.stock' => 'required|integer|min:0',
+        'proveedor_id' => 'nullable|exists:proveedores,id',
+        'imagen' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+        
 
-        // Preparar datos del producto
-        $datosProducto = collect($validated)->except('talles')->toArray();
+    ]);
 
-        // Sincronizar precio general
-        $datosProducto['precio'] = $datosProducto['precio_venta'] ?? 0;
+    // Validar lógica de talles según categoría
+    $categoria = Categoria::find($validated['categoria_id']);
 
-        // Guardar imagen si se subió
-        if ($request->hasFile('imagen')) {
-            $datosProducto['imagen'] = $request->file('imagen')->store('productos', 'public');
-        }
-
-//dd($datosProducto, $request->file('imagen'));
-
-        // Crear producto
-        $producto = Producto::create($datosProducto);
-
-        // Guardar talles
-        if (!empty($validated['talles'])) {
-            $syncData = [];
-            foreach ($validated['talles'] as $item) {
-                $syncData[$item['id']] = ['stock' => $item['stock']];
-            }
-            $producto->talles()->sync($syncData);
-        }
-
-        return redirect()->route('productos.index')->with('success', 'Producto creado correctamente');
+    if ($categoria->usa_talle && empty($validated['talles'])) {
+        return back()->withErrors(['talles' => 'Esta categoría requiere talles.']);
     }
+
+    if (!empty($validated['talles'])) {
+        foreach ($validated['talles'] as $item) {
+            $talle = Talle::find($item['id']);
+            if ($talle->tipo !== $categoria->tipo_talle) {
+                return back()->withErrors([
+                    'talles' => 'El talle "' . $talle->talle . '" no coincide con el tipo de categoría "' . $categoria->tipo_talle . '".'
+                ]);
+            }
+        }
+    }
+
+    // Preparar datos del producto
+    $datosProducto = collect($validated)->except('talles')->toArray();
+    $datosProducto['precio'] = $datosProducto['precio_venta'] ?? 0;
+
+    // Guardar imagen si se subió
+    if ($request->hasFile('imagen')) {
+        $datosProducto['imagen'] = $request->file('imagen')->store('productos', 'public');
+    }
+
+    // Crear producto
+    $producto = Producto::create($datosProducto);
+
+    // Guardar talles con stock
+    if (!empty($validated['talles'])) {
+        $syncData = [];
+        foreach ($validated['talles'] as $item) {
+            $syncData[$item['id']] = ['stock' => $item['stock']];
+        }
+        $producto->talles()->sync($syncData);
+    }
+
+    return redirect()->route('productos.index')->with('success', 'Producto creado correctamente');
+}
+
 
     // -------------------
     // ACTUALIZAR PRODUCTO
     // -------------------
-    public function update(Request $request, Producto $producto)
-    {
-        $validated = $request->validate([
-            'codigo' => 'required|unique:productos,codigo,' . $producto->id,
-            'nombre' => 'required|string|max:255',
-            'descripcion' => 'nullable|string',
-            'precio_venta' => 'nullable|numeric|min:0',
-            'precio_base' => 'nullable|numeric|min:0',
-            'precio_reventa' => 'nullable|numeric|min:0',
-            'stock_minimo' => 'nullable|integer|min:0',
-            'activo' => 'required|boolean',
-            'talles' => 'nullable|array',
-            'talles.*.id' => 'required|exists:talles,id',
-            'talles.*.stock' => 'required|integer|min:0',
-            'proveedor_id' => 'nullable|exists:proveedores,id',
-            'imagen' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
-        ]);
+   public function update(Request $request, Producto $producto)
+{
+    $validated = $request->validate([
+        'codigo' => 'required|unique:productos,codigo,' . $producto->id,
+        'nombre' => 'required|string|max:255',
+        'descripcion' => 'nullable|string',
+        'precio_venta' => 'nullable|numeric|min:0',
+        'precio_base' => 'nullable|numeric|min:0',
+        'precio_reventa' => 'nullable|numeric|min:0',
+        'stock_minimo' => 'nullable|integer|min:0',
+        'activo' => 'required|boolean',
+        'categoria_id' => 'required|exists:categorias,id',
+        'talles' => 'nullable|array',
+        'talles.*.id' => 'required|exists:talles,id',
+        'talles.*.stock' => 'required|integer|min:0',
+        'proveedor_id' => 'nullable|exists:proveedores,id',
+        'imagen' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+    ]);
 
-        $datosProducto = collect($validated)->except('talles')->toArray();
+    // Validar lógica de talles según categoría
+    $categoria = Categoria::find($validated['categoria_id']);
 
-        // Sincronizar precio general
-        $datosProducto['precio'] = $datosProducto['precio_venta'] ?? 0;
-
-        
-        // Guardar nueva imagen si se subió
-        if ($request->hasFile('imagen')) {
-            // eliminar imagen anterior si existía
-            if ($producto->imagen) {
-                Storage::disk('public')->delete($producto->imagen);
-            }
-            $datosProducto['imagen'] = $request->file('imagen')->store('productos', 'public');
-        }
-
-       
-
-        // Actualizar producto
-        $producto->update($datosProducto);
-
-        // Sincronizar talles
-        if (!empty($validated['talles'])) {
-            $syncData = [];
-            foreach ($validated['talles'] as $item) {
-                $syncData[$item['id']] = ['stock' => $item['stock']];
-            }
-            $producto->talles()->sync($syncData);
-        } else {
-            $producto->talles()->detach();
-        }
-
-        return redirect()->route('productos.show', $producto)->with('success', 'Producto actualizado correctamente');
+    if ($categoria->usa_talle && empty($validated['talles'])) {
+        return back()->withErrors(['talles' => 'Esta categoría requiere talles.']);
     }
+
+    if (!empty($validated['talles'])) {
+        foreach ($validated['talles'] as $item) {
+            $talle = Talle::find($item['id']);
+            if ($talle->tipo !== $categoria->tipo_talle) {
+                return back()->withErrors([
+                    'talles' => 'El talle "' . $talle->talle . '" no coincide con el tipo de categoría "' . $categoria->tipo_talle . '".'
+                ]);
+            }
+        }
+    }
+
+    // Preparar datos del producto
+    $datosProducto = collect($validated)->except('talles')->toArray();
+    $datosProducto['precio'] = $datosProducto['precio_venta'] ?? 0;
+
+    // Guardar nueva imagen si se subió
+    if ($request->hasFile('imagen')) {
+        if ($producto->imagen) {
+            Storage::disk('public')->delete($producto->imagen);
+        }
+        $datosProducto['imagen'] = $request->file('imagen')->store('productos', 'public');
+    }
+
+    // Actualizar producto
+    $producto->update($datosProducto);
+
+    // Sincronizar talles
+    if (!empty($validated['talles'])) {
+        $syncData = [];
+        foreach ($validated['talles'] as $item) {
+            $syncData[$item['id']] = ['stock' => $item['stock']];
+        }
+        $producto->talles()->sync($syncData);
+    } else {
+        $producto->talles()->detach();
+    }
+
+    return redirect()->route('productos.show', $producto)->with('success', 'Producto actualizado correctamente');
+}
+
 
 
 
 
 //Detalles del producto
-    public function show(Producto $producto)
-    {
-        $producto->load('talles', 'proveedor');
-        
-       
-        return view('productos.show', compact('producto'));
-    }
+   public function show(Producto $producto)
+{
+    $producto->load('talles', 'proveedor', 'categoria'); // Cargamos también la categoría
+    return view('productos.show', compact('producto'));
+}
+
 
     // Formulario editar producto
-    public function edit(Producto $producto)
-    {
-        $talles = Talle::all();
-        $proveedores = Proveedor::orderBy('nombre')->get(); // <== cargamos proveedores
-        $producto->load('talles');
-        return view('productos.edit', compact('producto', 'talles', 'proveedores'));
+   public function edit(Producto $producto)
+{
+    $talles = Talle::all();
+    $proveedores = Proveedor::orderBy('nombre')->get();
+    $categorias = Categoria::orderBy('nombre')->get(); // Cargamos categorías
+    $producto->load('talles', 'categoria'); // Incluimos categoría en el producto
+
+     // Filtrar talles según la categoría del producto
+    $talles = [];
+    if ($producto->categoria && $producto->categoria->usa_talle) {
+        $talles = Talle::where('tipo', $producto->categoria->tipo_talle)->get();
     }
+    return view('productos.edit', compact('producto', 'talles', 'proveedores', 'categorias'));
+}
+
 
 
 
     
     // Mostrar productos eliminados (soft deleted)
-    public function eliminados()
-    {
-        $query = Producto::onlyTrashed()->with('talles')->orderBy('deleted_at', 'desc');
+   public function eliminados()
+{
+    $query = Producto::onlyTrashed()->with('talles', 'categoria')->orderBy('deleted_at', 'desc');
 
-        // Aplicar filtro de búsqueda si existe
-        if ($buscar = request('buscar')) {
-            $query->where(function ($q) use ($buscar) {
-                $q->where('nombre', 'like', '%' . $buscar . '%')
-                    ->orWhere('codigo', 'like', '%' . $buscar . '%');
-
-            });
-
-        }
-        $productosEliminados = $query->paginate(15)->withQueryString();
-
-        return view('productos.eliminados', compact('productosEliminados'));
-
+    if ($buscar = request('buscar')) {
+        $query->where(function ($q) use ($buscar) {
+            $q->where('nombre', 'like', '%' . $buscar . '%')
+              ->orWhere('codigo', 'like', '%' . $buscar . '%');
+        });
     }
+
+    $productosEliminados = $query->paginate(15)->withQueryString();
+
+    return view('productos.eliminados', compact('productosEliminados'));
+}
+
 
 
     // Eliminar (soft delete)
-    public function destroy(Producto $producto)
-    {
-        $producto->delete();
-        return redirect()->route('productos.index')->with('success', 'Producto eliminado correctamente');
-    }
+   public function destroy(Producto $producto)
+{
+    $producto->delete();
+    return redirect()->route('productos.index')->with('success', 'Producto eliminado correctamente');
+}
+
 
 
 
 
     // Restaurar producto eliminado
-    public function restaurar($id)
-    {
-        $producto = Producto::onlyTrashed()->findOrFail($id);
-        $producto->restore();
-        return redirect()->route('productos.eliminados')->with('success', 'Producto restaurado correctamente');
-    }
+   public function restaurar($id)
+{
+    $producto = Producto::onlyTrashed()->findOrFail($id);
+    $producto->restore();
+    return redirect()->route('productos.eliminados')->with('success', 'Producto restaurado correctamente');
+}
+
 
 
     //-------------imprecion QR
@@ -260,57 +302,62 @@ public function qrIndex()
 
 
     // Método para crear un producto rápido desde el modal compra
-    public function storeDesdeCompra(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'codigo' => 'nullable|string|max:100',
-            'precio_base' => 'required|numeric|min:0',
-        ]);
+   public function storeDesdeCompra(Request $request)
+{
+    $request->validate([
+        'nombre' => 'required|string|max:255',
+        'codigo' => 'nullable|string|max:100',
+        'precio_base' => 'required|numeric|min:0',
+        'categoria_id' => 'required|exists:categorias,id', // NUEVO
+    ]);
 
-        $producto = Producto::create([
-            'nombre' => $request->nombre,
-            'codigo' => $request->codigo,
-            'precio_base' => $request->precio_base,
-            // Agregá otros campos que uses o valores por defecto
-        ]);
+    $producto = Producto::create([
+        'nombre' => $request->nombre,
+        'codigo' => $request->codigo,
+        'precio_base' => $request->precio_base,
+        'categoria_id' => $request->categoria_id,
+        // Agregá otros campos que uses o valores por defecto
+    ]);
 
-        // Si querés devolver a la vista directamente (no ajax), redirigí con mensaje:
-        return redirect()->back()->with('success', 'Producto agregado correctamente');
+    return redirect()->back()->with('success', 'Producto agregado correctamente');
 
-        // O para ajax, podés devolver json:
-        // return response()->json(['producto' => $producto]);
-    }
+    // Para ajax:
+    // return response()->json(['producto' => $producto]);
+}
 
 
-    public function aplicarRecargo(Request $request, Producto $producto)
-    {
-        $request->validate([
-            'recargo' => 'required|numeric|min:0',
-        ]);
 
-        try {
-            $recargo = $request->input('recargo');
-            $precioBase = $producto->precio_base;
+   public function aplicarRecargo(Request $request, Producto $producto)
+{
+    $request->validate([
+        'recargo' => 'required|numeric|min:0',
+    ]);
 
-            if (!$precioBase) {
-                return back()->with('error', 'El producto no tiene precio base definido.');
-            }
+    try {
+        $producto->load('categoria'); // Cargamos la categoría por si se necesita
 
-            // Cálculos
-            $nuevoPrecioVenta = $precioBase * (1 + $recargo / 100);
-            $nuevoPrecioReventa = $precioBase * (1 + ($recargo - 10) / 100);
+        $recargo = $request->input('recargo');
+        $precioBase = $producto->precio_base;
 
-            // Actualiza el modelo
-            $producto->precio_venta = round($nuevoPrecioVenta, 2);
-            $producto->precio_reventa = round($nuevoPrecioReventa, 2);
-            $producto->save();
-
-            return back()->with('success', 'Precios actualizados correctamente.');
-        } catch (\Exception $e) {
-            return back()->with('error', 'Error al actualizar precios: ' . $e->getMessage());
+        if (!$precioBase) {
+            return back()->with('error', 'El producto no tiene precio base definido.');
         }
+
+        // Cálculos
+        $nuevoPrecioVenta = $precioBase * (1 + $recargo / 100);
+        $nuevoPrecioReventa = $precioBase * (1 + ($recargo - 10) / 100);
+
+        // Actualiza el modelo
+        $producto->precio_venta = round($nuevoPrecioVenta, 2);
+        $producto->precio_reventa = round($nuevoPrecioReventa, 2);
+        $producto->save();
+
+        return back()->with('success', 'Precios actualizados correctamente.');
+    } catch (\Exception $e) {
+        return back()->with('error', 'Error al actualizar precios: ' . $e->getMessage());
     }
+}
+
 public function showPorCodigo($codigo)
 {
     $producto = Producto::where('codigo', $codigo)->firstOrFail();

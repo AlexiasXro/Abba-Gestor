@@ -21,6 +21,9 @@ return new class extends Migration
             $table->decimal('precio', 10, 2);
             $table->integer('stock_minimo')->default(3);
             $table->boolean('activo')->default(true);
+            $table->foreignId('categoria_id')->constrained('categorias');
+$table->foreignId('talle_id')->nullable()->constrained('talles');
+
             $table->timestamps();
             $table->softDeletes();
         });

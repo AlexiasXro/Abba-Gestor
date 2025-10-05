@@ -20,6 +20,9 @@
 .border-primary {
     border-color: #5131f1 !important;
 }
+.border-secondary {
+    border-color: #5ce2e7ff !important;
+}
 .btn-primary {
     background-color: #5131f1ff;
     border-color: #5131f1ff;

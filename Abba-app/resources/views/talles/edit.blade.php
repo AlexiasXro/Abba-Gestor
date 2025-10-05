@@ -45,12 +45,15 @@
                     <div class="mb-3">
                         <label for="tipo" class="form-label">Tipo</label>
                         <select name="tipo" id="tipo" class="form-select" required>
-                            <option value="">-- Seleccionar tipo --</option>
-                            <option value="calzado" {{ old('tipo', $talle->tipo) == 'calzado' ? 'selected' : '' }}>Calzado</option>
-                            <option value="ropa" {{ old('tipo', $talle->tipo) == 'ropa' ? 'selected' : '' }}>Ropa</option>
-                            <option value="niño" {{ old('tipo', $talle->tipo) == 'niño' ? 'selected' : '' }}>Niño</option>
-                            <option value="unico" {{ old('tipo', $talle->tipo) == 'unico' ? 'selected' : '' }}>Único</option>
-                        </select>
+    <option value="">-- Seleccionar tipo --</option>
+    <option value="calzado" {{ old('tipo') == 'calzado' ? 'selected' : '' }}>Calzado</option>
+    <option value="ropa" {{ old('tipo') == 'ropa' ? 'selected' : '' }}>Ropa</option>
+    <option value="niño" {{ old('tipo') == 'niño' ? 'selected' : '' }}>Niño</option>
+    <option value="unico" {{ old('tipo') == 'unico' ? 'selected' : '' }}>Único</option>
+    <option value="adulto" {{ old('tipo') == 'adulto' ? 'selected' : '' }}>Adulto</option>
+    <option value="juvenil" {{ old('tipo') == 'juvenil' ? 'selected' : '' }}>Juvenil</option>
+    <option value="bebé" {{ old('tipo') == 'bebé' ? 'selected' : '' }}>Bebé</option>
+</select>
                         <div class="form-text">Define a qué categoría pertenece este talle.</div>
                     </div>
 

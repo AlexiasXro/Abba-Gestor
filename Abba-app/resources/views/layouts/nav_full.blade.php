@@ -72,6 +72,7 @@
                         </a>
                         <ul class="dropdown-menu custom-hover">
                             <li><a class="dropdown-item" href="{{ route('talles.index') }}">Talles</a></li>
+                            <li><a class="dropdown-item" href="{{ route('categorias.index') }}">Categorías</a></li>
                             <li><a class="dropdown-item" href="{{ route('compras.index') }}">Compras</a></li>
                             <li><a class="dropdown-item" href="{{ route('proveedores.index') }}">Proveedores</a></li>
                         </ul>

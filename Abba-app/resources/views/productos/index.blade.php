@@ -59,7 +59,9 @@
                         <th class="small">
                             <hr class="my-0">Reventa
                         </th>
+                        <th>Categoría</th>
                         <th>Stock Total</th>
+
                         <th>Talles (Stock)</th>
                         <th><i class="bi bi-hand-thumbs-up-fill text-success" title="Activo"></i></th>
                         <th>Acciones
@@ -123,6 +125,14 @@
                             <td>${{ number_format($producto->precio_base ?? 0, 2) }}</td>
                             <td>${{ number_format($producto->precio_venta ?? 0, 2) }}</td>
                             <td>${{ number_format($producto->precio_reventa ?? 0, 2) }}</td>
+{{-- Categoria --}}
+                           <td>
+    @if($producto->categoria)
+        <span class="badge bg-info text-dark">{{ $producto->categoria->nombre }}</span>
+    @else
+        <span class="text-muted">Sin categoría</span>
+    @endif
+</td>
 
                             {{-- Stock --}}
                             <td>{{ $producto->talles->sum('pivot.stock') }}</td>

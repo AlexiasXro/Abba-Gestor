@@ -10,7 +10,8 @@ class TalleController extends Controller
 {
     public function index()
     {
-        $talles = Talle::orderBy('talle')->get();
+         $talles = Talle::orderBy('talle')->paginate(13); // Cambiá el número según lo que prefieras
+    
         return view('talles.index', compact('talles'));
     }
 
@@ -23,7 +24,8 @@ class TalleController extends Controller
     {
         $request->validate([
             'talle' => 'required|string|max:10|unique:talles,talle',
-            'tipo'  => 'required|string|in:calzado,ropa,niño,unico',
+            'tipo' => 'required|string|in:calzado,ropa,niño,unico,adulto,juvenil,bebé',
+
         ]);
 
         Talle::create($request->only('talle', 'tipo'));

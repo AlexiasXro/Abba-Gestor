@@ -24,7 +24,8 @@ class Producto extends Model
         'activo', 
         'tipo',
         'proveedor_id',
-        'imagen'
+        'imagen',
+        'categoria_id'
 
         // ✅ Nuevos campos 'precio_base', 'precio_venta', 'precio_reventa''proveedor_id' imagen 
     ];
@@ -104,6 +105,14 @@ public function setPrecioAttribute($value)
 {
     // opcional: cuando se guarda "precio", también se guarda en precio_venta
     $this->attributes['precio_venta'] = $value;
+}
+
+public function categoria() {
+    return $this->belongsTo(Categoria::class);
+}
+
+public function talle() {
+    return $this->belongsTo(Talle::class);
 }
 
 }

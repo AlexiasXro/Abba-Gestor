@@ -32,20 +32,20 @@
         @include('productos.partials.modal_recargo', ['producto' => $producto])
 
 
-        <form action="{{ route('productos.update', $producto) }}" method="POST" enctype="multipart/form-data"
-            class="">
+        <form action="{{ route('productos.update', $producto) }}" method="POST" enctype="multipart/form-data" class="">
             @csrf
             @method('PUT')
 
-                       
+
             <div class="row">
                 <!-- Columna izquierda -->
                 <div class="col-md-8 card shadow-sm rounded mb-3">
                     <div class="row my-2 ">
                         <div class="col-md-6 p-2">
                             <label for="codigo" class="form-label">Código<span class="text-danger">*</span></label>
-                            <input type="text" name="codigo" id="codigo" class="form-control" value="{{ old('codigo') }}"
-                                required>
+                            <input type="text" name="codigo" id="codigo" class="form-control"
+                                value="{{ old('codigo', $producto->codigo) }}" required>
+
                         </div>
                         <div class="col-md-6 p-2">
                             <label for="precio_base" class="form-label fw-bold ">
@@ -60,8 +60,9 @@
 
                         <div class="col-md-6 p-2">
                             <label for="nombre" class="form-label">Nombre<span class="text-danger">*</span></label>
-                            <input type="text" name="nombre" id="nombre" class="form-control" value="{{ old('nombre') }}"
-                                required>
+                            <input type="text" name="nombre" id="nombre" class="form-control"
+                                value="{{ old('nombre', $producto->nombre) }}" required>
+
                         </div>
 
 
@@ -91,6 +92,17 @@
                             <input type="number" step="0.01" name="precio_reventa" id="precio_reventa" class="form-control"
                                 value="{{ old('precio_reventa', $producto->precio_reventa ?? '') }}">
                         </div>
+                        <div class="col-md-6 p-2">
+                            <label for="categoria_id" class="form-label">Categoría<span class="text-danger">*</span></label>
+                            <select name="categoria_id" id="categoria_id" class="form-select" required>
+                                @foreach ($categorias as $categoria)
+                                    <option value="{{ $categoria->id }}" {{ old('categoria_id', $producto->categoria_id) == $categoria->id ? 'selected' : '' }}>
+                                        {{ $categoria->nombre }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
 
                         <!-- Fin de campos de precios adicionales -->
 
@@ -99,8 +111,8 @@
                                     class="text-danger">*</span></label>
                             <input type="number" name="stock_minimo" id="stock_minimo" class="form-control"
                                 value="{{ old('stock_minimo', 3) }}" required>
-                                <small class="text-muted">Se usa para alertas de reposición.</small>
-                                 
+                            <small class="text-muted">Se usa para alertas de reposición.</small>
+
                         </div>
 
                         <div class="col-md-6 p-2">
@@ -110,7 +122,7 @@
                                 <option value="1" {{ old('activo') == '1' ? 'selected' : '' }}>Sí</option>
                                 <option value="0" {{ old('activo') == '0' ? 'selected' : '' }}>No</option>
                             </select>
-                             <small class="text-muted">Marcá "No" si no se vende más.</small>
+                            <small class="text-muted">Marcá "No" si no se vende más.</small>
                         </div>
 
                         <div class="col-md-6 p-2">
@@ -119,30 +131,31 @@
                                 class="form-control">{{ old('descripcion') }}</textarea>
                         </div>
                         <div class="col-md-6 p-2">
-    <div class="border rounded shadow-sm p-2 text-center" style="max-width: 220px; margin: 0 auto;">
-        @if(isset($producto) && $producto->imagen)
-            <!-- Imagen existente (edit) -->
-            <img id="preview" src="{{ asset('storage/' . $producto->imagen) }}" alt="Vista previa"
-                 class="img-fluid" style="max-height: 200px;">
-        @else
-            <!-- Preview vacío (create) -->
-            <img id="preview" src="#" alt="Vista previa" class="img-fluid" style="max-height: 200px; display: none;">
-        @endif
-    </div>
-</div>
+                            <div class="border rounded shadow-sm p-2 text-center" style="max-width: 220px; margin: 0 auto;">
+                                @if(isset($producto) && $producto->imagen)
+                                    <!-- Imagen existente (edit) -->
+                                    <img id="preview" src="{{ asset('storage/' . $producto->imagen) }}" alt="Vista previa"
+                                        class="img-fluid" style="max-height: 200px;">
+                                @else
+                                    <!-- Preview vacío (create) -->
+                                    <img id="preview" src="#" alt="Vista previa" class="img-fluid"
+                                        style="max-height: 200px; display: none;">
+                                @endif
+                            </div>
+                        </div>
 
-<div class="col-md-6 p-2">
-    <label for="imagen" class="form-label">Imagen del producto</label>
-    <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*">
-</div>
+                        <div class="col-md-6 p-2">
+                            <label for="imagen" class="form-label">Imagen del producto</label>
+                            <input type="file" id="imagen" name="imagen" class="form-control" accept="image/*">
+                        </div>
 
 
 
-                <div class="card-footer text-end">
-    <button type="submit" class="btn btn-primary">
-        <i class="bi bi-check-circle"></i> Confirmar
-    </button>
-</div>
+                        <div class="card-footer text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-check-circle"></i> Confirmar
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -153,8 +166,9 @@
                     <div style="max-width: 180px; width: 100%;">
 
                         <div class="table-responsive">
-                            <table class="table table-bordered table-sm rounded " style="font-size: 0.9rem;">
-    <thead class="table-secondary">
+                            <table class="table table-bordered table-sm rounded " class="border border-primary rounded shadow-sm p-3 bg-light mb-3"
+             style="display: none;">
+                                <thead class="table-secondary">
                                     <tr>
                                         <th class="text-center" style="width: 60px;">Talle</th>
                                         <th class="text-center" style="width: 90px;">Stock</th>

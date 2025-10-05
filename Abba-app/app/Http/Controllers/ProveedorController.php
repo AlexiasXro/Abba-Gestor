@@ -31,7 +31,7 @@ class ProveedorController extends Controller
 
         Proveedor::create($request->all());
 
-        return redirect()->route('proveedores.index')->with('success', 'Proveedor registrado correctamente');
+        return redirect()->route('proveedores.index');
     }
 
     public function edit(Proveedor $proveedor)
@@ -52,12 +52,23 @@ class ProveedorController extends Controller
 
         $proveedor->update($request->all());
 
-        return redirect()->route('proveedores.index')->with('success', 'Proveedor actualizado correctamente');
+        return redirect()->route('proveedores.index');
     }
 
     public function destroy(Proveedor $proveedor)
     {
         $proveedor->delete();
-        return redirect()->route('proveedores.index')->with('success', 'Proveedor eliminado');
+        return redirect()->route('proveedores.index');
     }
+
+    public function eliminados()
+    {
+        $proveedores = Proveedor::onlyTrashed()->orderBy('nombre')->paginate(15);
+        return view('proveedores.eliminados', compact('proveedores'));
+    }
+public function show(Proveedor $proveedor)
+{
+    return view('proveedores.show', compact('proveedor'));
+}
+
 }

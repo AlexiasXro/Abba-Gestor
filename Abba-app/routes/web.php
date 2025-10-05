@@ -14,6 +14,7 @@ use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\GastoController;
 use App\Http\Controllers\CierreCajaController;
 use App\Http\Controllers\ScannerController;
+use App\Http\Controllers\CategoriaController;
 use App\Models\Producto;
 
 
@@ -125,6 +126,15 @@ Route::post('clientes/{id}/restaurar', [ClienteController::class, 'restaurar'])-
 // Rutas para talles__________________________________________________________________________
 Route::resource('talles', TalleController::class);
 
+// Rutas para categorias__________________________________________________________________________
+Route::resource('categorias', CategoriaController::class);
+
+// API interna para talles por tipo (usada en JS dinámico)
+Route::get('/api/talles', function (Illuminate\Http\Request $request) {
+    $tipo = $request->query('tipo');
+    return \App\Models\Talle::where('tipo', $tipo)->get(['id', 'talle']);
+});
+
 
 // Rutas para REPORTES__________________________________________________________________________
 
@@ -157,8 +167,14 @@ use App\Http\Controllers\CompraController;
 Route::resource('compras', CompraController::class)->except(['edit', 'update', 'destroy']);
 Route::post('/productos/store-desde-compra', [ProductoController::class, 'storeDesdeCompra'])->name('productos.store_desde_compra');
 use App\Http\Controllers\ProveedorController;
+
 // Rutas para proveedores
-Route::resource('proveedores', ProveedorController::class)->except(['show']);
+Route::get('proveedores/eliminados', [ProveedorController::class, 'eliminados'])->name('proveedores.eliminados');
+Route::resource('proveedores', ProveedorController::class)->parameters([
+    'proveedores' => 'proveedor'
+]);
+
+
 
 
 // Rutas para configuracion de margenes
