@@ -22,7 +22,8 @@
         @if($clientes->isEmpty())
             <p>No hay clientes registrados.</p>
         @else
-            <table class="table table-bordered table-striped table-sm align-middle">
+         <div class="table-responsive">
+             <table class="table table-bordered table-sm  table-striped  align-middle text-center small shadow-sm">
                 <thead class="table-light">
                     <tr>
                         <th>Nombre</th>
@@ -79,5 +80,6 @@
                 </tbody>
             </table>
         @endif
+    </div>
     </div>
 @endsection

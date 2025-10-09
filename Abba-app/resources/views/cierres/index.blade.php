@@ -33,7 +33,8 @@
         <button type="submit" class="btn btn-primary">Filtrar</button>
     </form>
 
-    <table class="table table-bordered">
+     <div class="table-responsive" style="">
+            <table class="table table-bordered table-sm  table-striped  align-middle text-center small shadow-sm">
         <thead>
             <tr>
                 <th>Fecha</th>
@@ -69,6 +70,7 @@
             </tr>
         </tfoot>
     </table>
+</div>
 </div>
 
 

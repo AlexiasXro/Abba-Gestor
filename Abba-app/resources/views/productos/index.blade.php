@@ -45,7 +45,8 @@
 
         {{-- Tabla de productos --}}
         <div class="table-responsive">
-            <table class="table table-bordered table-striped table-sm align-middle">
+            <table class="table table-bordered table-striped table-sm  align-middle text-center small shadow-sm">
+            
                 <thead class="table-light text-center">
                     <tr>
                         <th>Código</th>

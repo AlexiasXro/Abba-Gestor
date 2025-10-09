@@ -8,21 +8,9 @@
     <div class="container">
 
 
-        <form method="GET" class="mb-3 d-flex gap-2 align-items-center flex-wrap">
-            <select name="estado" class="form-select w-auto">
-                <option value="">-- Todos los estados --</option>
-                <option value="pagada" {{ request('estado') == 'pagada' ? 'selected' : '' }}>Pagadas</option>
-                <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendientes</option>
-                <option value="vencida" {{ request('estado') == 'vencida' ? 'selected' : '' }}>Vencidas</option>
-            </select>
-
-            <input type="text" name="cliente" class="form-control w-auto" placeholder="Buscar por nombre o apellido"
-                value="{{ request('cliente') }}" />
-
-            <button type="submit" class="btn btn-primary">Filtrar</button>
-        </form>
-
-        <table class="table table-bordered table-striped table-sm align-middle">
+        
+ <div class="table-responsive">
+        <table class="table table-bordered table-sm  table-striped  align-middle text-center small shadow-sm">
             <thead class="table-light">
                 <tr>
                     <th>Venta</th>
@@ -95,7 +83,7 @@
             </form>
         </div>
     </div>
-
+</div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var confirmPagoModal = document.getElementById('confirmPagoModal');

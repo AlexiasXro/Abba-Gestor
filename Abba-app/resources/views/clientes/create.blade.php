@@ -54,8 +54,10 @@
                             <textarea name="direccion" id="direccion" class="form-control" rows="2">{{ old('direccion') }}</textarea>
                         </div>
 
-                        <div class="d-grid mt-3">
-                            <button type="submit" class="btn btn-primary">Guardar Cliente</button>
+                        <div class="card-footer text-end">
+           
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Guardar Cliente</button>
                         </div>
                     </form>
                 </div>

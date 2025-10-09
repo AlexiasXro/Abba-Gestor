@@ -16,7 +16,7 @@
        <div class="container mt-3">
     <div class="d-flex justify-content-center">
         <div class="table-responsive" style="max-width: 720px; width: 100%;">
-            <table class="table table-bordered table-hover align-middle text-center small shadow-sm">
+            <table class="table table-bordered table-sm  table-striped  align-middle text-center small shadow-sm">
                 <thead class="table-light">
                     <tr>
                         <th style="width: 50px;"><i class="bi bi-hash"></i></th>

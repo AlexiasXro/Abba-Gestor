@@ -21,12 +21,13 @@
     ]" />
 
                                     <div class="container mt-2">
+                                        <div class="card border-primary shadow-sm p-3">
 
                                         <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data" class="">
                                             @csrf
                                             <div class="row">
                                                 <!-- Columna izquierda -->
-                                                <div class="col-md-8 card shadow-sm rounded mb-3">
+                                                <div class="col-md-8 ">
 
                                                     <div class="row my-2 ">
                                                         <div class="col-md-4 p-2">
@@ -126,20 +127,14 @@
         </div>
 
         <div class="col-md-4 p-2">
-            <div class="border rounded shadow-sm p-2 text-center" style="max-width: 220px; height: 200px; margin: 0 auto;">
-                @if(isset($producto) && $producto->imagen)
-                    <!-- Imagen existente (edit) -->
-                    <img id="preview" src="{{ asset('storage/' . $producto->imagen) }}" alt="Vista previa" class="img-fluid h-100"
-                        style="object-fit: contain;">
-                @else
-                    <!-- Placeholder visual (create) -->
-                    <div class="d-flex flex-column align-items-center justify-content-center h-100 text-muted">
-                        <i class="bi bi-image" style="font-size: 2rem;"></i>
-
-                    </div>
-                @endif
-            </div>
-        </div>
+    <div class="border rounded shadow-sm p-2 text-center" style="max-width: 220px; height: 200px; margin: 0 auto;">
+        <img id="preview"
+             src="{{ isset($producto) && $producto->imagen ? asset('storage/' . $producto->imagen) : asset('images/placeholder.svg') }}"
+             alt="Vista previa"
+             class="img-fluid h-100"
+             style="object-fit: contain;">
+    </div>
+</div>
 
         <div class="col-md-4 p-2">
             <label for="imagen" class="form-label">Imagen del producto</label>
@@ -148,11 +143,7 @@
 
 
 
-        <div class="card-footer text-end">
-            <button type="submit" class="btn btn-primary">
-                <i class="bi bi-plus-circle"></i> Crear Producto
-            </button>
-        </div>
+        
 
         </div>
         </div>
@@ -198,7 +189,11 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-
+<div class="card-footer text-end">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Crear Producto
+            </button>
+        </div>
 
                                                         </form>
                                                         </div>

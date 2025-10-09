@@ -12,76 +12,9 @@
     <div class="container">
 
     
-
-        {{-- Filtros profesionales - Devoluciones --}}
-        <form method="GET" action="{{ route('devoluciones.index') }}" class="mb-3">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-2">
-
-                {{-- ID de devolución --}}
-                <div class="col">
-                    <input type="text" name="id" value="{{ request('id') }}" class="form-control form-control-sm"
-                        placeholder="ID devolución">
-                </div>
-
-                {{-- Venta relacionada --}}
-                <div class="col">
-                    <input type="text" name="venta" value="{{ request('venta') }}" class="form-control form-control-sm"
-                        placeholder="N° Venta">
-                </div>
-
-                {{-- Cliente --}}
-                <div class="col">
-                    <input type="text" name="cliente" value="{{ request('cliente') }}" class="form-control form-control-sm"
-                        placeholder="Cliente (nombre, DNI, teléfono)">
-                </div>
-
-                {{-- Tipo de devolución --}}
-                <div class="col">
-                    <select name="tipo" class="form-select form-select-sm">
-                        <option value="">-- Tipo --</option>
-                        <option value="total" {{ request('tipo') == 'total' ? 'selected' : '' }}>Total</option>
-                        <option value="parcial" {{ request('tipo') == 'parcial' ? 'selected' : '' }}>Parcial</option>
-                    </select>
-                </div>
-
-                {{-- Motivo --}}
-                <div class="col">
-                    <input type="text" name="motivo" value="{{ request('motivo') }}" class="form-control form-control-sm"
-                        placeholder="Motivo">
-                </div>
-
-                {{-- Estado --}}
-                <div class="col">
-                    <select name="estado" class="form-select form-select-sm">
-                        <option value="">-- Estado --</option>
-                        <option value="pendiente" {{ request('estado') == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
-                        <option value="procesada" {{ request('estado') == 'procesada' ? 'selected' : '' }}>Procesada</option>
-                        <option value="anulada" {{ request('estado') == 'anulada' ? 'selected' : '' }}>Anulada</option>
-                    </select>
-                </div>
-
-                {{-- Fecha desde --}}
-                <div class="col">
-                    <input type="date" name="fecha_desde" value="{{ request('fecha_desde') }}"
-                        class="form-control form-control-sm">
-                </div>
-
-                {{-- Fecha hasta --}}
-                <div class="col">
-                    <input type="date" name="fecha_hasta" value="{{ request('fecha_hasta') }}"
-                        class="form-control form-control-sm">
-                </div>
-            </div>
-
-            {{-- Botones --}}
-            <div class="mt-2 d-flex flex-wrap gap-2">
-                <button type="submit" class="btn btn-primary btn-sm">Filtrar</button>
-                <a href="{{ route('devoluciones.index') }}" class="btn btn-secondary btn-sm">Limpiar</a>
-            </div>
-        </form>
-
+ <div class="table-responsive">
         {{-- Tabla --}}
-        <table class="table table-bordered table-striped table-sm align-middle">
+        <table class="table table-bordered table-sm  table-striped  align-middle text-center small shadow-sm">
             <thead class="table-light">
                 <tr>
                     <th>ID</th>
@@ -139,7 +72,7 @@
                 @endforelse
             </tbody>
         </table>
-
+</div> 
         {{-- Paginación si aplica --}}
         {{ $devoluciones->links() }}
     </div>
