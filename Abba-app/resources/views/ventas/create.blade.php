@@ -97,14 +97,18 @@ document.addEventListener("DOMContentLoaded", () => {
     function seleccionarCliente(c) {
         clienteId.value = c.id;
         clienteCard.innerHTML = `
-            <div class="d-flex align-items-center justify-content-between p-2 border rounded bg-light">
-                <div>
-                    <span>${c.nombre} ${c.apellido ?? ""} - DNI: ${c.dni ?? "-"} - Tel: ${c.telefono ?? "-"}</span>
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('clienteSeleccionado').innerHTML='';document.getElementById('clienteId').value='';document.getElementById('buscarCliente').focus();">
-                    Cambiar
-                </button>
-            </div>
+           <div class="d-flex align-items-center justify-content-between px-2 py-1 border rounded bg-white small shadow-sm">
+  <div class="text-muted">
+    <span>${c.nombre} ${c.apellido ?? ""} · Tel: ${c.telefono ?? "-"}</span>
+  </div>
+  <button type="button" class="btn btn-sm btn-link text-decoration-none text-muted" onclick="
+    document.getElementById('clienteSeleccionado').innerHTML='';
+    document.getElementById('clienteId').value='';
+    document.getElementById('buscarCliente').focus();">
+    <i class="bi bi-arrow-repeat"></i> Cambiar
+  </button>
+</div>
+
         `;
         clienteCard.classList.remove("d-none");
         sugerencias.style.display = "none";
@@ -234,6 +238,80 @@ document.addEventListener("DOMContentLoaded", () => {
                                             <option value="cuotas">Pago en Cuotas</option>
                                         </select>
                                     </div>
+                                    <!-- Lista-sm de productos añadidos con scrol-->
+                                     <div class="mb-3">
+  <label class="form-label">🛒 Productos en esta venta</label>
+  <div class="border rounded p-2" style="max-height: 200px; overflow-y: auto;">
+    <ul class="list-group list-group-sm">
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    <span>ZAP001 - Zapatilla Urbana (38)</span>
+    <div class="d-flex align-items-center gap-2">
+      <span class="text-muted">$1,150.00</span>
+      <span class="badge bg-primary rounded-pill">x1</span>
+      <button class="btn btn-sm btn-outline-danger" onclick="eliminarProducto('ZAP001')">
+        <i class="bi bi-trash"></i>
+      </button>
+    </div>
+  </li>
+</ul>
+  </div>
+</div>
+<script>
+    document.querySelectorAll('.agregar-carrito').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const fila = this.closest('tr');
+    const codigo = fila.children[0].textContent.trim();
+    const nombre = fila.children[1].textContent.trim();
+    const talleSelect = fila.querySelector('.talle-select');
+    const talle = talleSelect.options[talleSelect.selectedIndex].text.split(' ')[0]; // solo el talle
+    const cantidad = parseInt(fila.querySelector('.cantidad-input').value);
+    const precioReventa = parseFloat(fila.children[4].textContent.replace('$', '').replace(',', ''));
+    
+    const producto = {
+      codigo,
+      nombre,
+      talle,
+      cantidad,
+      precioReventa
+    };
+
+    agregarProducto(producto);
+  });
+});
+
+    function agregarProducto(producto) {
+  productosSeleccionados.push(producto);
+  renderizarLista();
+}
+
+function eliminarProducto(codigo) {
+  productosSeleccionados = productosSeleccionados.filter(p => p.codigo !== codigo);
+  renderizarLista();
+}
+
+function renderizarLista() {
+  const lista = document.querySelector('.list-group');
+  lista.innerHTML = '';
+  productosSeleccionados.forEach(p => {
+    const item = document.createElement('li');
+    item.className = 'list-group-item d-flex justify-content-between align-items-center';
+    item.innerHTML = `
+      <span>${p.codigo} - ${p.nombre} (${p.talle})</span>
+      <div class="d-flex align-items-center gap-2">
+        <span class="text-muted">$${p.precioReventa.toFixed(2)}</span>
+        <span class="badge bg-primary rounded-pill">x${p.cantidad}</span>
+        <button class="btn btn-sm btn-outline-danger" onclick="eliminarProducto('${p.codigo}')">
+          <i class="bi bi-trash"></i>
+        </button>
+      </div>
+    `;
+    lista.appendChild(item);
+  });
+}
+
+</script>
+
+
 
                                     <!-- Subtotal y descuento -->
                                     <div class="mb-3 d-flex justify-content-between">
@@ -247,10 +325,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                                     <!-- Botón Confirmar -->
                                     <div class="d-grid mt-3">
+                                        <div class="card-footer text-end">
                                         <button type="button" class="btn btn-success" id="btn-confirmar-venta" data-bs-toggle="modal"
                                             data-bs-target="#modal-detalle-pago">
                                             Confirmar Venta
                                         </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
